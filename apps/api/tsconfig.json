@@ -11,5 +11,8 @@
         "outDir": "./dist",
         "baseUrl": "./",
         "incremental": true,
-    }
+    },
+    "references": [
+        { "path": "../../packages/models" }
+    ]
 }

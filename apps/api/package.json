@@ -28,6 +28,7 @@
 		"rxjs": "^7.4.0"
 	},
 	"devDependencies": {
+		"@dragonfish/models": "1.0.0",
 		"@nestjs/cli": "^8.1.3",
 		"@nestjs/schematics": "^8.0.4",
 		"@nestjs/testing": "^8.1.1",

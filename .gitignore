@@ -13,7 +13,7 @@ coverage
 .vercel_build_output
 
 # nestjs
-/dist
+dist
 
 # misc
 .DS_Store
@@ -33,3 +33,6 @@ yarn-error.log*
 
 # turbo
 .turbo
+
+# typescript
+tsconfig.tsbuildinfo
