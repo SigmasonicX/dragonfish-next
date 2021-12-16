@@ -9,8 +9,11 @@ node_modules
 coverage
 
 # sveltekit
+/.svelte-kit
+.vercel_build_output
 
 # nestjs
+/dist
 
 # misc
 .DS_Store
