@@ -11,6 +11,11 @@
         "outDir": "./dist",
         "baseUrl": "./",
         "incremental": true,
+        "paths": {
+            "$shared/*": ["src/shared/*"],
+            "$db/*": ["src/db/*"],
+            "$modules/*": ["src/modules/*"]
+        }
     },
     "references": [
         { "path": "../../packages/models" }

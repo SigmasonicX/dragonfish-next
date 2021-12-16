@@ -17,7 +17,9 @@ dist
 
 # misc
 .DS_Store
+apps/api/.env
 *.pem
+.idea
 
 # debug
 npm-debug.log*
