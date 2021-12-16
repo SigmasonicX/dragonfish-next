@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "sourceMap": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "strict": true
+    }
+}
