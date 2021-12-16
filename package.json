@@ -6,7 +6,13 @@
 		"apps/*",
 		"packages/*"
 	],
-	"scripts": {},
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel",
+		"dev:client": "turbo run dev --scope='@dragonfish/client'",
+		"start": "turbo run start",
+		"start:api": "turbo run start --scope='@dragonfish/api'"
+	},
 	"turbo": {
 		"baseBranch": "origin/main",
 		"pipeline": {
@@ -30,6 +36,11 @@
 			},
 			"dev": {
 				"cache": false
+			},
+			"start": {
+				"dependsOn": [
+					"^build"
+				]
 			}
 		}
 	},
