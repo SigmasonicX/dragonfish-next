@@ -28,6 +28,7 @@
 		"@nestjs/jwt": "^8.0.0",
 		"@nestjs/mongoose": "^9.0.1",
 		"@nestjs/platform-express": "^8.1.1",
+		"@nestjsplus/cookies": "^1.1.1",
 		"@types/mongoose-paginate-v2": "^1.4.1",
 		"@types/voca": "^1.4.2",
 		"argon2": "^0.28.3",

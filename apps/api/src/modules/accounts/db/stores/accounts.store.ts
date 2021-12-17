@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AccountDocument } from '../schemas';
+import { AccountDocument, InviteCodesDocument } from '../schemas';
 import {
     AccountForm,
     ChangeEmail,
@@ -11,6 +11,7 @@ import {
     Account,
     FrontendAccount,
     Pseudonym,
+    InviteCodes,
 } from '@dragonfish/models';
 import * as sanitizeHtml from 'sanitize-html';
 import { DeviceInfo } from '$shared/util';
@@ -19,7 +20,10 @@ import { nanoid } from 'nanoid';
 
 @Injectable()
 export class AccountsStore {
-    constructor(@InjectModel('Account') private readonly accountModel: Model<AccountDocument>) {}
+    constructor(
+        @InjectModel('Account') private readonly accountModel: Model<AccountDocument>,
+        @InjectModel('InviteCodes') private readonly inviteCodesModel: Model<InviteCodesDocument>,
+    ) {}
 
     //#region ---FETCH ACCOUNTS---
 
@@ -158,6 +162,26 @@ export class AccountsStore {
             createdAt: account.createdAt,
             updatedAt: account.updatedAt,
         };
+    }
+
+    /**
+     * Return the invite code with the given ID.
+     * @param codeId The ID of the invite code to look for.
+     */
+    async findOneInviteCode(codeId: string): Promise<InviteCodes> {
+        return this.inviteCodesModel.findById(await sanitizeHtml(codeId));
+    }
+
+    /**
+     * Marks the code with the given ID as used, preventing it from being used by anyone else.
+     * @param codeId The ID of the code to mark as used.
+     * @param usedById Which user used this code
+     */
+    async useInviteCode(codeId: string, usedById: string): Promise<void> {
+        await this.inviteCodesModel.findOneAndUpdate(
+            { _id: codeId },
+            { byWho: usedById, used: true },
+        );
     }
 
     //#endregion

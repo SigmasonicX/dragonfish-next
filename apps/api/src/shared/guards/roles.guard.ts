@@ -1,0 +1,71 @@
+import {
+    CanActivate,
+    ExecutionContext,
+    UnauthorizedException,
+    Injectable,
+    Logger,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { TokenExpiredError } from 'jsonwebtoken';
+import * as lodash from 'lodash';
+import { Roles } from '@dragonfish/models';
+import { JwtPayload } from '$shared/auth';
+import { AccountsStore } from '$modules/accounts';
+import { Reflector } from '@nestjs/core';
+
+@Injectable()
+export class RolesGuard implements CanActivate {
+    private logger = new Logger(`RolesGuard`);
+
+    constructor(
+        private readonly reflector: Reflector,
+        private readonly accounts: AccountsStore,
+        private readonly jwtService: JwtService,
+    ) {}
+
+    async canActivate(ctx: ExecutionContext): Promise<boolean> {
+        const roles = this.reflector.get<Roles[]>('identity', ctx.getHandler());
+        const request = ctx.switchToHttp().getRequest();
+
+        // Getting the JSON Web Token from the authorization header.
+        const jwtToken: string = request.headers['authorization'];
+
+        // Checking to see if the token matches the correct format.
+        // If it does, then grab the token. If not, throw an
+        // Unauthorized exception.
+        let bearerToken: string;
+        if (jwtToken.startsWith('Bearer ')) {
+            bearerToken = jwtToken.substring(7, jwtToken.length);
+        } else {
+            throw new UnauthorizedException(`You don't have permission to do that.`);
+        }
+
+        // Verifying that the token is legitimate.
+        let verifiedToken: JwtPayload;
+        try {
+            verifiedToken = this.jwtService.verify<JwtPayload>(bearerToken, {
+                ignoreExpiration: false,
+            });
+        } catch (err) {
+            if (err instanceof TokenExpiredError) {
+                throw new UnauthorizedException('Your token has expired.');
+            } else {
+                throw err;
+            }
+        }
+
+        if (verifiedToken) {
+            const userRoles = await this.accounts.fetchRoles(verifiedToken.sub);
+            const hasRoles = lodash.intersection(userRoles, roles);
+
+            if (hasRoles.length !== 0) {
+                request.user = verifiedToken;
+                return true;
+            } else {
+                throw new UnauthorizedException(`You don't have permission to do that.`);
+            }
+        } else {
+            return false;
+        }
+    }
+}

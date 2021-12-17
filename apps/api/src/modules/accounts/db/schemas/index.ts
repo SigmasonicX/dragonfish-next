@@ -3,6 +3,7 @@ import { PseudonymDocument, PseudonymSchema } from './pseudonym.schema';
 import * as sanitizeHtml from 'sanitize-html';
 import { argon2id, hash } from 'argon2';
 import { sanitizeOptions } from '$shared/util';
+import { InviteCodesSchema } from './invite-codes.schema';
 
 /**
  * NOTE: MongooseUniqueValidator has been commented out because a current bug
@@ -18,6 +19,7 @@ import { sanitizeOptions } from '$shared/util';
 export { AccountDocument, AccountSchema } from './account.schema';
 export { PseudonymDocument, PseudonymSchema } from './pseudonym.schema';
 export { SessionInfoDocument, SessionInfoSchema } from './session-info.schema';
+export { InviteCodesDocument, InviteCodesSchema } from './invite-codes.schema';
 
 //#endregion
 
@@ -76,6 +78,14 @@ export async function setupPseudonymCollection() {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     schema.plugin(require('mongoose-paginate-v2'));
     //schema.plugin(MongooseUniqueValidator);
+    return schema;
+}
+
+export async function setupInviteCodesCollection() {
+    const schema = InviteCodesSchema;
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-autopopulate'));
     return schema;
 }
 

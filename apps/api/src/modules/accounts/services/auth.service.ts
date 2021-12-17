@@ -3,6 +3,7 @@ import {
     InternalServerErrorException,
     Logger,
     NotFoundException,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { argon2id, verify } from 'argon2';
@@ -76,18 +77,18 @@ export class AuthService {
         }
     }
 
-    /*public async register(req, device: DeviceInfo, formInfo: AccountForm): Promise<LoginPackage> {
-        const validCode = await this.usersStore.findOneInviteCode(formInfo.inviteCode);
+    public async register(req, device: DeviceInfo, formInfo: AccountForm): Promise<LoginPackage> {
+        const validCode = await this.accountStore.findOneInviteCode(formInfo.inviteCode);
 
         if (validCode !== null) {
             const addedUser = await this.accountStore.createAccount(formInfo);
-            await this.usersStore.useInviteCode(formInfo.inviteCode, addedUser._id);
+            await this.accountStore.useInviteCode(formInfo.inviteCode, addedUser._id);
             this.logger.log(`New user created with ID: ${addedUser._id}`);
             return await this.login(addedUser, req, device, false);
         } else {
             throw new UnauthorizedException(`You need a valid invite code to register!`);
         }
-    }*/
+    }
 
     public async logout(req): Promise<void> {
         req._cookies = [
