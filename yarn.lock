@@ -1132,6 +1132,11 @@
   dependencies:
     "@types/superagent" "*"
 
+"@types/voca@^1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@types/voca/-/voca-1.4.2.tgz#4d2ceef3582c2a1f6a1574f71f0897400d910583"
+  integrity sha512-Vmw8euGSdVlcDV69LoixtuervYUim5u6Vgp41PNxrHVGIo4vxSKMhW0I9MmBKbk3gtveNFzdHIVzyW1DpECzYw==
+
 "@types/webidl-conversions@*":
   version "6.1.1"
   resolved "https://registry.yarnpkg.com/@types/webidl-conversions/-/webidl-conversions-6.1.1.tgz#e33bc8ea812a01f63f90481c666334844b12a09e"
@@ -4415,6 +4420,11 @@ mongodb@4.2.2:
   optionalDependencies:
     saslprep "^1.0.3"
 
+mongoose-autopopulate@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/mongoose-autopopulate/-/mongoose-autopopulate-0.16.0.tgz#d3fa11b8ffc2ffc8b107debcdeed2e7bf2947c2b"
+  integrity sha512-OSRETKRTk6B3cF7cSLYPE+iUs/DTIY5+07gVYNzCdTRu4oB3uMahc0qjZYepZqZJKm+nv8SihtSHRM5gScn+fA==
+
 mongoose-paginate-v2@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/mongoose-paginate-v2/-/mongoose-paginate-v2-1.4.2.tgz#482cea73f4a0bd49131ef9004694c73cae93b73e"
@@ -5920,6 +5930,11 @@ typescript@4.3.5:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
 
+ua-parser-js@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-1.0.2.tgz#e2976c34dbfb30b15d2c300b2a53eac87c57a775"
+  integrity sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==
+
 uid-safe@2.1.5:
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/uid-safe/-/uid-safe-2.1.5.tgz#2b3d5c7240e8fc2e58f8aa269e5ee49c0857bd3a"
@@ -5994,6 +6009,11 @@ vite@^2.7.2:
     rollup "^2.59.0"
   optionalDependencies:
     fsevents "~2.3.2"
+
+voca@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/voca/-/voca-1.4.0.tgz#e15ac58b38290b72acc0c330366b6cc7984924d7"
+  integrity sha512-8Xz4H3vhYRGbFupLtl6dHwMx0ojUcjt0HYkqZ9oBCfipd/5mD7Md58m2/dq7uPuZU/0T3Gb1m66KS9jn+I+14Q==
 
 w3c-hr-time@^1.0.2:
   version "1.0.2"

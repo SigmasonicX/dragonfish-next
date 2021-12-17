@@ -2,11 +2,11 @@ import { Schema, Prop, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
 import { Roles, Account } from '@dragonfish/models';
-//import { SessionInfoDocument, SessionInfoSchema } from './session-info.schema';
-//import { PseudonymDocument } from './pseudonym.schema';
+import { SessionInfoDocument, SessionInfoSchema } from './session-info.schema';
+import { PseudonymDocument } from './pseudonym.schema';
 
 @Schema({ timestamps: true, autoIndex: true, collection: 'accounts' })
-export class AccountDocument extends Document {
+export class AccountDocument extends Document implements Account {
     @Prop({ default: () => nanoid() })
     readonly _id: string;
 
@@ -16,7 +16,7 @@ export class AccountDocument extends Document {
     @Prop({ trim: true, required: true })
     password: string;
 
-    /*@Prop({ type: [String], ref: 'Pseudonym', default: [], autopopulate: { select: '-accountId' } })
+    @Prop({ type: [String], ref: 'Pseudonym', default: [], autopopulate: { select: '-accountId' } })
     pseudonyms: string[] | PseudonymDocument[];
 
     @Prop({ type: [String], enum: Object.keys(Roles), default: ['User'] })
@@ -40,7 +40,7 @@ export class AccountDocument extends Document {
     recovery: {
         resetCode: string;
         expires: Date;
-    };*/
+    };
 
     @Prop()
     readonly createdAt: Date;

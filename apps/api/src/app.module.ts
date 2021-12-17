@@ -4,8 +4,12 @@ import { BullModule } from '@nestjs/bull';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { SendGridModule, SendGridModuleOptions } from '@anchan828/nest-sendgrid';
 
+/* Modules */
+import { AccountsModule } from '$modules/accounts';
+
 @Module({
     imports: [
+        AccountsModule,
         EventEmitterModule.forRoot(),
         BullModule.forRootAsync({
             useFactory: () => ({
