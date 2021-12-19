@@ -4,10 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
 import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
-import { AuthService } from './services/auth.service';
-import { UserService } from './services/user.service';
-import { AuthController } from './controllers/auth.controller';
-import { UserController } from './controllers/user.controller';
+import { AuthService, UserService } from './services';
+import { AuthController, UserController } from './controllers';
 
 @Module({
     imports: [
