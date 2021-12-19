@@ -54,8 +54,8 @@ export class AuthController {
         return this.auth.login(verifiedUser, req, device, login.rememberMe);
     }
 
-    @UseGuards(RefreshGuard)
     @Get('refresh-token')
+    @UseGuards(RefreshGuard)
     async refreshToken(
         @User() user: JwtPayload,
         @Cookies() cookies,
@@ -73,9 +73,9 @@ export class AuthController {
         }
     }
 
+    @Get('logout')
     @UseGuards(RefreshGuard)
     @SetCookies()
-    @Get('logout')
     async logout(@Request() req, @Cookies() cookies): Promise<void> {
         const refreshToken = cookies['refreshToken'];
         if (refreshToken) {
@@ -84,9 +84,9 @@ export class AuthController {
         return await this.auth.logout(req);
     }
 
+    @Post('add-pseudonym')
     @UseGuards(RolesGuard)
     @Identity(Roles.User)
-    @Post('add-pseudonym')
     async addPseudonym(
         @User() user: JwtPayload,
         @Body() formData: PseudonymForm,

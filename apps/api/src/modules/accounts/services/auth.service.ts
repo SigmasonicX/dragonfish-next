@@ -17,8 +17,10 @@ import {
     PseudonymForm,
     Pseudonym,
     FrontendAccount,
+    Roles,
 } from '@dragonfish/models';
 import { createHash } from 'crypto';
+import { intersection } from 'lodash';
 
 @Injectable()
 export class AuthService {
@@ -115,6 +117,17 @@ export class AuthService {
     public async clearRefreshToken(userId: string, oldSessionId: string): Promise<void> {
         const hashedSessionId = createHash('sha256').update(oldSessionId).digest('base64');
         await this.accountStore.removeSession(userId, hashedSessionId);
+    }
+
+    public async checkRoles(accountId: string, ...requiredRoles: Roles[]) {
+        const roles = await this.accountStore.fetchRoles(accountId);
+        const hasRoles = intersection(roles, requiredRoles);
+        return hasRoles.length === 0;
+    }
+
+    public async verifyPseudonym(accountId: string, pseudId: string) {
+        const account = await this.accountStore.fetchAccountById(accountId);
+        return account.pseudonyms.some((elem) => elem._id === pseudId);
     }
 
     //#endregion

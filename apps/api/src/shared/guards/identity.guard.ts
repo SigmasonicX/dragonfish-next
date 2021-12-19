@@ -8,9 +8,9 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { Roles, Account } from '@dragonfish/models';
-import { JwtPayload, isAllowed } from '../auth';
-import { AccountsStore } from '$modules/accounts';
+import { Roles } from '@dragonfish/models';
+import { JwtPayload } from '../auth';
+import { AuthService } from '$modules/accounts';
 import { Reflector } from '@nestjs/core';
 
 /**
@@ -24,9 +24,9 @@ export class IdentityGuard implements CanActivate {
     private logger = new Logger(`IdentityGuard`);
 
     constructor(
-        private reflector: Reflector,
-        private jwtService: JwtService,
-        private accountStore: AccountsStore,
+        private readonly reflector: Reflector,
+        private readonly jwtService: JwtService,
+        private readonly auth: AuthService,
     ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -85,17 +85,16 @@ export class IdentityGuard implements CanActivate {
             });
 
         // Check to see if the account owns the pseudonym
-        const account: Account = await this.accountStore.fetchAccountById(verifiedToken.sub);
-        if (account.pseudonyms.some((elem) => elem._id === pseudId)) {
-            if (isAllowed(account.roles, roles)) {
+        if (await this.auth.verifyPseudonym(verifiedToken.sub, pseudId)) {
+            if (await this.auth.checkRoles(verifiedToken.sub, ...roles)) {
                 request.user = verifiedToken;
                 return true;
             } else {
-                this.logger.error(`Someone attempted to impersonate User ${account._id}!`);
+                this.logger.error(`Someone attempted to impersonate User ${verifiedToken.sub}!`);
                 throw new UnauthorizedException(`You don't have permission to do that.`);
             }
         } else {
-            this.logger.error(`Someone attempted to impersonate User ${account._id}!`);
+            this.logger.error(`Someone attempted to impersonate User ${verifiedToken.sub}!`);
             throw new UnauthorizedException(`You don't have permission to do that.`);
         }
     }

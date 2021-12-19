@@ -7,11 +7,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import * as lodash from 'lodash';
 import { Roles } from '@dragonfish/models';
 import { JwtPayload } from '$shared/auth';
-import { AccountsStore } from '$modules/accounts';
 import { Reflector } from '@nestjs/core';
+import { AuthService } from '$modules/accounts';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -19,7 +18,7 @@ export class RolesGuard implements CanActivate {
 
     constructor(
         private readonly reflector: Reflector,
-        private readonly accounts: AccountsStore,
+        private readonly auth: AuthService,
         private readonly jwtService: JwtService,
     ) {}
 
@@ -55,10 +54,7 @@ export class RolesGuard implements CanActivate {
         }
 
         if (verifiedToken) {
-            const userRoles = await this.accounts.fetchRoles(verifiedToken.sub);
-            const hasRoles = lodash.intersection(userRoles, roles);
-
-            if (hasRoles.length !== 0) {
+            if (await this.auth.checkRoles(verifiedToken.sub, ...roles)) {
                 request.user = verifiedToken;
                 return true;
             } else {
