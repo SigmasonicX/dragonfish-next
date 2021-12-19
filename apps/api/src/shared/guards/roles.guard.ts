@@ -1,21 +1,13 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    UnauthorizedException,
-    Injectable,
-    Logger,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
 import { Roles } from '@dragonfish/models';
-import { JwtPayload } from '$shared/auth';
+import { JwtPayload } from '../auth';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from '$modules/accounts';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    private logger = new Logger(`RolesGuard`);
-
     constructor(
         private readonly reflector: Reflector,
         private readonly auth: AuthService,

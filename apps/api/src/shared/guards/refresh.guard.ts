@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { JwtPayload } from '$shared/auth';
+import { JwtPayload } from '../auth';
 
 @Injectable()
 export class RefreshGuard implements CanActivate {

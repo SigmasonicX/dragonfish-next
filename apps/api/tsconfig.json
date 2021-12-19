@@ -1,23 +1,20 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "module": "commonjs",
-        "declaration": true,
-        "removeComments": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "target": "es2017",
-        "outDir": "./dist",
-        "baseUrl": "./",
-        "incremental": true,
-        "paths": {
-            "$shared/*": ["src/shared/*"],
-            "$db/*": ["src/db/*"],
-            "$modules/*": ["src/modules/*"]
-        }
-    },
-    "references": [
-        { "path": "../../packages/models" }
-    ]
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "skipLibCheck": true,
+    "paths": {
+        "$modules/*": ["src/modules/*"],
+        "$shared/*": ["src/shared/*"]
+    }
+  }
 }
