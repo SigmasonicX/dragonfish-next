@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"module": "es2020",
-		"lib": ["es2020", "DOM"],
+		"moduleResolution": "node",
+		"lib": [
+			"es2020", "DOM"],
 		"target": "es2020",
 		/**
 			svelte-preprocess cannot figure out whether you have a value or a type, so tell TypeScript

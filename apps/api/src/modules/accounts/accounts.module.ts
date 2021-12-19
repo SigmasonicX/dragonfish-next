@@ -4,8 +4,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
 import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
-import * as Services from './services';
-import * as Controllers from './controllers';
+import { AuthService } from './services/auth.service';
+import { UserService } from './services/user.service';
+import { AuthController } from './controllers/auth.controller';
+import { UserController } from './controllers/user.controller';
 
 @Module({
     imports: [
@@ -30,13 +32,8 @@ import * as Controllers from './controllers';
             }),
         }),
     ],
-    exports: [Services.AuthService],
-    controllers: [Controllers.AuthController, Controllers.UserController],
-    providers: [
-        Stores.AccountsStore,
-        Stores.PseudonymsStore,
-        Services.AuthService,
-        Services.UserService,
-    ],
+    exports: [AuthService],
+    controllers: [AuthController, UserController],
+    providers: [Stores.AccountsStore, Stores.PseudonymsStore, AuthService, UserService],
 })
 export class AccountsModule {}
