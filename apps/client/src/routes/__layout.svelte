@@ -1,5 +1,9 @@
-<script>
-	import '../app.scss';
+<script lang="ts">
+  import '../app.scss';
+  import Nav from '$lib/components/nav/Nav.svelte';
 </script>
 
-<slot />
+<main class="flex h-screen crimson">
+  <Nav />
+  <slot />
+</main>
