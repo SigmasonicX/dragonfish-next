@@ -4,7 +4,7 @@ import { TokenExpiredError } from 'jsonwebtoken';
 import { Roles } from '@dragonfish/models';
 import { JwtPayload } from '../auth';
 import { Reflector } from '@nestjs/core';
-import { AuthService } from '$modules/accounts';
+import { AuthService } from '$modules/accounts/services/auth.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
