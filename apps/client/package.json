@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@dragonfish/client",
   "version": "0.0.1",
   "scripts": {
     "dev": "svelte-kit dev",
@@ -13,7 +13,11 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
+    "@sveltejs/adapter-vercel": "^1.0.0-next.32",
     "@sveltejs/kit": "next",
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.4.0",
+    "@tailwindcss/line-clamp": "^0.3.0",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
     "eslint": "^7.32.0",
