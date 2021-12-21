@@ -48,7 +48,7 @@
 {#if openLogin}
   <Sidenav on:click={() => openLogin = !openLogin}>
     <div slot="header">
-      <h3>Log In</h3>
+      <h3>Registration</h3>
       <LoginCircleLine />
     </div>
     <div slot="body">

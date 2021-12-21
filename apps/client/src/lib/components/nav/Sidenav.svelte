@@ -18,6 +18,7 @@
   div.menu {
     @apply flex flex-col h-screen z-40;
     min-width: 24rem;
+    max-width: 24rem;
     background: var(--background);
   }
   div.header :global {
