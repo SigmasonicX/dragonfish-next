@@ -425,6 +425,18 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@felte/common@0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@felte/common/-/common-0.6.0.tgz#64cb3438be91b2d553641bc7ec523284806186f5"
+  integrity sha512-dLh+heGTGKQzIeUbLcJMEvDks3YTy99FFdUHg8/fxeIFSprUM/b4olK+tIMBrTE30AV2BFYeQHxB8hFpzUafAQ==
+
+"@felte/core@0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@felte/core/-/core-0.3.0.tgz#d95fb20b4bb5d3ffd66149528f85cd937e627794"
+  integrity sha512-v3rOg8wdchnQoMYJCPLelaJmgyG3doibYFqKmoOj7iQlnI738fczEEjDToJfa9UUbYBRDdgfYHXrEtEK7kYIGg==
+  dependencies:
+    "@felte/common" "0.6.0"
+
 "@graphql-tools/merge@6.2.5":
   version "6.2.5"
   resolved "https://registry.yarnpkg.com/@graphql-tools/merge/-/merge-6.2.5.tgz#a03d6711f2a468b8de97c0fe9092469280ca66c9"
@@ -3428,6 +3440,13 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
+
+felte@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/felte/-/felte-0.9.0.tgz#10ab750c799a5ddc53ffd67abb266e7aedecc04f"
+  integrity sha512-B7ML7Xopy9D/PI2Z28wFQZ+wcUtB6mqMbKVBneHPWsphCZPFY0dE2asPd9n0lhgx0bvSO4n8Aq0VNlqt2mGFfw==
+  dependencies:
+    "@felte/core" "0.3.0"
 
 figures@^3.0.0:
   version "3.2.0"

@@ -2,9 +2,10 @@
   import { Loader5Line } from 'svelte-remixicon';
   export let loading = false;
   export let loadingText = 'Loading...';
+  export let type = 'button';
 </script>
 
-<button on:click>
+<button {type} on:click>
   {#if loading}
     <Loader5Line class='button-icon animate-spin' />
     <span class='button-text'>{loadingText}</span>

@@ -29,8 +29,8 @@
 <div class='w-full h-screen overflow-y-auto'>
   <div class='w-full mb-6'>
     <div class='home-header'>
-      <img src='/images/logo.png' alt='logo' style='max-width: 24rem; margin: 0 auto;' class='relative z-40'>
-      <h2 class='text-white text-2xl relative z-40'>{currSlogan}</h2>
+      <img src='/images/logo.png' alt='logo' style='max-width: 24rem; margin: 0 auto;' class='relative z-30'>
+      <h2 class='text-white text-2xl relative z-30'>{currSlogan}</h2>
     </div>
     <div class='jumbo-carousel'>
       <Jumbotron />
