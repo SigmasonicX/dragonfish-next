@@ -13,7 +13,7 @@ import {
     Pseudonym,
     InviteCodes,
 } from '@dragonfish/models';
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 import { DeviceInfo } from '$shared/util';
 import { createHash } from 'crypto';
 import { nanoid } from 'nanoid';

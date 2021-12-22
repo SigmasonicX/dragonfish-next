@@ -11,7 +11,7 @@
 		"dev": "turbo run dev --parallel",
 		"dev:client": "yarn workspace @dragonfish/client run dev",
 		"start": "turbo run start",
-		"start:api": "turbo run start --scope='@dragonfish/api'"
+		"start:api": "yarn workspace @dragonfish/api run start"
 	},
 	"turbo": {
 		"baseBranch": "origin/main",

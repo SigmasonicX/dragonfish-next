@@ -9,7 +9,7 @@
       class:switch-activated={value}
     ></div>
   </div>
-  <label class="ml-3 select-none cursor-pointer" for="toggle"><slot /></label>
+  <label class="ml-3 select-none cursor-pointer text-sm" for="toggle"><slot /></label>
 </div>
 
 <style lang="scss">

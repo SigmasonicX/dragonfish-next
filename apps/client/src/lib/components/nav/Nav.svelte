@@ -21,7 +21,7 @@
         <span class="link-name">Close</span>
       {:else}
         <span class="link-icon"><LoginCircleLine size="1.5rem" /></span>
-        <span class="link-name">Login</span>
+        <span class="link-name">Log In</span>
       {/if}
     </a>
     <div class="w-10/12 mx-auto border-b border-white my-2"></div>
@@ -47,13 +47,7 @@
 
 {#if openLogin}
   <Sidenav on:click={() => openLogin = !openLogin}>
-    <div slot="header">
-      <h3>Registration</h3>
-      <LoginCircleLine />
-    </div>
-    <div slot="body">
-      <Registration />
-    </div>
+    <Registration />
   </Sidenav>
 {/if}
 

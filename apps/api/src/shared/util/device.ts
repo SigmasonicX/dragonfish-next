@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { DeviceInfo } from './device-info';
-import * as UAParser from 'ua-parser-js';
+import UAParser from 'ua-parser-js';
 
 export const Device = createParamDecorator((_data: unknown, ctx: ExecutionContext) => {
     const req = ctx.switchToHttp().getRequest();

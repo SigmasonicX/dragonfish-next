@@ -1,6 +1,6 @@
 import { AccountDocument, AccountSchema } from './account.schema';
 import { PseudonymDocument, PseudonymSchema } from './pseudonym.schema';
-import * as sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 import { argon2id, hash } from 'argon2';
 import { sanitizeOptions } from '$shared/util';
 import { InviteCodesSchema } from './invite-codes.schema';

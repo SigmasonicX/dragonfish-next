@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { VersioningType, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { config, DotenvConfigOutput } from 'dotenv';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
@@ -25,14 +25,14 @@ async function bootstrap() {
     app.use(cookieParser(process.env.COOKIE_SECRET));
     app.use(json({ limit: '50mb' }));
     app.use(urlencoded({ limit: '50mb', extended: true }));
-    if (process.env.NODE_ENV === 'production') {
+    /*if (process.env.NODE_ENV === 'production') {
         app.use(csurf({ cookie: { sameSite: 'lax', secure: true } }));
         // this is to make sure the XSRF-TOKEN is being set correctly
         app.use(function (req: any, res: any, next: any) {
             res.cookie('XSRF-TOKEN', req.csrfToken(), { sameSite: 'lax', secure: true });
             return next();
         });
-    }
+    }*/
     app.enableCors({
         origin: [
             'http://localhost:3000',
@@ -44,10 +44,7 @@ async function bootstrap() {
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         credentials: true,
     });
-    app.enableVersioning({
-        type: VersioningType.URI,
-        defaultVersion: `v1`,
-    });
-    await app.listen(3000);
+    app.setGlobalPrefix(`api`);
+    await app.listen(3333);
 }
 bootstrap();
