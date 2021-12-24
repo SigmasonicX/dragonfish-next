@@ -6,10 +6,12 @@ import { SendGridModule, SendGridModuleOptions } from '@anchan828/nest-sendgrid'
 
 /* Modules */
 import { AccountsModule } from '$modules/accounts';
+import { ContentModule } from '$modules/content';
 
 @Module({
     imports: [
         AccountsModule,
+        ContentModule,
         EventEmitterModule.forRoot(),
         BullModule.forRootAsync({
             useFactory: () => ({

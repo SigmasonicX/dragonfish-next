@@ -1,8 +1,8 @@
 import { PubStatus } from './pub-status.enum';
 import { ContentKind } from './content-kind.enum';
-import { ContentRating } from '../works';
+import { ContentRating } from './content-rating.enum';
 import { Pseudonym } from '../accounts';
-import { TagsModel } from './tags/tags.model';
+import { TagsModel } from './tags';
 
 export interface ContentModel {
     readonly _id: string;

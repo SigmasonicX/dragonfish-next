@@ -4,11 +4,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
 import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
-import { AuthService, UserService } from './services';
-import { AuthController, UserController } from './controllers';
+import * as Services from './services';
+import * as Controllers from './controllers';
+import { ContentModule } from '$modules/content';
 
 @Module({
     imports: [
+        ContentModule,
         MongooseModule.forFeatureAsync([
             {
                 name: 'Account',
@@ -30,8 +32,18 @@ import { AuthController, UserController } from './controllers';
             }),
         }),
     ],
-    exports: [AuthService],
-    controllers: [AuthController, UserController],
-    providers: [Stores.AccountsStore, Stores.PseudonymsStore, AuthService, UserService],
+    exports: [Services.AuthService],
+    controllers: [
+        Controllers.AuthController,
+        Controllers.UserController,
+        Controllers.AccountController,
+    ],
+    providers: [
+        Stores.AccountsStore,
+        Stores.PseudonymsStore,
+        Services.AuthService,
+        Services.UserService,
+        Services.AccountService,
+    ],
 })
 export class AccountsModule {}

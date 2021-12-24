@@ -1,4 +1,4 @@
-import { ContentModel } from '../../content';
+import { ContentModel } from '../content';
 
 export interface ContentLibrary {
     readonly _id: string;

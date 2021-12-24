@@ -1,4 +1,4 @@
-import { RatingOption } from '../ratings';
+import { RatingOption } from './index';
 
 export interface SetRating {
     readonly workId: string;

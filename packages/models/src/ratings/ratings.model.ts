@@ -1,4 +1,4 @@
-import { RatingOption } from '@dragonfish/shared/models/reading-history';
+import { RatingOption } from './rating-option.enum';
 
 export interface RatingsModel {
     readonly contentId: string;
