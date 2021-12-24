@@ -5,6 +5,7 @@ import type { Observable } from 'rxjs';
 import { token } from '$lib/repo/session.repo';
 
 http.instance.interceptors.request.use((request) => {
+    console.log(`Request interceptor hit!`);
     if (token()) {
         request.headers.authorization = `Bearer ${token()}`;
     }

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
   import { createForm } from "felte";
   import { LoginCircleLine } from 'svelte-remixicon';
   import TextField from "$lib/components/forms/TextField.svelte";
@@ -8,6 +9,7 @@
   import type { Login } from "@dragonfish/models";
 
   let submitting = false;
+  const dispatch = createEventDispatcher();
 
   const { form, data, errors } = createForm({
     onSubmit: (values) => {
@@ -20,8 +22,8 @@
       };
 
       login(formInfo).subscribe(() => {
-        console.log(`Success!`);
         submitting = false;
+        dispatch('login');
       });
     },
     validate: (values) => {
@@ -68,8 +70,5 @@
       <LoginCircleLine class="button-icon" />
       <span class="button-text">Log In</span>
     </Button>
-  </div>
-  <div class="text-center text-sm border-t border-gray-300 dark:border-white pt-4 mt-2">
-    New to Offprint? <a href="/">Sign up today!</a>
   </div>
 </form>

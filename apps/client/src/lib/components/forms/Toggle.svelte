@@ -2,7 +2,7 @@
   export let value = false;
 </script>
 
-<div class="flex flex-row items-center mt-3 mb-3 cursor-pointer" on:click={() => value = !value }>
+<div class="flex flex-row items-center mt-3 mb-3 cursor-pointer" on:click={() => value = !value } tabindex="0">
   <div class="switch-container w-12 h-6 flex items-center rounded-full" id='toggle'>
     <div
       class="switch w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out"
