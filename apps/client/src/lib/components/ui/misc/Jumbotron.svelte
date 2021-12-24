@@ -101,12 +101,12 @@
     div.card-stack {
       @apply w-1/3 flex flex-col;
       div.card {
-        @apply border-l-8 border-b border-gray-300 w-full h-1/4 flex items-center p-4 cursor-pointer;
+        @apply border-l-8 border-b border-zinc-300 dark:border-zinc-600 w-full h-1/4 flex items-center p-4 cursor-pointer;
         &:last-child {
           @apply border-b-0;
         }
         &.active {
-          @apply bg-gray-100;
+          @apply bg-zinc-200 dark:bg-zinc-700;
           border-color: var(--accent);
         }
       }

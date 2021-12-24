@@ -34,7 +34,7 @@
     {#if $currentProfile$}
       <div
         class="link select-none cursor-pointer group"
-        on:click={toggleMenu(MenuOptions.UserMenu)}
+        on:click={() => toggleMenu(MenuOptions.UserMenu)}
         class:active={currentMenu === MenuOptions.UserMenu}
         class:no-padding={currentMenu !== MenuOptions.UserMenu}
       >
@@ -47,7 +47,7 @@
       </div>
       <div
         class="link select-none cursor-pointer"
-        on:click={toggleMenu(MenuOptions.InboxMenu)}
+        on:click={() => toggleMenu(MenuOptions.InboxMenu)}
         class:active={currentMenu === MenuOptions.InboxMenu}
       >
         {#if currentMenu === MenuOptions.InboxMenu}

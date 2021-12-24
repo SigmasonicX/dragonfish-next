@@ -1055,7 +1055,7 @@
     "@iarna/toml" "^2.2.5"
     esbuild "^0.13.15"
 
-"@sveltejs/adapter-vercel@1.0.0-next.32", "@sveltejs/adapter-vercel@^1.0.0-next.32":
+"@sveltejs/adapter-vercel@1.0.0-next.32", "@sveltejs/adapter-vercel@next":
   version "1.0.0-next.32"
   resolved "https://registry.yarnpkg.com/@sveltejs/adapter-vercel/-/adapter-vercel-1.0.0-next.32.tgz#90a8c1078a477a81d16cfd0efb27e5df2dc90189"
   integrity sha512-ZcltaS5bAobGD5P0z7xJIjPHSlGpF7padMIkqTzJxwMEb/acGgdO5yzDS8XUEaSNgj+prpD2oG8+gm33ds8x0A==
@@ -6624,7 +6624,7 @@ supports-hyperlinks@^2.0.0:
     has-flag "^4.0.0"
     supports-color "^7.0.0"
 
-svelte-check@^2.2.6:
+svelte-check@^2.2.11:
   version "2.2.11"
   resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-2.2.11.tgz#d436fd71dbc15876a1a5575a4924133620ac3f37"
   integrity sha512-clotPGGZPj3LuS9qP1lk+Wwnsj+js42ehCPmHk+qtyaQh/dU95e0qkpPmtmOMYHN6My5Y75XqeN1QNLj5V5gwA==
@@ -6644,7 +6644,7 @@ svelte-hmr@^0.14.7:
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.14.7.tgz#7fa8261c7b225d9409f0a86f3b9ea5c3ca6f6607"
   integrity sha512-pDrzgcWSoMaK6AJkBWkmgIsecW0GChxYZSZieIYfCP0v2oPyx2CYU/zm7TBIcjLVUPP714WxmViE9Thht4etog==
 
-svelte-preprocess@^4.0.0, svelte-preprocess@^4.9.8:
+svelte-preprocess@^4.0.0, svelte-preprocess@^4.10.1:
   version "4.10.1"
   resolved "https://registry.yarnpkg.com/svelte-preprocess/-/svelte-preprocess-4.10.1.tgz#5f435e8aaa82976165bc8f5fa690e2e5ba084760"
   integrity sha512-NSNloaylf+o9UeyUR2KvpdxrAyMdHl3U7rMnoP06/sG0iwJvlUM4TpMno13RaNqovh4AAoGsx1jeYcIyuGUXMw==
@@ -6661,7 +6661,12 @@ svelte-remixicon@^1.0.1:
   resolved "https://registry.yarnpkg.com/svelte-remixicon/-/svelte-remixicon-1.0.1.tgz#2aec22c024b94774a3e80153e984714fcb545407"
   integrity sha512-Jago+glcU0j5j+j9ELvl9EVEVIbYWVdxfSdi0nUUr2o9Iz75OdJRD7OSkEBeIl2Tm3n9dT4WS1eTo+2BdMviRw==
 
-svelte@^3.44.0:
+svelte-select@^4.4.6:
+  version "4.4.6"
+  resolved "https://registry.yarnpkg.com/svelte-select/-/svelte-select-4.4.6.tgz#c89943f10bec9ff37912c09493a3fd4da24043a1"
+  integrity sha512-AcWNfakmr8dBFH77MSlTskfrYGYP6BRBv/QpPb+59Tag8OQ6/JBXf0r0S0+U18/1JNXtXHJUMaQqRSLfaOtyIA==
+
+svelte@^3.44.3:
   version "3.44.3"
   resolved "https://registry.yarnpkg.com/svelte/-/svelte-3.44.3.tgz#795b1ced6ed3da44969099e5061b850c93c95e9a"
   integrity sha512-aGgrNCip5PQFNfq9e9tmm7EYxWLVHoFsEsmKrtOeRD8dmoGDdyTQ+21xd7qgFd8MNdKGSYvg7F9dr+Tc0yDymg==

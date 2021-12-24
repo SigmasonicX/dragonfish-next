@@ -1,4 +1,4 @@
-<div class='page-nav bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-700'>
+<div class='page-nav bg-zinc-300 dark:bg-zinc-700 border-gray-300 dark:border-gray-700'>
   <div class='header'>
     <slot name='header'></slot>
   </div>
