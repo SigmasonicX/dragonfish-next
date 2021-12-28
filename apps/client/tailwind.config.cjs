@@ -1,6 +1,7 @@
 const config = {
 	content: ['./src/**/*.{html,js,svelte,ts}'],
 	darkMode: 'class',
+	important: true,
 
 	theme: {
 		extend: {}

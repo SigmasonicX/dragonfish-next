@@ -2,6 +2,7 @@
   import { UserLine, BookOpenLine, CupLine, Group2Line, LogoutCircleLine } from "svelte-remixicon";
   import { currentProfile$ } from "$lib/repo/session.repo";
   import { abbreviate, pluralize } from "$lib/util";
+  import RoleBadge from './RoleBadge.svelte';
 </script>
 
 <div class="flex flex-col w-full">
@@ -21,6 +22,7 @@
       </div>
       <div class="ml-2">
         <div class="flex items-center">
+          <RoleBadge roles={$currentProfile$.roles} />
           <!--<dragonfish-role-badge [roles]="user.roles" [size]="'small'"></dragonfish-role-badge>-->
           <h2 class="text-2xl font-medium relative top-0.5">
             {$currentProfile$.screenName}

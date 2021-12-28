@@ -2,8 +2,18 @@
   import Button from '$lib/components/ui/misc/Button.svelte';
   import Toggle from '$lib/components/forms/Toggle.svelte';
   import SelectMenu from "$lib/components/forms/SelectMenu.svelte";
-  import { isOfAge$, setOfAge, setContentFilter, setTheme, theme$, setDarkMode, darkMode$ } from "$lib/repo/app.repo";
-  import { ThemePref } from "$lib/models/site";
+  import {
+    isOfAge$,
+    setOfAge,
+    setContentFilter,
+    setTheme,
+    theme$,
+    setDarkMode,
+    darkMode$,
+    setWorkCardSize,
+    cardSize$
+  } from "$lib/repo/app.repo";
+  import { CardSize, ThemePref } from "$lib/models/site";
 
   let enableMature = false;
   let enableExplicit = false;
@@ -11,6 +21,9 @@
 
   const themes = Object.entries(ThemePref).map(([key, value]) => ({value: value, label: key}));
   let currTheme = themes.filter((theme) => { return theme.value === $theme$ })[0];
+
+  const cardSizes = Object.entries(CardSize).map(([key, value]) => ({value: value, label: key}));
+  let currSize = cardSizes.filter((size) => { return size.value === $cardSize$})[0];
 
   $: {
     setContentFilter(enableMature, enableExplicit);
@@ -20,6 +33,10 @@
   function changeTheme(themePref: string): void {
     setTheme(ThemePref[themePref]);
   }
+
+  function changeCardSize(cardSize: string): void {
+    setWorkCardSize(CardSize[cardSize]);
+  }
 </script>
 
 <div class='w-full flex-1'>
@@ -27,8 +44,11 @@
     <div class="p-2 border border-gray-600 dark:border-white rounded-md shadow-xl">
       <h3 class="text-xl font-medium text-center">Theme</h3>
       <span class='text-center text-sm italic w-full block'>Change Offprint's theme</span>
+      <div class="my-4"></div>
       <SelectMenu items={themes} value={currTheme} on:select={(event) => changeTheme(event.detail.label)} />
-      <Toggle bind:value={enableDarkMode}>Dark Mode</Toggle>
+      <div class="flex flex-col items-center mt-4">
+        <Toggle bind:value={enableDarkMode}>Dark Mode</Toggle>
+      </div>
     </div>
     <div class="p-2 border border-gray-600 dark:border-white rounded-md shadow-xl">
       <h3 class="text-xl font-medium text-center">Ratings Filter</h3>
@@ -51,6 +71,8 @@
     <div class='p-2 border border-gray-600 dark:border-white rounded-md shadow-xl'>
       <h3 class='text-xl font-medium text-center'>Card Size</h3>
       <span class='text-center text-sm italic w-full block'>Change the size of work cards on certain pages</span>
+      <div class="my-4"></div>
+      <SelectMenu items={cardSizes} value={currSize} on:select={(event) => changeCardSize(event.detail.label)} />
     </div>
   </div>
 </div>

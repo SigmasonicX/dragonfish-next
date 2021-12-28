@@ -1,17 +1,7 @@
 export enum ThemePref {
     Crimson = 'crimson',
-    //DarkCrimson = 'dark-crimson',
     Aqua = 'aqua',
-    //DarkAqua = 'dark-aqua',
     Royal = 'royal',
-    //DarkRoyal = 'dark-royal',
     Field = 'field',
-    //MidnightField = 'midnight-field',
     Autumn = 'autumn',
-    //DuskAutumn = 'dusk-autumn',
-    Phoenix = 'phoenix',
-    Evergreen = 'evergreen',
-    Amethyst = 'amethyst',
-    Aquamarine = 'aquamarine',
-    Brisk = 'brisk',
 }

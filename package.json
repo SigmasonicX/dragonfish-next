@@ -7,7 +7,7 @@
 		"packages/*"
 	],
 	"scripts": {
-		"build": "turbo run build --parallel",
+		"build": "CI=true turbo run build --parallel",
 		"dev": "turbo run dev --parallel",
 		"dev:client": "yarn workspace @dragonfish/client run dev",
 		"start": "turbo run start",
