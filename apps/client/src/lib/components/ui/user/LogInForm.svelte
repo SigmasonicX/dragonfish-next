@@ -6,7 +6,7 @@
   import Button from "$lib/components/ui/misc/Button.svelte";
   import Toggle from "$lib/components/forms/Toggle.svelte";
   import { login } from "$lib/repo/session.repo";
-  import type { Login } from "@dragonfish/models";
+  import type { LoginForm } from "$lib/models/accounts/forms";
 
   let submitting = false;
   const dispatch = createEventDispatcher();
@@ -15,7 +15,7 @@
     onSubmit: (values) => {
       submitting = true;
 
-      const formInfo: Login = {
+      const formInfo: LoginForm = {
         email: values.email,
         password: values.password,
         rememberMe: values.rememberMe,

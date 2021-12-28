@@ -10,9 +10,8 @@ import {
     FormType,
     PubChange,
     PubStatus,
-    PublishSection,
-    SectionForm,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { PublishSection, SectionForm } from '$shared/models/sections';
 import { BlogsContentDocument } from '../schemas';
 import { BlogsStore } from './blogs.store';
 import { ProseStore } from './prose.store';

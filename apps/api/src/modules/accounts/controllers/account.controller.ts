@@ -1,6 +1,6 @@
 import { Controller, UseGuards, Patch, Body, Post } from '@nestjs/common';
 import { RolesGuard } from '$shared/guards';
-import { ChangeEmail, ChangePassword, ResetPassword, Roles } from '@dragonfish/models';
+import { ChangeEmail, ChangePassword, ResetPassword, Roles } from '$shared/models/accounts';
 import { User, JwtPayload, Identity } from '$shared/auth';
 import { AccountService } from '../services';
 

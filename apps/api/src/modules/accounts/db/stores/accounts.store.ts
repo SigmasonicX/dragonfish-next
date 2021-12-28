@@ -12,7 +12,7 @@ import {
     FrontendAccount,
     Pseudonym,
     InviteCodes,
-} from '@dragonfish/models';
+} from '$shared/models/accounts';
 import sanitizeHtml from 'sanitize-html';
 import { DeviceInfo } from '$shared/util';
 import { createHash } from 'crypto';

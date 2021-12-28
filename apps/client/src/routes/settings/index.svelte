@@ -23,7 +23,8 @@
   let currTheme = themes.filter((theme) => { return theme.value === $theme$ })[0];
 
   const cardSizes = Object.entries(CardSize).map(([key, value]) => ({value: value, label: key}));
-  let currSize = cardSizes.filter((size) => { return size.value === $cardSize$})[0];
+  let currSize = cardSizes.filter((size) => { return size.value === $cardSize$ })[0];
+  console.log(currSize);
 
   $: {
     setContentFilter(enableMature, enableExplicit);
@@ -35,6 +36,7 @@
   }
 
   function changeCardSize(cardSize: string): void {
+    console.log(CardSize[cardSize]);
     setWorkCardSize(CardSize[cardSize]);
   }
 </script>

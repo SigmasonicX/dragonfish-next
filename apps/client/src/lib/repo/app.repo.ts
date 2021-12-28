@@ -1,6 +1,7 @@
 import { Store, createState, withProps, select } from '@ngneat/elf';
 import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
-import { CardSize, ThemePref, ContentFilter } from '$lib/models/site';
+import { ContentFilter } from '$lib/models/content';
+import { CardSize, ThemePref } from '$lib/models/site';
 
 //#region ---STORE METADATA---
 

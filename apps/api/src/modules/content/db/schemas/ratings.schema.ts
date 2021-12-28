@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { RatingsModel, RatingOption } from '@dragonfish/models';
+import { RatingsModel, RatingOption } from '$shared/models/ratings';
 
 @Schema({ timestamps: true, collection: 'ratings', autoIndex: true })
 export class RatingsDocument extends Document implements RatingsModel {

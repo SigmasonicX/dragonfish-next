@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
 import sanitizeHtml from 'sanitize-html';
 import { sanitizeOptions } from '$shared/util';
-import { CreateProse } from '@dragonfish/models';
+import { CreateProse } from '$shared/models/content';
 import { ProseContentDocument } from '../schemas';
 
 @Injectable()

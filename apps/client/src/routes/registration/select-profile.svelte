@@ -18,7 +18,7 @@
     <div class="my-4"></div>
     <div class="flex items-center">
       {#each $allProfiles$ as profile}
-        <div class="profile-box" on:click={selectProfile(profile._id)}>
+        <div class="profile-box" on:click={() => selectProfile(profile._id)}>
           <img src={profile.profile.avatar} alt="avatar" class="border border-gray-600 dark:border-white rounded-md mb-0.5" style="max-width: 4rem">
           <div class="flex-1 flex flex-col items-center justify-center">
             <span class="text-xs text-center">{profile.screenName}</span>

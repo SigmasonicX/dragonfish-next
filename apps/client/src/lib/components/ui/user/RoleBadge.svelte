@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Roles } from "@dragonfish/models";
+  import { Roles } from "$lib/models/accounts";
 
   export let roles: Roles[] = [];
 

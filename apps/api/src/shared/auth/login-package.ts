@@ -1,4 +1,4 @@
-import { FrontendAccount } from '@dragonfish/models';
+import { FrontendAccount } from '$shared/models/accounts';
 
 export interface LoginPackage {
     readonly account: FrontendAccount;

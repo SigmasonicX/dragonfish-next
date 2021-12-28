@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { SectionForm, PublishSection } from '@dragonfish/models';
+import { SectionForm, PublishSection } from '$shared/models/sections';
 import { SectionsDocument } from '../schemas';
 
 @Injectable()

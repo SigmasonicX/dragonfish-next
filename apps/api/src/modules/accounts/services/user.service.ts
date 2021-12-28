@@ -7,9 +7,8 @@ import {
     ChangeTagline,
     Pseudonym,
     Roles,
-    ContentFilter,
-    ContentModel,
-} from '@dragonfish/models';
+} from '$shared/models/accounts';
+import { ContentFilter, ContentModel } from '$shared/models/content';
 import { isAllowed, JwtPayload } from '$shared/auth';
 
 @Injectable()

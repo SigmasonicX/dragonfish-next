@@ -5,8 +5,8 @@ import {
     PubStatus,
     ContentRating,
     TagsModel,
-    Pseudonym,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { Pseudonym } from '$shared/models/accounts';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
 

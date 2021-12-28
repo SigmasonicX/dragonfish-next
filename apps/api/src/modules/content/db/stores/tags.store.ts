@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, Logger, NotFoundException } from '@nes
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { ContentDocument, TagsDocument } from '../schemas';
-import { TagKind, TagsForm, TagsTree, ContentKind, PubStatus } from '@dragonfish/models';
+import { TagKind, TagsForm, TagsTree, ContentKind, PubStatus } from '$shared/models/content';
 import sanitizeHtml from 'sanitize-html';
 
 @Injectable()

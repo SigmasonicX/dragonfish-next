@@ -1,7 +1,7 @@
 // This schema is temporary and only applicable to the Closed Alpha (aka, the Origins Arc)
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { InviteCodes } from '@dragonfish/models';
+import { InviteCodes } from '$shared/models/accounts';
 
 @Schema({ collection: 'invite_codes' })
 export class InviteCodesDocument extends Document implements InviteCodes {

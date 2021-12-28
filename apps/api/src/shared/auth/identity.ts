@@ -1,4 +1,4 @@
 import { SetMetadata } from '@nestjs/common';
-import { Roles } from '@dragonfish/models';
+import { Roles } from '$shared/models/accounts';
 
 export const Identity = (...roles: Roles[]) => SetMetadata('identity', roles);

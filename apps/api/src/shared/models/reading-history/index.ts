@@ -1,1 +1,1 @@
-export { ReadingHistory } from './reading-history.model';
+export type { ReadingHistory } from './reading-history.model';

@@ -2,7 +2,7 @@ import type { Pronouns } from './pronouns';
 import type { Presence } from './presence';
 import type { Roles } from './roles';
 
-export interface Pseudonym {
+export interface Profile {
     readonly _id: string;
     userTag: string;
     screenName: string;

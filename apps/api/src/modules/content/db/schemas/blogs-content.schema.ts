@@ -6,8 +6,8 @@ import {
     ContentRating,
     ContentKind,
     TagsModel,
-    Pseudonym,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { Pseudonym } from '$shared/models/accounts';
 
 @Schema()
 export class BlogsContentDocument extends Document implements BlogsContentModel {

@@ -1,7 +1,7 @@
 import { Schema, Prop, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
-import { Pronouns, Presence, Pseudonym, Roles } from '@dragonfish/models';
+import { Pronouns, Presence, Pseudonym, Roles } from '$shared/models/accounts';
 
 @Schema({ timestamps: true, collection: 'pseudonyms', autoIndex: true })
 export class PseudonymDocument extends Document implements Pseudonym {

@@ -18,7 +18,7 @@ import {
     Pseudonym,
     FrontendAccount,
     Roles,
-} from '@dragonfish/models';
+} from '$shared/models/accounts';
 import { createHash } from 'crypto';
 import { intersection } from 'lodash';
 

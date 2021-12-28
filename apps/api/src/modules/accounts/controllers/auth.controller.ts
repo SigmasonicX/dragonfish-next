@@ -13,7 +13,7 @@ import { RefreshGuard, RolesGuard } from '$shared/guards';
 import { User, LoginPackage, JwtPayload, Identity } from '$shared/auth';
 import { Device, DeviceInfo } from '$shared/util';
 import { AuthService } from '../services';
-import { AccountForm, Login, PseudonymForm, Pseudonym, Roles } from '@dragonfish/models';
+import { AccountForm, Login, PseudonymForm, Pseudonym, Roles } from '$shared/models/accounts';
 
 @Controller('auth')
 export class AuthController {

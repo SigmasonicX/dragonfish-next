@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { SessionInfo } from '@dragonfish/models';
+import { SessionInfo } from '$shared/models/accounts';
 
 @Schema({ timestamps: true })
 export class SessionInfoDocument extends Types.Subdocument implements SessionInfo {

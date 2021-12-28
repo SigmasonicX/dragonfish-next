@@ -8,11 +8,11 @@ export { ContentRating } from './content-rating.enum';
 export { ContentWarning } from './content-warning.enum';
 export { PubStatus } from './pub-status.enum';
 export { Genres } from './genres.enum';
-export { SectionInfo } from './section-info.model';
+export type { SectionInfo } from './section-info.model';
 export { WorkKind } from './work-kind.enum';
 export { WorkStatus } from './work-status.enum';
 export { ContentFilter } from './content-filter.enum';
-export { PubContent } from './pub-content.model';
+export type { PubContent } from './pub-content.model';
 
 export * from './blogs';
 export * from './prose';

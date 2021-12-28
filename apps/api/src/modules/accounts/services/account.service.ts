@@ -1,6 +1,6 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { AccountsStore } from '../db/stores';
-import { ResetPassword } from '@dragonfish/models';
+import { ResetPassword } from '$shared/models/accounts';
 import { SendGridService } from '@anchan828/nest-sendgrid';
 
 @Injectable()

@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { RatingsDocument, ContentDocument } from '../schemas';
 import { JwtPayload } from '$shared/auth';
-import { RatingOption, PubStatus } from '@dragonfish/models';
+import { RatingOption } from '$shared/models/ratings';
+import { PubStatus } from '$shared/models/content';
 
 /**
  * ## Ratings Store

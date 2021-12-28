@@ -10,16 +10,16 @@ import {
     TagsDocument,
 } from '../schemas';
 import {
-    RatingOption,
     ContentRating,
     ContentKind,
     ContentFilter,
     Genres,
     PubStatus,
     WorkKind,
-    Pseudonym,
-    SearchMatch,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { RatingOption } from '$shared/models/ratings';
+import { Pseudonym } from '$shared/models/accounts';
+import { SearchMatch } from '$shared/models/search';
 import { JwtPayload } from '$shared/auth';
 
 /**

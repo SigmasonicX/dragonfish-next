@@ -5,7 +5,7 @@ import sanitizeHtml from 'sanitize-html';
 import { countWords, stripTags } from 'voca';
 import { sanitizeOptions } from '$shared/util';
 import { BlogsContentDocument } from '../schemas';
-import { BlogForm, NewsChange, PubChange } from '@dragonfish/models';
+import { BlogForm, NewsChange, PubChange } from '$shared/models/content';
 
 @Injectable()
 export class BlogsStore {

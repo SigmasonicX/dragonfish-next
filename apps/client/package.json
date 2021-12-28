@@ -12,7 +12,6 @@
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
-		"@dragonfish/models": "1.0.0",
 		"@ngneat/elf": "^1.0.2",
 		"@ngneat/elf-devtools": "^1.2.0",
 		"@ngneat/elf-entities": "^2.0.2",

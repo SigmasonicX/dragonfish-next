@@ -1,7 +1,7 @@
 import { Schema, Prop, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
-import { Roles, Account } from '@dragonfish/models';
+import { Roles, Account } from '$shared/models/accounts';
 import { SessionInfoDocument, SessionInfoSchema } from './session-info.schema';
 import { PseudonymDocument } from './pseudonym.schema';
 

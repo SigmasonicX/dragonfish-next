@@ -10,8 +10,8 @@ import {
     ContentKind,
     PubStatus,
     TagsModel,
-    Pseudonym,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { Pseudonym } from '$shared/models/accounts';
 
 @Schema()
 export class ProseContentDocument extends Document implements ProseContent {

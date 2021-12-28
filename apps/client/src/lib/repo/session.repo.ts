@@ -1,7 +1,8 @@
 import { createState, select, Store, withProps } from '@ngneat/elf';
 import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
-import type { Login, AccountForm, Pseudonym, FrontendAccount } from '@dragonfish/models';
-import type { LoginPackage } from '$lib/models/auth';
+import type { Profile, Account } from '$lib/models/accounts';
+import type { LoginForm, RegisterForm } from '$lib/models/accounts/forms';
+import type { LoginPackage } from '$lib/models/accounts';
 import { Observable, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { auth } from '../services';
@@ -20,13 +21,13 @@ import {
 
 interface SessionProps {
     token: string;
-    currentAccount: FrontendAccount;
+    currentAccount: Account;
     error: string;
 }
 
 const { state, config } = createState(
     withProps<SessionProps>({ token: null, currentAccount: null, error: null }),
-    withEntities<Pseudonym, '_id'>({ idKey: '_id' }),
+    withEntities<Profile, '_id'>({ idKey: '_id' }),
     withActiveId(),
 );
 
@@ -46,7 +47,7 @@ export const currAccount$ = store.pipe(select((state) => state.currentAccount));
  * Logs a user in.
  * @param payload
  */
-export function login(payload: Login): Observable<void> {
+export function login(payload: LoginForm): Observable<void> {
     return auth.login(payload).pipe(
         tap((user: LoginPackage) => {
             store.update((state) => ({
@@ -70,7 +71,7 @@ export function login(payload: Login): Observable<void> {
  * Registers a new user.
  * @param payload
  */
-export function register(payload: AccountForm): Observable<void> {
+export function register(payload: RegisterForm): Observable<void> {
     return auth.register(payload).pipe(
         tap((user: LoginPackage) => {
             store.update((state) => ({
@@ -97,7 +98,7 @@ export function register(payload: AccountForm): Observable<void> {
 export const allProfiles$ = store.pipe(selectAll());
 export const currentProfile$ = store.pipe(selectActiveEntity());
 
-export function setAllProfiles(profiles: Pseudonym[]): void {
+export function setAllProfiles(profiles: Profile[]): void {
     store.update(setEntities(profiles));
 }
 
@@ -109,7 +110,7 @@ export function deselect(): void {
     store.update(setActiveId(null));
 }
 
-export function addProfile(profile: Pseudonym): void {
+export function addProfile(profile: Profile): void {
     store.update(addEntities(profile));
 }
 

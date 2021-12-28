@@ -10,7 +10,7 @@ import {
     ChangeBio,
     ChangeTagline,
     ChangePronouns,
-} from '@dragonfish/models';
+} from '$shared/models/accounts';
 import { chain } from 'voca';
 import { OnEvent } from '@nestjs/event-emitter';
 

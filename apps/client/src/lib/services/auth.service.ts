@@ -1,5 +1,5 @@
 import http from './http';
-import type { AccountForm, Login } from '@dragonfish/models';
+import type { RegisterForm, LoginForm } from '$lib/models/accounts/forms';
 import type { LoginPackage } from '$lib/models/auth';
 import type { Observable } from 'rxjs';
 import { token } from '$lib/repo/session.repo';
@@ -17,7 +17,7 @@ const baseUrl =
         ? `https://api.offprint.net/api`
         : `http://127.0.0.1:3333/api`;
 
-export function login(formInfo: Login): Observable<LoginPackage> {
+export function login(formInfo: LoginForm): Observable<LoginPackage> {
     return http.handleRequest(
         http.post<LoginPackage>(`${baseUrl}/auth/login`, formInfo, {
             observe: 'response',
@@ -26,7 +26,7 @@ export function login(formInfo: Login): Observable<LoginPackage> {
     );
 }
 
-export function register(formInfo: AccountForm): Observable<LoginPackage> {
+export function register(formInfo: RegisterForm): Observable<LoginPackage> {
     return http.handleRequest(
         http.post<LoginPackage>(`${baseUrl}/auth/register`, formInfo, {
             observe: 'response',

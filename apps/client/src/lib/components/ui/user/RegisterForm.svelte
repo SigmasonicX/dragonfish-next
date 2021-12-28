@@ -8,7 +8,7 @@
   import Button from "$lib/components/ui/misc/Button.svelte";
   import Toggle from "$lib/components/forms/Toggle.svelte";
   import { register } from "$lib/repo/session.repo";
-  import type { AccountForm } from "@dragonfish/models";
+  import type { RegisterForm } from "$lib/models/accounts/forms";
 
   let submitting = false;
   const dispatch = createEventDispatcher();
@@ -16,7 +16,7 @@
   const { form, data, errors } = createForm({
     onSubmit: (values) => {
       submitting = true;
-      const formInfo: AccountForm = {
+      const formInfo: RegisterForm = {
         email: values.email,
         password: values.password,
         inviteCode: values.inviteCode,

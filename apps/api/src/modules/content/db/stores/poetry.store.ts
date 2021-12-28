@@ -4,7 +4,7 @@ import { PaginateModel } from 'mongoose';
 import sanitizeHtml from 'sanitize-html';
 import { countWords, stripTags } from 'voca';
 import { sanitizeOptions } from '$shared/util';
-import { CreatePoetry } from '@dragonfish/models';
+import { CreatePoetry } from '$shared/models/content';
 import { PoetryContentDocument } from '../schemas';
 
 @Injectable()

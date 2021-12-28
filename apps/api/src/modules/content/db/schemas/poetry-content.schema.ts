@@ -11,8 +11,8 @@ import {
     PubStatus,
     PoetryForm,
     TagsModel,
-    Pseudonym,
-} from '@dragonfish/models';
+} from '$shared/models/content';
+import { Pseudonym } from '$shared/models/accounts';
 
 @Schema()
 export class PoetryContentDocument extends Document implements PoetryContent {

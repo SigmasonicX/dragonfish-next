@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { Roles } from '@dragonfish/models';
+import { Roles } from '$shared/models/accounts';
 import { JwtPayload } from '../auth';
 import { Reflector } from '@nestjs/core';
 import { AuthService } from '$modules/accounts/services/auth.service';

@@ -1,3 +1,4 @@
+import { Reflector } from '@nestjs/core';
 import {
     CanActivate,
     ExecutionContext,
@@ -8,10 +9,9 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { TokenExpiredError } from 'jsonwebtoken';
-import { Roles } from '@dragonfish/models';
+import { Roles } from '$shared/models/accounts';
 import { JwtPayload } from '../auth';
 import { AuthService } from '$modules/accounts/services/auth.service';
-import { Reflector } from '@nestjs/core';
 
 /**
  * This guard checks to see if a pseudonym belongs to the user making the request.

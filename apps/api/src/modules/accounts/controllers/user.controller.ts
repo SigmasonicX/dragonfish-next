@@ -13,13 +13,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { IdentityGuard } from '$shared/guards';
 import { User, JwtPayload, Identity } from '$shared/auth';
 import { UserService } from '../services';
-import {
-    ChangeBio,
-    ChangeScreenName,
-    ChangeTagline,
-    Roles,
-    ContentFilter,
-} from '@dragonfish/models';
+import { ChangeBio, ChangeScreenName, ChangeTagline, Roles } from '$shared/models/accounts';
+import { ContentFilter } from '$shared/models/content';
 
 @Controller('user')
 export class UserController {

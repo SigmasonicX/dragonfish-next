@@ -1,5 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { ContentModel, ReadingHistory } from '@dragonfish/models';
+import { ContentModel } from '$shared/models/content';
+import { ReadingHistory } from '$shared/models/reading-history';
 import { Document } from 'mongoose';
 import { nanoid } from 'nanoid';
 
