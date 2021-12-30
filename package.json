@@ -2,10 +2,16 @@
 	"name": "dragonfish",
 	"version": "0.0.0",
 	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
+	"workspaces": {
+		"packages": [
+			"apps/*",
+			"packages/*"
+		],
+		"nohoist": [
+			"**/@nestjs/**",
+			"**/@ngneat/**"
+		]
+	},
 	"scripts": {
 		"build": "CI=true turbo run build --parallel",
 		"dev": "turbo run dev --parallel",

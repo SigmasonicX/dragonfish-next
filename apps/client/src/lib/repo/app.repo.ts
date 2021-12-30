@@ -66,7 +66,7 @@ export function setDarkMode(pref: boolean): void {
 export function setWorkCardSize(newSize: CardSize): void {
     store.update((state) => ({
         ...state,
-        workCardSize: newSize,
+        cardSize: newSize,
     }));
 }
 

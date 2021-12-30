@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bull';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
+import * as Services from './services';
+import * as Controllers from './controllers';
+import { AccountsModule } from '$modules/accounts';
+import { JwtModule } from '@nestjs/jwt';
+import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
 
 @Module({
     imports: [
+        AccountsModule,
         MongooseModule.forFeatureAsync([
             {
                 name: 'Content',
@@ -31,10 +38,44 @@ import * as Stores from './db/stores';
                 name: 'Tags',
                 useFactory: Schemas.setupTagsCollection,
             },
+            {
+                name: 'ContentLibrary',
+                useFactory: Schemas.setupContentLibraryCollection,
+            },
+            {
+                name: 'Bookshelf',
+                useFactory: Schemas.setupBookshelvesCollection,
+            },
+            {
+                name: 'BookshelfItem',
+                useFactory: Schemas.setupShelfItemsCollection,
+            },
         ]),
+        BullModule.registerQueue({
+            name: 'content-library',
+            limiter: {
+                max: 1000,
+                duration: 5000,
+            },
+        }),
+        JwtModule.registerAsync({
+            useFactory: () => ({
+                secret: getJwtSecretKey(),
+                signOptions: { expiresIn: JWT_EXPIRATION },
+            }),
+        }),
     ],
     exports: [Stores.ContentStore, Stores.ContentGroupStore],
-    controllers: [],
+    controllers: [
+        Controllers.ContentController,
+        Controllers.ContentLibraryController,
+        Controllers.BrowseController,
+        Controllers.BookshelfController,
+        Controllers.ReadingHistoryController,
+        Controllers.RatingsController,
+        Controllers.SectionsController,
+        Controllers.TagsController,
+    ],
     providers: [
         Stores.ContentStore,
         Stores.ContentGroupStore,
@@ -45,6 +86,15 @@ import * as Stores from './db/stores';
         Stores.ReadingHistoryStore,
         Stores.TagsStore,
         Stores.SectionsStore,
+        Stores.ContentLibraryStore,
+        Stores.BookshelfStore,
+        Services.ContentService,
+        Services.SectionsService,
+        Services.RatingsService,
+        Services.ReadingHistoryService,
+        Services.TagsService,
+        Services.ContentLibraryService,
+        Services.ContentLibraryConsumer,
     ],
 })
 export class ContentModule {}

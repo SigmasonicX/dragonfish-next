@@ -1,4 +1,4 @@
-export { ContentCommentPayload } from './content-comment.payload';
-export { SubscriptionPayload } from './subscription.payload';
-export { AddedToLibraryPayload } from './added-to-library.payload';
-export { ContentUpdatedPayload } from './content-updated.payload';
+export type { ContentCommentPayload } from './content-comment.payload';
+export type { SubscriptionPayload } from './subscription.payload';
+export type { AddedToLibraryPayload } from './added-to-library.payload';
+export type { ContentUpdatedPayload } from './content-updated.payload';

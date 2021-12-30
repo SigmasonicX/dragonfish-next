@@ -1,4 +1,4 @@
-import { Pseudonym } from '../../psuedonyms';
+import { Pseudonym } from '../../accounts';
 
 export interface ContentCommentPayload {
     readonly contentId: string;

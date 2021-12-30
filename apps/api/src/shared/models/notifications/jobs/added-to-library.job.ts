@@ -1,5 +1,5 @@
-import { ContentKind } from '../../../content';
-import { Pseudonym } from '../../psuedonyms';
+import { ContentKind } from '../../content';
+import { Pseudonym } from '../../accounts';
 
 export interface AddedToLibraryJob {
     readonly recipientId: string;

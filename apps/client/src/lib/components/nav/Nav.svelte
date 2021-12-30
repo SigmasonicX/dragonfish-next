@@ -88,7 +88,7 @@
 
 {#if currentMenu === MenuOptions.UserMenu}
   <Sidenav on:click={() => currentMenu = MenuOptions.NoMenu}>
-    <UserMenu />
+    <UserMenu on:logout={() => currentMenu = MenuOptions.NoMenu} />
   </Sidenav>
 {:else if currentMenu === MenuOptions.InboxMenu}
   <Sidenav on:click={() => currentMenu = MenuOptions.NoMenu}>

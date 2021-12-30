@@ -14,7 +14,6 @@ import { IdentityGuard } from '$shared/guards';
 import { User, JwtPayload, Identity } from '$shared/auth';
 import { UserService } from '../services';
 import { ChangeBio, ChangeScreenName, ChangeTagline, Roles } from '$shared/models/accounts';
-import { ContentFilter } from '$shared/models/content';
 
 @Controller('user')
 export class UserController {
@@ -23,14 +22,6 @@ export class UserController {
     @Get('get-profile')
     async getProfile(@Query('pseudId') pseudId: string) {
         return await this.user.getOneUser(pseudId);
-    }
-
-    @Get('get-profile-content')
-    async getProfileContent(
-        @Query('pseudId') pseudId: string,
-        @Query('filter') filter: ContentFilter,
-    ) {
-        return await this.user.getUserProfile(pseudId, filter);
     }
 
     @UseGuards(IdentityGuard)

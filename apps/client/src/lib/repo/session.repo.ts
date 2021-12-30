@@ -1,7 +1,7 @@
 import { createState, select, Store, withProps } from '@ngneat/elf';
 import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
 import type { Profile, Account } from '$lib/models/accounts';
-import type { LoginForm, RegisterForm } from '$lib/models/accounts/forms';
+import type { LoginForm, ProfileForm, RegisterForm } from '$lib/models/accounts/forms';
 import type { LoginPackage } from '$lib/models/accounts';
 import { Observable, tap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -91,6 +91,92 @@ export function register(payload: RegisterForm): Observable<void> {
     );
 }
 
+/**
+ * Logs a user out.
+ */
+export function logout(): Observable<void> {
+    return auth.logout().pipe(
+        tap(() => {
+            store.update(
+                (state) => ({
+                    ...state,
+                    token: null,
+                    currentAccount: null,
+                }),
+                setActiveId(null),
+                deleteAllEntities(),
+            );
+            //this.alerts.success(`See you next time!`);
+        }),
+        catchError((err) => {
+            //this.alerts.error(err.error.message);
+            return throwError(err);
+        }),
+    );
+}
+
+/**
+ * Attempts to refresh a user's token. If the refresh token is expired, logs a user out.
+ */
+export function refreshToken(): Observable<string> {
+    return auth.refreshToken().pipe(
+        tap((result: string | null) => {
+            if (result === null) {
+                store.update(
+                    (state) => ({
+                        ...state,
+                        token: null,
+                        currentAccount: null,
+                    }),
+                    setActiveId(null),
+                    deleteAllEntities(),
+                );
+                //this.alerts.info(`Your token has expired, and you've been logged out.`);
+            } else {
+                store.update((state) => ({
+                    ...state,
+                    token: result,
+                }));
+            }
+        }),
+        catchError((err) => {
+            this.alerts.error(err.error.message);
+            return throwError(err);
+        }),
+    );
+}
+
+/**
+ * Creates a new profile associated with the current account
+ * @param formData
+ */
+export function createPseudonym(formData: ProfileForm) {
+    return this.network.addPseudonym(formData).pipe(
+        tap((result: Profile) => {
+            this.sessionStore.update(({ currAccount }) => {
+                currAccount.pseudonyms = [...currAccount.pseudonyms, result];
+            });
+            this.pseudService.addOne(result);
+        }),
+        catchError((err) => {
+            this.alerts.error(err.error.message);
+            return throwError(err);
+        }),
+    );
+}
+
+/**
+ * Checks to see if the current profile is owned by the current session.
+ * @param profileId
+ */
+export function checkPseudonym(profileId: string): boolean {
+    if (currentAccount()) {
+        return currentAccount().pseudonyms.some((elem) => elem._id === profileId);
+    } else {
+        return false;
+    }
+}
+
 //#endregion
 
 //#region ---PROFILES---
@@ -124,5 +210,6 @@ export function clearAll(): void {
 
 export const token = (): string => store.getValue().token;
 export const isLoggedIn = (): boolean => !!store.getValue().token;
+export const currentAccount = (): Account => store.getValue().currentAccount;
 
 //#endregion

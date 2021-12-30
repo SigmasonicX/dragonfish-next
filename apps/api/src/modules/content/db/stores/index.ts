@@ -7,3 +7,5 @@ export { BlogsStore } from './blogs.store';
 export { PoetryStore } from './poetry.store';
 export { ProseStore } from './prose.store';
 export { TagsStore } from './tags.store';
+export { ContentLibraryStore } from './content-library.store';
+export { BookshelfStore } from './bookshelf.store';

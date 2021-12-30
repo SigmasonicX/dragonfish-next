@@ -5,6 +5,9 @@ import { RatingsSchema } from './ratings.schema';
 import { ReadingHistorySchema } from './reading-history.schema';
 import { SectionsDocument, SectionsSchema } from './sections.schema';
 import { TagsSchema } from './tags.schema';
+import { ContentLibrarySchema } from './content-library.schema';
+import { BookshelfDocument, BookshelfSchema } from './bookshelf.schema';
+import { ShelfItemSchema } from './shelf-item.schema';
 import { countWords, stripTags } from 'voca';
 
 //#region ---EXPORTS---
@@ -17,6 +20,9 @@ export { RatingsDocument, RatingsSchema } from './ratings.schema';
 export { ReadingHistoryDocument, ReadingHistorySchema } from './reading-history.schema';
 export { SectionsDocument, SectionsSchema } from './sections.schema';
 export { TagsDocument, TagsSchema } from './tags.schema';
+export { ContentLibraryDocument, ContentLibrarySchema } from './content-library.schema';
+export { BookshelfDocument, BookshelfSchema } from './bookshelf.schema';
+export { ShelfItemDocument, ShelfItemSchema } from './shelf-item.schema';
 
 //#endregion
 
@@ -109,6 +115,54 @@ export async function setupTagsCollection() {
     schema.plugin(require('mongoose-autopopulate'));
 
     schema.index({ parent: 1, name: 1 });
+
+    return schema;
+}
+
+/**
+ * Sets up the content library collection.
+ */
+export async function setupContentLibraryCollection() {
+    const schema = ContentLibrarySchema;
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-autopopulate'));
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-paginate-v2'));
+
+    return schema;
+}
+
+/**
+ * Sets up the bookshelves collection.
+ */
+export async function setupBookshelvesCollection() {
+    const schema = BookshelfSchema;
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-paginate-v2'));
+
+    schema.pre<BookshelfDocument>('save', async function (next) {
+        this.set('name', sanitizeHtml(this.name, sanitizeOptions));
+        if (this.isModified('desc')) {
+            this.set('desc', sanitizeHtml(this.desc, sanitizeOptions));
+        }
+        return next();
+    });
+
+    return schema;
+}
+
+/**
+ * Sets up the shelf items collection.
+ */
+export async function setupShelfItemsCollection() {
+    const schema = ShelfItemSchema;
+
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-autopopulate'));
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    schema.plugin(require('mongoose-paginate-v2'));
 
     return schema;
 }

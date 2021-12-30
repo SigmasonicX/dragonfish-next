@@ -7,11 +7,15 @@ import { SendGridModule, SendGridModuleOptions } from '@anchan828/nest-sendgrid'
 /* Modules */
 import { AccountsModule } from '$modules/accounts';
 import { ContentModule } from '$modules/content';
+import { NotificationsModule } from '$modules/notifications';
+import { AdminModule } from '$modules/admin';
 
 @Module({
     imports: [
+        AdminModule,
         AccountsModule,
         ContentModule,
+        NotificationsModule,
         EventEmitterModule.forRoot(),
         BullModule.forRootAsync({
             useFactory: () => ({

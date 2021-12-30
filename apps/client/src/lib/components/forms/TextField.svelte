@@ -11,7 +11,7 @@
 <div class="text-field">
   <label
     for={name}
-    class="text-[0.625rem] relative z-20 top-[0.1875rem] left-2 py-0.5 px-1 bg-gray-200 rounded-t-lg font-semibold tracking-wider uppercase"
+    class="text-[0.625rem] relative z-20 top-[0.2125rem] left-2 py-0.5 px-1 bg-zinc-300 dark:bg-zinc-700 rounded-t-lg font-semibold tracking-wider uppercase"
     class:error={!!errorMessage}
   >
     {title}
@@ -22,6 +22,7 @@
     {name}
     {title}
     {placeholder}
+    class="bg-zinc-300 dark:bg-zinc-700 dark:placeholder-zinc-400"
     class:error={!!errorMessage}
     on:change
   >

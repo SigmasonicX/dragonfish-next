@@ -1,5 +1,5 @@
 import { Notification } from '../notification';
-import { ContentKind } from '../../../content';
+import { ContentKind } from '../../content';
 
 export interface ContentNewNotification extends Notification {
     readonly contentInfo: {

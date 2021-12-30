@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { ContentGroupStore } from '$modules/content';
 import { PseudonymsStore } from '../db/stores';
 import {
     ChangeBio,
@@ -8,27 +7,16 @@ import {
     Pseudonym,
     Roles,
 } from '$shared/models/accounts';
-import { ContentFilter, ContentModel } from '$shared/models/content';
 import { isAllowed, JwtPayload } from '$shared/auth';
 
 @Injectable()
 export class UserService {
     private readonly logger: Logger = new Logger(UserService.name);
 
-    constructor(
-        private readonly pseudStore: PseudonymsStore,
-        private readonly contentGroupStore: ContentGroupStore,
-    ) {}
+    constructor(private readonly pseudStore: PseudonymsStore) {}
 
     async getOneUser(userId: string): Promise<Pseudonym> {
         return await this.pseudStore.fetchPseud(userId);
-    }
-
-    async getUserProfile(
-        userId: string,
-        filter: ContentFilter,
-    ): Promise<{ works: ContentModel[]; blogs: ContentModel[] }> {
-        return await this.contentGroupStore.fetchFirstThreePublished(filter, userId);
     }
 
     async changeScreenName(userId: string, screenNameForm: ChangeScreenName): Promise<Pseudonym> {
@@ -75,5 +63,10 @@ export class UserService {
         } else {
             throw new UnauthorizedException(`You don't have permission to do that.`);
         }
+    }
+
+    async updateCounts(userId: string, blogNum: number, workNum: number) {
+        await this.pseudStore.updateBlogCount(userId, blogNum);
+        await this.pseudStore.updateWorkCount(userId, workNum);
     }
 }

@@ -6,11 +6,9 @@ import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
 import * as Services from './services';
 import * as Controllers from './controllers';
-import { ContentModule } from '$modules/content';
 
 @Module({
     imports: [
-        ContentModule,
         MongooseModule.forFeatureAsync([
             {
                 name: 'Account',
@@ -32,7 +30,7 @@ import { ContentModule } from '$modules/content';
             }),
         }),
     ],
-    exports: [Services.AuthService],
+    exports: [Services.AuthService, Services.UserService],
     controllers: [
         Controllers.AuthController,
         Controllers.UserController,

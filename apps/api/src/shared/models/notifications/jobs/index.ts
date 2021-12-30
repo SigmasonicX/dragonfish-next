@@ -1,6 +1,6 @@
-export { ContentCommentJob } from './content-comment.job';
-export { AddedToLibraryJob } from './added-to-library.job';
-export { ContentUpdatedJob } from './content-updated.job';
+export type { ContentCommentJob } from './content-comment.job';
+export type { AddedToLibraryJob } from './added-to-library.job';
+export type { ContentUpdatedJob } from './content-updated.job';
 
 import { ContentCommentJob } from './content-comment.job';
 import { AddedToLibraryJob } from './added-to-library.job';

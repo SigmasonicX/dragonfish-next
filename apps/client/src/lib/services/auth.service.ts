@@ -1,7 +1,10 @@
 import http from './http';
-import type { RegisterForm, LoginForm } from '$lib/models/accounts/forms';
+import type { RegisterForm, LoginForm, ProfileForm } from '$lib/models/accounts/forms';
+import type { Profile } from '$lib/models/accounts';
 import type { LoginPackage } from '$lib/models/auth';
 import type { Observable } from 'rxjs';
+import { throwError, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import { token } from '$lib/repo/session.repo';
 
 http.instance.interceptors.request.use((request) => {
@@ -38,6 +41,35 @@ export function register(formInfo: RegisterForm): Observable<LoginPackage> {
 export function logout(): Observable<void> {
     return http.handleRequest(
         http.get<void>(`${baseUrl}/auth/logout`, {
+            observe: 'response',
+            withCredentials: true,
+        }),
+    );
+}
+
+export function refreshToken(): Observable<string | null> {
+    return http
+        .get<{ newToken: string }>(`${this.baseUrl}/auth/refresh-token`, {
+            observe: 'response',
+            withCredentials: true,
+        })
+        .pipe(
+            map((user) => {
+                return user.data.newToken;
+            }),
+            catchError((err) => {
+                if (err.status === 403) {
+                    // A 403 means that the refreshToken has expired, or we didn't send one up at all, which is Super Suspicious
+                    return of<string>(null);
+                }
+                return throwError(err);
+            }),
+        );
+}
+
+export function addProfile(formInfo: ProfileForm): Observable<Profile> {
+    return http.handleRequest(
+        http.post<Profile>(`${this.baseUrl}/auth/add-pseudonym`, formInfo, {
             observe: 'response',
             withCredentials: true,
         }),

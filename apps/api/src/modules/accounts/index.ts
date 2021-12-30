@@ -1,2 +1,2 @@
 export { AccountsModule } from './accounts.module';
-export { AuthService } from './services';
+export { AuthService, UserService } from './services';
