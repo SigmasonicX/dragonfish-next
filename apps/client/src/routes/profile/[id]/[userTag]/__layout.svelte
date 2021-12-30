@@ -21,7 +21,9 @@
 </script>
 
 <div class="flex flex-col w-full h-screen overflow-y-auto">
-    <div class="profile-header" />
+    <div class="profile-header">
+        <img src={$profile$.profile.coverPic} alt="cover" />
+    </div>
 </div>
 
 <style lang="scss">
