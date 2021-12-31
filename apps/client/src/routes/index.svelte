@@ -127,16 +127,12 @@
         @apply text-white text-center py-2 w-full flex flex-col items-center justify-center;
         background: var(--accent);
     }
+
     div.jumbo-carousel {
         @apply shadow-2xl mb-8;
         height: 32rem;
     }
-    :global(span.dot) {
-        border-color: white !important;
-        &.is-active {
-            background-color: white !important;
-        }
-    }
+
     :global(.swipe-indicator .is-active) {
         background-color: white !important;
     }
