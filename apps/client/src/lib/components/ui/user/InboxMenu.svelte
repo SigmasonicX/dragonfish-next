@@ -49,7 +49,7 @@
 
 <style lang="scss">
     div.header {
-        @apply p-8;
+        @apply px-8 py-4;
         background: var(--accent);
 
         div.nav {
@@ -72,6 +72,10 @@
                 &:hover,
                 &.active {
                     background: var(--accent-light);
+
+                    span.notification-badge {
+                        background: var(--accent);
+                    }
                 }
             }
         }

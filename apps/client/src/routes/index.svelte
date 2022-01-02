@@ -9,21 +9,27 @@
 <svelte:head>
     <title>Home &mdash; Offprint</title>
     <!-- Primary Meta Tags -->
-    <meta name="title" content="Offprint Next" />
-    <meta name="description" content="Catch a glimpse at the future of Offprint" />
+    <meta name="title" content="Offprint" />
+    <meta name="description" content="A next-generation publishing and community platform." />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://next.offprint.net/" />
-    <meta property="og:title" content="Offprint Next" />
-    <meta property="og:description" content="Catch a glimpse at the future of Offprint" />
+    <meta property="og:url" content="https://offprint.net/" />
+    <meta property="og:title" content="Offprint" />
+    <meta
+        property="og:description"
+        content="A next-generation publishing and community platform."
+    />
     <meta property="og:image" content="/images/offprint_icon.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://next.offprint.net/" />
-    <meta property="twitter:title" content="Offprint Next" />
-    <meta property="twitter:description" content="Catch a glimpse at the future of Offprint" />
+    <meta property="twitter:url" content="https://offprint.net/" />
+    <meta property="twitter:title" content="Offprint" />
+    <meta
+        property="twitter:description"
+        content="A next-generation publishing and community platform."
+    />
     <meta property="twitter:image" content="/images/offprint_icon.png" />
 </svelte:head>
 

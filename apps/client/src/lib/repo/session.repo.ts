@@ -150,16 +150,19 @@ export function refreshToken(): Observable<string> {
  * Creates a new profile associated with the current account
  * @param formData
  */
-export function createPseudonym(formData: ProfileForm) {
-    return this.network.addPseudonym(formData).pipe(
+export function createProfile(formData: ProfileForm): Observable<Profile> {
+    return auth.addProfile(formData).pipe(
         tap((result: Profile) => {
-            this.sessionStore.update(({ currAccount }) => {
-                currAccount.pseudonyms = [...currAccount.pseudonyms, result];
-            });
-            this.pseudService.addOne(result);
+            const currAccount = store.getValue().currentAccount;
+            currAccount.pseudonyms = [...currAccount.pseudonyms, result];
+            store.update((state) => ({
+                ...state,
+                currentAccount: currAccount,
+            }));
+            addProfile(result);
         }),
         catchError((err) => {
-            this.alerts.error(err.error.message);
+            //this.alerts.error(err.error.message);
             return throwError(err);
         }),
     );

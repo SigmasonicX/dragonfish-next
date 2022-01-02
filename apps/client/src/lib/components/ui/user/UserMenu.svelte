@@ -1,9 +1,6 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
-    import { fly, fade } from 'svelte/transition';
     import {
-        UserLine,
-        BookOpenLine,
         CupLine,
         LogoutCircleRLine,
         ArrowLeftRightLine,
@@ -16,6 +13,7 @@
     import { abbreviate, pluralize, slugify } from '$lib/util';
     import RoleBadge from './RoleBadge.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
+    import SelectProfile from '$lib/components/ui/user/SelectProfile.svelte';
 
     enum MenuPages {
         Main,
@@ -43,7 +41,7 @@
             >
                 <ArrowLeftRightLine class="button-icon no-text" size="1.325rem" />
             </Button>
-            <div class="flex-1" />
+            <div class="flex-1 text-center uppercase text-sm font-bold tracking-widest">Menu</div>
             <Button kind="primary" title="Log Out" on:click={() => (currPage = MenuPages.LogOut)}>
                 <LogoutCircleRLine class="button-icon no-text" size="1.325rem" />
             </Button>
@@ -63,9 +61,9 @@
             <div class="user-avatar" style="background: var(--background)">
                 <img src={$currentProfile$.profile.avatar} alt="avatar" />
             </div>
-            <div class="relative top-[5.5rem] w-full">
+            <div class="user-header" class:has-cover={!!$currentProfile$.profile.coverPic}>
                 <div class="text-center">
-                    <h3 class="text-3xl font-medium">
+                    <h3 class="text-3xl font-medium flex items-center justify-center">
                         <RoleBadge roles={$currentProfile$.roles} />
                         <a
                             href={`/profile/${$currentProfile$._id}/${slugify(
@@ -80,7 +78,7 @@
                         href={`/profile/${$currentProfile$._id}/${slugify(
                             $currentProfile$.userTag,
                         )}/works`}
-                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 rounded-l-lg"
+                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600 rounded-l-lg"
                         style="color: var(--text-color);"
                     >
                         <span>{abbreviate($currentProfile$.stats.works)}</span>
@@ -90,7 +88,7 @@
                         href={`/profile/${$currentProfile$._id}/${slugify(
                             $currentProfile$.userTag,
                         )}/blogs`}
-                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300"
+                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
                         <span>{abbreviate($currentProfile$.stats.blogs)}</span>
@@ -100,7 +98,7 @@
                         href={`/profile/${$currentProfile$._id}/${slugify(
                             $currentProfile$.userTag,
                         )}/followers`}
-                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300"
+                        class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
                         <span>{abbreviate($currentProfile$.stats.followers)}</span>
@@ -110,7 +108,7 @@
                         href={`/profile/${$currentProfile$._id}/${slugify(
                             $currentProfile$.userTag,
                         )}/following`}
-                        class="block flex flex-col items-center w-[86px] text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 rounded-r-lg"
+                        class="block flex flex-col items-center w-[86px] text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 rounded-r-lg hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
                         <span>{abbreviate($currentProfile$.stats.following)}</span>
@@ -140,12 +138,7 @@
                 </div>
             </div>
         {:else if currPage === MenuPages.SwitchProfile}
-            <div class="mt-16">
-                <div class="empty">
-                    <h3 class="text-2xl">Pardon our dust—</h3>
-                    <p class="text-sm">This feature is not yet available.</p>
-                </div>
-            </div>
+            <SelectProfile on:profilesel={() => (currPage = MenuPages.Main)} />
         {:else if currPage === MenuPages.LogOut}
             <div class="mt-16">
                 <div class="empty">
@@ -186,7 +179,11 @@
     }
 
     div.cover-pic {
-        @apply w-full h-36;
+        @apply w-full h-32 overflow-hidden;
+        img {
+            @apply object-cover h-full w-full;
+        }
+
         &.has-accent {
             @apply h-24;
             background: var(--accent);
@@ -199,6 +196,15 @@
 
         img {
             @apply object-cover w-full h-full w-32 h-32;
+        }
+    }
+
+    div.user-header {
+        @apply relative w-full;
+        top: 5.5rem;
+
+        &.has-cover {
+            top: 4rem;
         }
     }
 

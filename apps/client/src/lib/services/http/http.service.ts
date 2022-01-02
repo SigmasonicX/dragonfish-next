@@ -1,90 +1,82 @@
 import Axios from 'axios';
-import type { AxiosInstance, AxiosPromise, AxiosResponse } from 'axios';
-import { from, Observable, throwError } from 'rxjs';
-import { catchError, map, take } from 'rxjs/operators';
+import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { HttpOptions } from './http-options';
+import { token, refreshToken, logout } from '$lib/repo/session.repo';
 
-/**
- * Borrowed heavily from NestJS's HTTP Service implementation.
- *
- * Source: https://github.com/nestjs/nest/blob/master/packages/common/http/http.service.ts
- */
-export class HttpService {
-    private axiosInstance: AxiosInstance = Axios.create({
-        timeout: 1000,
-        //xsrfCookieName: 'XSRF-TOKEN',
-        withCredentials: true,
-    });
+const http: AxiosInstance = Axios.create({
+    timeout: 1000,
+    timeoutErrorMessage: 'Request timed out!',
+    withCredentials: true,
+});
 
-    private static generateObservable<T>(
-        Axios: (...args: unknown[]) => AxiosPromise<T>,
-        ...args: unknown[]
-    ): Observable<AxiosResponse<T>> {
-        return from(Axios(...args)).pipe(take(1));
+http.interceptors.request.use((request) => {
+    console.log(`Request interceptor hit!`);
+    if (token()) {
+        request.headers.authorization = `Bearer ${token()}`;
     }
+    return request;
+});
 
-    public handleRequest<T>(
-        response: Observable<AxiosResponse<T>>,
-        onSuccess: (success: AxiosResponse<T>) => void = null,
-        onError: (error: unknown) => void = null,
-    ): Observable<T> {
-        return response.pipe(
-            map((resp) => {
-                if (onSuccess) {
-                    onSuccess(resp);
-                }
-                return resp.data;
-            }),
-            catchError((err) => {
-                if (onError) {
-                    onError(err);
-                }
-                return throwError(err);
-            }),
-        );
+http.interceptors.response.use((response) => {
+    console.log(`Response interceptor hit!`);
+    if (response.status === 401) {
+        refreshToken().subscribe({
+            error: (err) => {
+                console.log(err);
+                logout().subscribe();
+            },
+        });
     }
+    return response;
+});
 
-    public request<T = unknown>(config: HttpOptions): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.request, config);
-    }
+export async function request<T = unknown>(
+    config: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.request<T>(config);
+}
 
-    public get<T = unknown>(url: string, config?: HttpOptions): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.get, `${url}`, config);
-    }
+export async function get<T = unknown>(
+    url: string,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.get<T>(url, config);
+}
 
-    public delete<T = unknown>(url: string, config?: HttpOptions): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.delete, `${url}`, config);
-    }
+export async function deleteReq<T = unknown>(
+    url: string,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.delete<T>(url, config);
+}
 
-    public head<T = unknown>(url: string, config?: HttpOptions): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.head, `${url}`, config);
-    }
+export async function head<T = unknown>(
+    url: string,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.head<T>(url, config);
+}
 
-    public post<T = unknown>(
-        url: string,
-        data: unknown,
-        config?: HttpOptions,
-    ): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.post, `${url}`, data, config);
-    }
+export async function post<T = unknown>(
+    url: string,
+    data: unknown,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.post<T>(url, data, config);
+}
 
-    public put<T = unknown>(
-        url: string,
-        data: unknown,
-        config?: HttpOptions,
-    ): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.put, `${url}`, data, config);
-    }
+export async function put<T = unknown>(
+    url: string,
+    data: unknown,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.put<T>(url, data, config);
+}
 
-    public patch<T = unknown>(
-        url: string,
-        data: unknown,
-        config?: HttpOptions,
-    ): Observable<AxiosResponse<T>> {
-        return HttpService.generateObservable<T>(this.instance.patch, `${url}`, data, config);
-    }
-
-    public get instance(): AxiosInstance {
-        return this.axiosInstance;
-    }
+export async function patch<T = unknown>(
+    url: string,
+    data: unknown,
+    config?: HttpOptions,
+): Promise<AxiosResponse<T, unknown>> {
+    return http.patch<T>(url, data, config);
 }

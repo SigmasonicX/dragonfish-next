@@ -122,7 +122,9 @@ export class AuthService {
     public async checkRoles(accountId: string, ...requiredRoles: Roles[]) {
         const roles = await this.accountStore.fetchRoles(accountId);
         const hasRoles = intersection(roles, requiredRoles);
-        return hasRoles.length === 0;
+        // if the hasRoles array has a length of 0, it means it has nothing
+        // in common with the array of required roles. we want greater than 0.
+        return hasRoles.length !== 0;
     }
 
     public async verifyPseudonym(accountId: string, pseudId: string) {

@@ -1,4 +1,1 @@
-import { HttpService } from './http.service';
-
-const http = new HttpService();
-export default http;
+export * as http from './http.service';
