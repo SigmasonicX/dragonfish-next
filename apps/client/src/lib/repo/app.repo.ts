@@ -2,6 +2,7 @@ import { Store, createState, withProps, select } from '@ngneat/elf';
 import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
 import { ContentFilter } from '$lib/models/content';
 import { CardSize, ThemePref } from '$lib/models/site';
+import { Observable } from 'rxjs';
 
 //#region ---STORE METADATA---
 
@@ -56,7 +57,7 @@ export function setTheme(newPref: ThemePref): void {
     }));
 }
 
-export function setDarkMode(pref: boolean): void {
+export function setDarkMode(pref: Observable<boolean>): void {
     store.update((state) => ({
         ...state,
         darkMode: pref,

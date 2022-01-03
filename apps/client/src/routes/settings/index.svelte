@@ -55,6 +55,7 @@
             <SelectMenu
                 items={themes}
                 value={currTheme}
+                label="Theme"
                 on:select={(event) => changeTheme(event.detail.label)}
             />
             <div class="flex flex-col items-center mt-4">
@@ -93,6 +94,7 @@
             <SelectMenu
                 items={cardSizes}
                 value={currSize}
+                label="Card Size"
                 on:select={(event) => changeCardSize(event.detail.label)}
             />
         </div>

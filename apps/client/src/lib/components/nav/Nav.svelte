@@ -23,11 +23,7 @@
     let currentMenu = MenuOptions.NoMenu;
 
     function toggleMenu(menuOption: MenuOptions) {
-        if (currentMenu === MenuOptions.NoMenu) {
-            currentMenu = menuOption;
-        } else {
-            currentMenu = MenuOptions.NoMenu;
-        }
+        currentMenu = menuOption;
     }
 
     navigating.subscribe((val) => {
@@ -40,39 +36,52 @@
 <div class="navbar">
     <div class="py-2 flex flex-col items-center h-full">
         {#if $currentProfile$}
-            <div
-                class="link select-none cursor-pointer group"
-                on:click={() => toggleMenu(MenuOptions.UserMenu)}
-                class:active={currentMenu === MenuOptions.UserMenu}
-                class:no-padding={currentMenu !== MenuOptions.UserMenu}
-            >
-                {#if currentMenu === MenuOptions.UserMenu}
+            {#if currentMenu === MenuOptions.UserMenu}
+                <div
+                    class="link select-none cursor-pointer group"
+                    on:click={() => toggleMenu(MenuOptions.NoMenu)}
+                    class:active={currentMenu === MenuOptions.UserMenu}
+                    class:no-padding={currentMenu !== MenuOptions.UserMenu}
+                >
                     <span class="link-icon"><CloseLine size="1.5rem" /></span>
                     <span class="link-name">Close</span>
-                {:else}
+                </div>
+            {:else}
+                <div
+                    class="link select-none cursor-pointer group"
+                    on:click={() => toggleMenu(MenuOptions.UserMenu)}
+                    class:active={currentMenu === MenuOptions.UserMenu}
+                    class:no-padding={currentMenu !== MenuOptions.UserMenu}
+                >
                     <img src={$currentProfile$.profile.avatar} class="rounded-full" alt="avatar" />
-                {/if}
-            </div>
-            <div
-                class="link select-none cursor-pointer"
-                on:click={() => toggleMenu(MenuOptions.InboxMenu)}
-                class:active={currentMenu === MenuOptions.InboxMenu}
-            >
-                {#if currentMenu === MenuOptions.InboxMenu}
+                </div>
+            {/if}
+            {#if currentMenu === MenuOptions.InboxMenu}
+                <div
+                    class="link select-none cursor-pointer"
+                    on:click={() => toggleMenu(MenuOptions.NoMenu)}
+                    class:active={currentMenu === MenuOptions.InboxMenu}
+                >
                     <span class="link-icon"><CloseLine size="1.5rem" /></span>
                     <span class="link-name">Close</span>
-                {:else}
+                </div>
+            {:else}
+                <div
+                    class="link select-none cursor-pointer"
+                    on:click={() => toggleMenu(MenuOptions.InboxMenu)}
+                    class:active={currentMenu === MenuOptions.InboxMenu}
+                >
                     <span class="link-icon"><InboxLine size="1.5rem" /></span>
                     <span class="link-name">Inbox</span>
-                {/if}
-            </div>
+                </div>
+            {/if}
         {:else}
             <a class="link" href="/registration">
                 <span class="link-icon"><LoginCircleLine size="1.5rem" /></span>
                 <span class="link-name">Log In</span>
             </a>
         {/if}
-        <div class="w-10/12 mx-auto border-b border-white my-2" />
+        <div class="w-10/12 mx-auto border-b border-white my-2"><!--separator--></div>
         <a
             class="link"
             href="/"
@@ -97,8 +106,8 @@
             <span class="link-icon"><GroupLine size="1.5rem" /></span>
             <span class="link-name">Social</span>
         </a>
-        <div class="flex-1" />
-        <div class="w-10/12 mx-auto border-b border-white my-2" />
+        <div class="flex-1"><!--fill space--></div>
+        <div class="w-10/12 mx-auto border-b border-white my-2"><!--separator--></div>
         <a
             class="link"
             href="/settings"
@@ -131,11 +140,15 @@
     div.link {
         @apply p-2 mx-2 mb-1 border-2 border-transparent rounded-lg transition transform text-white flex flex-col items-center justify-center w-[61px] h-[61px];
         &:hover {
-            @apply no-underline scale-110;
+            @apply no-underline scale-105;
             box-shadow: var(--dropshadow);
             background: var(--accent-light);
             color: white;
             border-color: white;
+        }
+
+        &:active {
+            @apply scale-105;
         }
 
         &.active {
