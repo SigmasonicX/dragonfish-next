@@ -1,13 +1,12 @@
 <script lang="ts">
     import { createEventDispatcher } from 'svelte';
     import {
-        CupLine,
         LogoutCircleRLine,
         ArrowLeftRightLine,
         ArrowLeftSLine,
         CheckLine,
         CloseLine,
-        QuillPenLine,
+        AddBoxLine,
     } from 'svelte-remixicon';
     import { currentProfile$, logout } from '$lib/repo/session.repo';
     import { abbreviate, pluralize, slugify } from '$lib/util';
@@ -115,27 +114,10 @@
                         <span>following</span>
                     </a>
                 </div>
-                <div
-                    class="flex items-center justify-center my-4 w-11/12 mx-auto border-t border-zinc-300 dark:border-white pt-4"
-                >
-                    <a
-                        href="/"
-                        class="new-content-button border-zinc-600 dark:border-white group"
-                        style="color: var(--text-color);"
-                    >
-                        <QuillPenLine size="1.25rem" class="mr-2 group-hover:text-white" />
-                        <span>New Work</span>
-                    </a>
-                    <div class="mx-1" />
-                    <a
-                        href="/"
-                        class="new-content-button border-zinc-600 dark:border-white group"
-                        style="color: var(--text-color);"
-                    >
-                        <CupLine size="1.25rem" class="mr-2 group-hover:text-white" />
-                        <span>New Blog</span>
-                    </a>
-                </div>
+                <button class="new-content flex items-center justify-center my-4 mx-auto w-11/12">
+                    <AddBoxLine size="20px" class="mr-2" />
+                    <span>New Content</span>
+                </button>
             </div>
         {:else if currPage === MenuPages.SwitchProfile}
             <SelectProfile on:profilesel={() => (currPage = MenuPages.Main)} />
@@ -208,22 +190,15 @@
         }
     }
 
-    a.new-content-button {
-        @apply block flex items-center flex-1 justify-center w-1/2 py-2 border rounded-lg transition transform no-underline;
+    button.new-content {
+        @apply flex items-center justify-center w-11/12 py-2 border rounded-lg transition transform;
         &:hover {
-            @apply scale-105;
-            span,
-            svg {
-                @apply text-white;
-            }
-
+            @apply scale-105 text-white;
             background: var(--accent);
         }
-
         &:active {
-            @apply scale-100 text-white;
+            @apply scale-100;
         }
-
         span {
             @apply uppercase text-xs font-bold tracking-widest;
         }

@@ -8,15 +8,18 @@
         Settings5Line,
         CloseLine,
         InboxLine,
+        AddBoxLine,
     } from 'svelte-remixicon';
     import Sidenav from '$lib/components/nav/Sidenav.svelte';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
     import { currentProfile$ } from '$lib/repo/session.repo';
     import InboxMenu from '$lib/components/ui/user/InboxMenu.svelte';
+    import ContentMenu from '../ui/user/ContentMenu.svelte';
 
     enum MenuOptions {
         NoMenu,
         UserMenu,
+        CreateMenu,
         InboxMenu,
     }
 
@@ -54,6 +57,25 @@
                     class:no-padding={currentMenu !== MenuOptions.UserMenu}
                 >
                     <img src={$currentProfile$.profile.avatar} class="rounded-full" alt="avatar" />
+                </div>
+            {/if}
+            {#if currentMenu === MenuOptions.CreateMenu}
+                <div
+                    class="link select-none cursor-pointer group"
+                    on:click={() => toggleMenu(MenuOptions.NoMenu)}
+                    class:active={currentMenu === MenuOptions.CreateMenu}
+                >
+                    <span class="link-icon"><CloseLine size="1.5rem" /></span>
+                    <span class="link-name">Close</span>
+                </div>
+            {:else}
+                <div
+                    class="link select-none cursor-pointer group"
+                    on:click={() => toggleMenu(MenuOptions.CreateMenu)}
+                    class:active={currentMenu === MenuOptions.CreateMenu}
+                >
+                    <span class="link-icon"><AddBoxLine size="1.5rem" /></span>
+                    <span class="link-name">Create</span>
                 </div>
             {/if}
             {#if currentMenu === MenuOptions.InboxMenu}
@@ -125,6 +147,10 @@
 {#if currentMenu === MenuOptions.UserMenu}
     <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
         <UserMenu on:logout={() => (currentMenu = MenuOptions.NoMenu)} />
+    </Sidenav>
+{:else if currentMenu === MenuOptions.CreateMenu}
+    <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
+        <ContentMenu />
     </Sidenav>
 {:else if currentMenu === MenuOptions.InboxMenu}
     <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
