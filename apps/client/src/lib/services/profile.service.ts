@@ -5,9 +5,22 @@ import type { Observable } from 'rxjs';
 import { baseUrl } from '$lib/util';
 import { from, take } from 'rxjs';
 import { map } from 'rxjs/operators';
+import type { ContentFilter, Content } from '$lib/models/content';
+import type { AxiosResponse } from 'axios';
 
-export function getProfile(profileId: string): Observable<Profile> {
-    return from(http.get<Profile>(`${baseUrl}/user/get-profile?pseudId=${profileId}`)).pipe(
+export async function getProfile(profileId: string): Promise<AxiosResponse<Profile>> {
+    return http.get<Profile>(`${baseUrl}/user/get-profile?pseudId=${profileId}`);
+}
+
+export function getProfileContent(
+    profileId: string,
+    filter: ContentFilter,
+): Observable<{ works: Content[]; blogs: Content[] }> {
+    return from(
+        http.get<{ works: Content[]; blogs: Content[] }>(
+            `${baseUrl}/browse/get-profile-content?pseudId=${profileId}&filter=${filter}`,
+        ),
+    ).pipe(
         take(1),
         map((res) => {
             return res.data;

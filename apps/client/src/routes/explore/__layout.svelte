@@ -39,14 +39,14 @@
                     class="bg-zinc-400 dark:bg-zinc-600 placeholder-gray-600 dark:placeholder-zinc-400"
                 />
             </form>
-            <a href="/explore" class:active={$page.path === '/explore'}>
+            <a href="/explore" class:active={$page.url.pathname === '/explore'}>
                 <span class="link-icon"><MistFill /></span>
                 <span class="text">Overview</span>
             </a>
             {#if $isLoggedIn$}
                 <a
                     href="/explore/recommendations"
-                    class:active={$page.path === '/explore/recommendations'}
+                    class:active={$page.url.pathname === '/explore/recommendations'}
                 >
                     <span class="link-icon"><Gift2Line /></span>
                     <span class="text">Recommendations</span>
@@ -54,22 +54,25 @@
             {/if}
             <a
                 href="/explore/popular-this-week"
-                class:active={$page.path === '/explore/popular-this-week'}
+                class:active={$page.url.pathname === '/explore/popular-this-week'}
             >
                 <span class="link-icon"><CalendarLine /></span>
                 <span class="text">Popular this week</span>
             </a>
-            <a href="/explore/popular-today" class:active={$page.path === '/explore/popular-today'}>
+            <a
+                href="/explore/popular-today"
+                class:active={$page.url.pathname === '/explore/popular-today'}
+            >
                 <span class="link-icon"><CalendarEventLine /></span>
                 <span class="text">Popular today</span>
             </a>
-            <a href="/explore/new-works" class:active={$page.path === '/explore/new-works'}>
+            <a href="/explore/new-works" class:active={$page.url.pathname === '/explore/new-works'}>
                 <span class="link-icon"><NewspaperLine /></span>
                 <span class="text">New works</span>
             </a>
             <a
                 href="/explore/special-events"
-                class:active={$page.path === '/explore/special-events'}
+                class:active={$page.url.pathname === '/explore/special-events'}
             >
                 <span class="link-icon"><SunLine /></span>
                 <span class="text">Special events</span>

@@ -3,6 +3,7 @@
     import { ContentKind } from '$lib/models/content';
     import { TagKind } from '$lib/models/content/works';
     import { abbreviate, localeDate } from '$lib/util';
+    import { CardSize } from '$lib/models/site';
     import TagBadge from './TagBadge.svelte';
     import {
         Calendar2Line,
@@ -12,8 +13,12 @@
         RhythmFill,
     } from 'svelte-remixicon';
     import slug from 'slug';
+
     export let content: Content;
+    export let size: CardSize = CardSize.Medium;
+
     let contentUrl = `/prose`;
+
     const calculateApprovalRating = (likes: number, dislikes: number): number => {
         const totalVotes = likes + dislikes;
         if (totalVotes === 0) {
@@ -22,6 +27,7 @@
             return Math.ceil((likes / totalVotes) * 100);
         }
     };
+
     if (content) {
         switch (content.kind) {
             case ContentKind.ProseContent:

@@ -14,20 +14,15 @@ export async function fetchFirstNew(
     return http.get<Content[]>(`${baseUrl}/browse/fetch-first-new?filter=${contentFilter}`);
 }
 
-export function fetchAllNew(
-    pageNum: number,
+export async function fetchAllNew(
+    page: number,
     kinds: ContentKind[],
-    contentFilter: ContentFilter,
-): Observable<PaginateResult<Content>> {
+    filter: ContentFilter,
+): Promise<AxiosResponse<PaginateResult<Content>>> {
     const kindFragment = kinds.map((k) => `&kind=${k}`).join('');
-    const route = `${baseUrl}/browse/fetch-all-new?filter=${contentFilter}&pageNum=${pageNum}${kindFragment}`;
+    const route = `${baseUrl}/browse/fetch-all-new?filter=${filter}&pageNum=${page}${kindFragment}`;
 
-    return from(http.get<PaginateResult<Content>>(route)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
-    );
+    return http.get<PaginateResult<Content>>(route);
 }
 
 //#endregion

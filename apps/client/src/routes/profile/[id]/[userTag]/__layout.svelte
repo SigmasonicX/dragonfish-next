@@ -3,14 +3,20 @@
      * Fetching profile prior to loading the page.
      * */
     import type { Load } from '@sveltejs/kit';
-    import { lastValueFrom } from 'rxjs';
-    import { setProfile } from '$lib/repo/profile.repo';
+    import { profile } from '$lib/repo/profile.repo';
+    import type { Profile } from '$lib/models/accounts';
 
-    export const load: Load = async ({ page }) => {
-        const profileId: string = page.params.id;
+    export const load: Load = async ({ params, fetch }) => {
+        const profileId: string = params.id;
+        const profileModel: Profile = await fetch(`/api/profile/${profileId}`).then(async (res) => {
+            return await res.json();
+        });
+
+        profile.set(profileModel);
+
         return {
             props: {
-                content: await lastValueFrom(setProfile(profileId)),
+                profileModel,
             },
         };
     };
@@ -18,7 +24,6 @@
 
 <script lang="ts">
     import { page } from '$app/stores';
-    import { profile$ } from '$lib/repo/profile.repo';
     import { pluralize, slugify } from '$lib/util';
     import {
         UserFollowLine,
@@ -29,14 +34,18 @@
         BarChart2Fill,
     } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
+    // eslint-disable-next-line no-redeclare
+    import type { Profile } from '$lib/models/accounts';
+
+    export let profileModel: Profile;
 </script>
 
 <div class="flex flex-col w-full h-screen overflow-y-auto">
     <div class="profile-header">
-        {#if $profile$.profile.coverPic}
+        {#if profileModel.profile.coverPic}
             <img
-                class="block object-cover w-full h-[20rem]"
-                src={$profile$.profile.coverPic}
+                class="block object-cover w-full h-40 lg:h-[20rem]"
+                src={profileModel.profile.coverPic}
                 alt="cover"
             />
         {:else}
@@ -45,31 +54,37 @@
         <div class="user-info-container">
             <div class="user-info">
                 <div class="avatar-container self-end">
-                    <img src={$profile$.profile.avatar} alt="avatar" />
+                    <img src={profileModel.profile.avatar} alt="avatar" />
                 </div>
-                <div class="flex-1 self-end">
-                    <h1 class="text-3xl text-white font-medium">{$profile$.screenName}</h1>
-                    <h3 class="text-base text-white">@{$profile$.userTag}</h3>
-                    <span class="text-xs">
+                <div class="flex-1 lg:self-end top-4 flex flex-col relative">
+                    <h1 class="text-2xl lg:text-3xl text-white font-medium">
+                        {profileModel.screenName}
+                    </h1>
+                    <h3 class="text-base text-white">@{profileModel.userTag}</h3>
+                    <span class="text-xs mt-1">
                         <a
                             class="text-white"
-                            href="/profile/{$profile$._id}/{slugify($profile$.userTag)}/followers"
+                            href="/profile/{profileModel._id}/{slugify(
+                                profileModel.userTag,
+                            )}/followers"
                         >
-                            {$profile$.stats.followers} follower{pluralize(
-                                $profile$.stats.followers,
+                            {profileModel.stats.followers} follower{pluralize(
+                                profileModel.stats.followers,
                             )}
                         </a>
                         <span class="mx-1">•</span>
                         <a
                             class="text-white"
-                            href="/profile/{$profile$._id}/{slugify($profile$.userTag)}/following"
+                            href="/profile/{profileModel._id}/{slugify(
+                                profileModel.userTag,
+                            )}/following"
                         >
-                            {$profile$.stats.following} following
+                            {profileModel.stats.following} following
                         </a>
                     </span>
                     <div class="my-5" />
                 </div>
-                <div div class="flex items-center">
+                <div class="flex items-center">
                     <Button kind="primary">
                         <UserFollowLine class="button-icon" />
                         <span class="button-text">Follow</span>
@@ -82,30 +97,32 @@
             </div>
             <div class="user-nav">
                 <a
-                    href="/profile/{$profile$._id}/{slugify($profile$.userTag)}"
-                    class:active={$page.path ===
-                        `/profile/${$profile$._id}/${slugify($profile$.userTag)}`}
+                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}"
+                    class:active={$page.url.pathname ===
+                        `/profile/${profileModel._id}/${slugify(profileModel.userTag)}`}
                 >
                     <Home5Line size="1.25rem" class="mr-1" />
                     <span>Home</span>
                 </a>
                 <a
-                    href="/profile/{$profile$._id}/{slugify($profile$.userTag)}/works"
-                    class:active={$page.path.includes(`works`)}
+                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/works"
+                    class:active={$page.url.pathname.includes(`works`)}
                 >
                     <QuillPenLine size="1.25rem" class="mr-1" />
-                    <span>{$profile$.stats.works} Work{pluralize($profile$.stats.works)}</span>
+                    <span>{profileModel.stats.works} Work{pluralize(profileModel.stats.works)}</span
+                    >
                 </a>
                 <a
-                    href="/profile/{$profile$._id}/{slugify($profile$.userTag)}/blogs"
-                    class:active={$page.path.includes(`blogs`)}
+                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/blogs"
+                    class:active={$page.url.pathname.includes(`blogs`)}
                 >
                     <CupLine size="1.25rem" class="mr-1" />
-                    <span>{$profile$.stats.blogs} Blog{pluralize($profile$.stats.blogs)}</span>
+                    <span>{profileModel.stats.blogs} Blog{pluralize(profileModel.stats.blogs)}</span
+                    >
                 </a>
                 <a
-                    href="/profile/{$profile$._id}/{slugify($profile$.userTag)}/shelves"
-                    class:active={$page.path.includes(`shelves`)}
+                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/shelves"
+                    class:active={$page.url.pathname.includes(`shelves`)}
                 >
                     <BarChart2Fill size="1.25rem" class="mr-1" />
                     <span>Shelves</span>
@@ -124,21 +141,20 @@
             background: var(--accent);
 
             div.user-info {
-                @apply w-7/12 mx-auto flex relative;
-                height: 7.5rem;
+                @apply lg:w-7/12 w-11/12 mx-auto flex items-center flex-row relative lg:h-[7.5rem] h-[5.5rem];
 
                 div.avatar-container {
                     @apply relative overflow-hidden bg-white max-w-[200px] rounded-full border-4 border-white mr-4 shadow-xl;
                     img {
-                        @apply object-cover w-full h-full w-48 h-48;
+                        @apply object-cover w-full h-full w-24 h-24 lg:w-48 lg:h-48;
                     }
                 }
             }
 
             div.user-nav {
-                @apply w-7/12 mx-auto flex items-center justify-center mb-2;
+                @apply w-7/12 mx-auto flex items-center justify-center mb-2 mt-2;
                 a {
-                    @apply text-white flex items-center py-2 px-4 rounded-lg transition transform mx-0.5;
+                    @apply text-white lg:text-base text-sm flex items-center py-2 px-4 rounded-lg transition transform mx-0.5;
                     &:hover {
                         @apply scale-105 no-underline;
                         background: var(--accent-light);

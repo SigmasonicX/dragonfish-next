@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { intersection } from 'lodash';
+    import * as lodash from 'lodash';
     import { Roles } from '$lib/models/accounts';
     import {
         AuctionLine,
@@ -18,14 +18,14 @@
     function determineProminentRole() {
         // this will totally need retooling to figure out a much better way to verify what the top-level
         // role is
-        const hasAdmin = intersection([Roles.Admin], roles);
-        const hasModerator = intersection([Roles.Moderator], roles);
-        const hasChatModerator = intersection([Roles.ChatModerator], roles);
-        const hasMaintainer = intersection([Roles.Maintainer], roles);
-        const hasContributor = intersection([Roles.Contributor], roles);
-        const hasWorkApprover = intersection([Roles.WorkApprover], roles);
-        const hasVIP = intersection([Roles.VIP], this.roles);
-        const hasSupporter = intersection([Roles.Supporter], roles);
+        const hasAdmin = lodash.intersection([Roles.Admin], roles);
+        const hasModerator = lodash.intersection([Roles.Moderator], roles);
+        const hasChatModerator = lodash.intersection([Roles.ChatModerator], roles);
+        const hasMaintainer = lodash.intersection([Roles.Maintainer], roles);
+        const hasContributor = lodash.intersection([Roles.Contributor], roles);
+        const hasWorkApprover = lodash.intersection([Roles.WorkApprover], roles);
+        const hasVIP = lodash.intersection([Roles.VIP], this.roles);
+        const hasSupporter = lodash.intersection([Roles.Supporter], roles);
 
         if (hasAdmin.length > 0) {
             return Roles.Admin;

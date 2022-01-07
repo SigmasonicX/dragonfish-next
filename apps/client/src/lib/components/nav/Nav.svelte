@@ -85,7 +85,7 @@
         <a
             class="link"
             href="/"
-            class:active={$page.path === '/' && currentMenu === MenuOptions.NoMenu}
+            class:active={$page.url.pathname === '/' && currentMenu === MenuOptions.NoMenu}
         >
             <span class="link-icon"><Home5Line size="1.5rem" /></span>
             <span class="link-name">Home</span>
@@ -93,7 +93,8 @@
         <a
             class="link"
             href="/explore"
-            class:active={$page.path.startsWith('/explore') && currentMenu === MenuOptions.NoMenu}
+            class:active={$page.url.pathname.startsWith('/explore') &&
+                currentMenu === MenuOptions.NoMenu}
         >
             <span class="link-icon"><Compass3Line size="1.5rem" /></span>
             <span class="link-name">Explore</span>
@@ -101,7 +102,8 @@
         <a
             class="link"
             href="/social"
-            class:active={$page.path.startsWith('/social') && currentMenu === MenuOptions.NoMenu}
+            class:active={$page.url.pathname.startsWith('/social') &&
+                currentMenu === MenuOptions.NoMenu}
         >
             <span class="link-icon"><GroupLine size="1.5rem" /></span>
             <span class="link-name">Social</span>
@@ -111,7 +113,8 @@
         <a
             class="link"
             href="/settings"
-            class:active={$page.path.startsWith('/settings') && currentMenu === MenuOptions.NoMenu}
+            class:active={$page.url.pathname.startsWith('/settings') &&
+                currentMenu === MenuOptions.NoMenu}
         >
             <span class="link-icon"><Settings5Line size="1.5rem" /></span>
             <span class="link-name">Settings</span>

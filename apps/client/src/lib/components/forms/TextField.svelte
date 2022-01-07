@@ -12,7 +12,6 @@
     <label
         for={name}
         class="text-[0.625rem] relative z-20 top-[0.15rem] left-1 py-0.5 px-1 rounded-t-lg font-semibold tracking-wider uppercase"
-        class:error={!!errorMessage}
     >
         {title}
     </label>
@@ -22,7 +21,7 @@
         {name}
         {title}
         {placeholder}
-        class="bg-zinc-300 dark:bg-zinc-700 dark:placeholder-zinc-400"
+        class="bg-zinc-300 dark:bg-zinc-700 dark:placeholder-zinc-400 dark:highlight-shadowed"
         class:error={!!errorMessage}
         on:change
         on:keypress
@@ -38,9 +37,6 @@
 <style lang="scss">
     div.text-field {
         @apply w-full my-2;
-        label.error {
-            @apply border-t border-l border-r border-red-500;
-        }
 
         input {
             @apply w-full relative z-10 rounded-lg px-3 pt-3 pb-2.5 border-b-2 border-transparent bg-gray-200 transition;
