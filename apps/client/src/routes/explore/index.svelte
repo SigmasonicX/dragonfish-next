@@ -28,7 +28,7 @@
             </div>
             <div class="section-loading">
                 <div class="inner-loader">
-                    <Loader5Line class="animate-spin mr-2" size="2rem" />
+                    <Loader5Line class="animate-spin mr-2" size="32px" />
                     <span>Loading...</span>
                 </div>
             </div>
@@ -40,7 +40,7 @@
             </div>
             <div class="section-loading">
                 <div class="inner-loader">
-                    <Loader5Line class="animate-spin mr-2" size="2rem" />
+                    <Loader5Line class="animate-spin mr-2" size="32px" />
                     <span>Loading...</span>
                 </div>
             </div>
@@ -53,7 +53,7 @@
             {#await content.fetchFirstNew(filter())}
                 <div class="section-loading">
                     <div class="inner-loader">
-                        <Loader5Line class="animate-spin mr-2" size="2rem" />
+                        <Loader5Line class="animate-spin mr-2" size="32px" />
                         <span>Loading...</span>
                     </div>
                 </div>

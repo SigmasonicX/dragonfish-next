@@ -10,6 +10,10 @@
         } else {
             return {
                 status: 401,
+                props: {
+                    title: `401 Forbidden`,
+                    desc: `You do not have permission to view this page.`,
+                },
             };
         }
     };

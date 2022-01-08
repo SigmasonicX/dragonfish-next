@@ -106,7 +106,7 @@
                 </form>
             {:else}
                 <div class="absolute w-full h-full" on:click={() => (showAddForm = !showAddForm)} />
-                <AddBoxLine size="2rem" class="mr-2" />
+                <AddBoxLine size="32px" class="mr-2" />
                 <span class="uppercase font-bold tracking-widest text-sm">Add profile</span>
             {/if}
         </div>

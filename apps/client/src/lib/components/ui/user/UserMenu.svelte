@@ -38,15 +38,15 @@
                 title="Switch Profile"
                 on:click={() => (currPage = MenuPages.SwitchProfile)}
             >
-                <ArrowLeftRightLine class="button-icon no-text" size="1.325rem" />
+                <ArrowLeftRightLine class="button-icon no-text" size="21.2px" />
             </Button>
             <div class="flex-1 text-center uppercase text-sm font-bold tracking-widest">Menu</div>
             <Button kind="primary" title="Log Out" on:click={() => (currPage = MenuPages.LogOut)}>
-                <LogoutCircleRLine class="button-icon no-text" size="1.325rem" />
+                <LogoutCircleRLine class="button-icon no-text" size="21.2px" />
             </Button>
         {:else}
             <Button kind="primary" title="Go Back" on:click={() => (currPage = MenuPages.Main)}>
-                <ArrowLeftSLine class="button-icon no-text" size="1.325rem" />
+                <ArrowLeftSLine class="button-icon no-text" size="21.2px" />
             </Button>
         {/if}
     </div>

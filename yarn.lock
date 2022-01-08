@@ -6965,6 +6965,11 @@ svelte-check@^2.2.11:
     svelte-preprocess "^4.0.0"
     typescript "*"
 
+svelte-click-outside@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/svelte-click-outside/-/svelte-click-outside-1.0.0.tgz#94a823779e3613ae0bdadc53f26916fdd64cb09e"
+  integrity sha512-TVDn5Vd8L0WI0Y9BFh/2I7judkIqYCbFKkGwGl/f8D0inwBFNyU0weKhrbJY4VQtYnWriq0NPl+mIYGisgALbw==
+
 svelte-content-loader@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/svelte-content-loader/-/svelte-content-loader-1.1.3.tgz#58c049e4a2e60a93e1225d7d8727434a19237dcc"
@@ -6996,6 +7001,11 @@ svelte-select@^4.4.7:
   version "4.4.7"
   resolved "https://registry.yarnpkg.com/svelte-select/-/svelte-select-4.4.7.tgz#fc85414af070487d68e438f7249c653178860af3"
   integrity sha512-fIf9Z8rPI6F8naHZ9wjXT0Pv5gLyhdHAFkHFJnCfVVfELE8e82uOoF0xEVQP6Kir+b4Q5yOvNAzZ61WbSU6A0A==
+
+svelte-tiptap@^0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/svelte-tiptap/-/svelte-tiptap-0.4.6.tgz#f87ca752df24b0ebf00c6ac4f809012d0e96dab3"
+  integrity sha512-wIJYdTiq/fLkgEjcxeSycGPWgy/YraEJYeChTBaukiGxVzllqHbAvDhQsV+c3laIvl7MpA/XQV3ldvwFD/L6RQ==
 
 svelte@^3.44.3:
   version "3.44.3"

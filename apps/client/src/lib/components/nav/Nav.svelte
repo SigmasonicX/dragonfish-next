@@ -46,7 +46,7 @@
                     class:active={currentMenu === MenuOptions.UserMenu}
                     class:no-padding={currentMenu !== MenuOptions.UserMenu}
                 >
-                    <span class="link-icon"><CloseLine size="1.5rem" /></span>
+                    <span class="link-icon"><CloseLine size="24px" /></span>
                     <span class="link-name">Close</span>
                 </div>
             {:else}
@@ -65,7 +65,7 @@
                     on:click={() => toggleMenu(MenuOptions.NoMenu)}
                     class:active={currentMenu === MenuOptions.CreateMenu}
                 >
-                    <span class="link-icon"><CloseLine size="1.5rem" /></span>
+                    <span class="link-icon"><CloseLine size="24px" /></span>
                     <span class="link-name">Close</span>
                 </div>
             {:else}
@@ -74,7 +74,7 @@
                     on:click={() => toggleMenu(MenuOptions.CreateMenu)}
                     class:active={currentMenu === MenuOptions.CreateMenu}
                 >
-                    <span class="link-icon"><AddBoxLine size="1.5rem" /></span>
+                    <span class="link-icon"><AddBoxLine size="24px" /></span>
                     <span class="link-name">Create</span>
                 </div>
             {/if}
@@ -84,7 +84,7 @@
                     on:click={() => toggleMenu(MenuOptions.NoMenu)}
                     class:active={currentMenu === MenuOptions.InboxMenu}
                 >
-                    <span class="link-icon"><CloseLine size="1.5rem" /></span>
+                    <span class="link-icon"><CloseLine size="24px" /></span>
                     <span class="link-name">Close</span>
                 </div>
             {:else}
@@ -93,13 +93,13 @@
                     on:click={() => toggleMenu(MenuOptions.InboxMenu)}
                     class:active={currentMenu === MenuOptions.InboxMenu}
                 >
-                    <span class="link-icon"><InboxLine size="1.5rem" /></span>
+                    <span class="link-icon"><InboxLine size="24px" /></span>
                     <span class="link-name">Inbox</span>
                 </div>
             {/if}
         {:else}
             <a class="link" href="/registration">
-                <span class="link-icon"><LoginCircleLine size="1.5rem" /></span>
+                <span class="link-icon"><LoginCircleLine size="24px" /></span>
                 <span class="link-name">Log In</span>
             </a>
         {/if}
@@ -109,7 +109,7 @@
             href="/"
             class:active={$page.url.pathname === '/' && currentMenu === MenuOptions.NoMenu}
         >
-            <span class="link-icon"><Home5Line size="1.5rem" /></span>
+            <span class="link-icon"><Home5Line size="24px" /></span>
             <span class="link-name">Home</span>
         </a>
         <a
@@ -118,7 +118,7 @@
             class:active={$page.url.pathname.startsWith('/explore') &&
                 currentMenu === MenuOptions.NoMenu}
         >
-            <span class="link-icon"><Compass3Line size="1.5rem" /></span>
+            <span class="link-icon"><Compass3Line size="24px" /></span>
             <span class="link-name">Explore</span>
         </a>
         <a
@@ -127,7 +127,7 @@
             class:active={$page.url.pathname.startsWith('/social') &&
                 currentMenu === MenuOptions.NoMenu}
         >
-            <span class="link-icon"><GroupLine size="1.5rem" /></span>
+            <span class="link-icon"><GroupLine size="24px" /></span>
             <span class="link-name">Social</span>
         </a>
         <div class="flex-1"><!--fill space--></div>
@@ -138,7 +138,7 @@
             class:active={$page.url.pathname.startsWith('/settings') &&
                 currentMenu === MenuOptions.NoMenu}
         >
-            <span class="link-icon"><Settings5Line size="1.5rem" /></span>
+            <span class="link-icon"><Settings5Line size="24px" /></span>
             <span class="link-name">Settings</span>
         </a>
     </div>
