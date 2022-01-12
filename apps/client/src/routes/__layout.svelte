@@ -1,13 +1,13 @@
 <script lang="ts">
     import '../app.scss';
     import Nav from '$lib/components/nav/Nav.svelte';
-    import { theme$, darkMode$ } from '$lib/repo/app.repo';
+    import { app } from '$lib/repo/app.repo';
 </script>
 
 <main
-    class="flex h-screen {$theme$}"
-    class:dark={$darkMode$ === true}
-    class:light={$darkMode$ === false}
+    class="flex h-screen {$app.theme}"
+    class:dark={$app.darkMode === true}
+    class:light={$app.darkMode === false}
 >
     <Nav />
     <slot />

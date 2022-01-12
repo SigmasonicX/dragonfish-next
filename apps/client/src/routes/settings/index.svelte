@@ -3,25 +3,22 @@
     import Toggle from '$lib/components/forms/Toggle.svelte';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import {
-        isOfAge$,
+        app,
         setOfAge,
-        setContentFilter,
+        setFilter,
         setTheme,
-        theme$,
         setDarkMode,
-        darkMode$,
-        setWorkCardSize,
-        cardSize$,
+        setCardSize,
     } from '$lib/repo/app.repo';
     import { CardSize, ThemePref } from '$lib/models/site';
 
     let enableMature = false;
     let enableExplicit = false;
-    let enableDarkMode = $darkMode$;
+    let enableDarkMode = $app.darkMode;
 
     const themes = Object.entries(ThemePref).map(([key, value]) => ({ value: value, label: key }));
     let currTheme = themes.filter((theme) => {
-        return theme.value === $theme$;
+        return theme.value === $app.theme;
     })[0];
 
     const cardSizes = Object.entries(CardSize).map(([key, value]) => ({
@@ -29,11 +26,11 @@
         label: key,
     }));
     let currSize = cardSizes.filter((size) => {
-        return size.value === $cardSize$;
+        return size.value === $app.cardSize;
     })[0];
 
     $: {
-        setContentFilter(enableMature, enableExplicit);
+        setFilter(enableMature, enableExplicit);
         setDarkMode(enableDarkMode);
     }
 
@@ -42,7 +39,7 @@
     }
 
     function changeCardSize(cardSize: string): void {
-        setWorkCardSize(CardSize[cardSize]);
+        setCardSize(CardSize[cardSize]);
     }
 </script>
 
@@ -67,7 +64,7 @@
             <span class="text-center text-sm italic w-full block"
                 >Set what content you're willing to see</span
             >
-            {#if $isOfAge$}
+            {#if $app.isOfAge}
                 <div class="flex flex-col items-center mt-4">
                     <Toggle bind:value={enableMature}>Enable Mature</Toggle>
                     <Toggle bind:value={enableExplicit}>Enable Explicit</Toggle>

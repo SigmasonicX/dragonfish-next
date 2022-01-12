@@ -12,7 +12,7 @@
     } from 'svelte-remixicon';
     import Sidenav from '$lib/components/nav/Sidenav.svelte';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
-    import { currentProfile$ } from '$lib/repo/session.repo';
+    import { session } from '$lib/repo/session.repo';
     import InboxMenu from '$lib/components/ui/user/InboxMenu.svelte';
     import ContentMenu from '../ui/user/ContentMenu.svelte';
 
@@ -38,7 +38,7 @@
 
 <div class="navbar">
     <div class="py-2 flex flex-col items-center h-full">
-        {#if $currentProfile$}
+        {#if $session.currProfile}
             {#if currentMenu === MenuOptions.UserMenu}
                 <div
                     class="link select-none cursor-pointer group"
@@ -56,7 +56,11 @@
                     class:active={currentMenu === MenuOptions.UserMenu}
                     class:no-padding={currentMenu !== MenuOptions.UserMenu}
                 >
-                    <img src={$currentProfile$.profile.avatar} class="rounded-full" alt="avatar" />
+                    <img
+                        src={$session.currProfile.profile.avatar}
+                        class="rounded-full"
+                        alt="avatar"
+                    />
                 </div>
             {/if}
             {#if currentMenu === MenuOptions.CreateMenu}

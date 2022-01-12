@@ -9,7 +9,7 @@
         GroupLine,
         NotificationBadgeLine,
     } from 'svelte-remixicon';
-    import { isLoggedIn$ } from '$lib/repo/session.repo';
+    import { session } from '$lib/repo/session.repo';
 </script>
 
 <svelte:head>
@@ -27,7 +27,7 @@
                 <span class="link-icon"><Apps2Line /></span>
                 <span class="text">General</span>
             </a>
-            {#if $isLoggedIn$}
+            {#if $session.token}
                 <a
                     href="/settings/account"
                     class:active={$page.url.pathname === '/settings/account'}

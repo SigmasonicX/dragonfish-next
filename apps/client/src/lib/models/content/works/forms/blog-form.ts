@@ -1,4 +1,4 @@
-import { ContentRating } from '../content-rating.enum';
+import type { ContentRating } from '$lib/models/content';
 
 export interface BlogForm {
     readonly title: string;

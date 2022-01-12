@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { filter } from '$lib/repo/app.repo';
+    import { app } from '$lib/repo/app.repo';
     import { profile } from '$lib/repo/profile.repo';
     import { localeDate, slugify } from '$lib/util';
     import { Gift2Line } from 'svelte-remixicon';
@@ -9,7 +9,7 @@
     let works: Content[] = [];
     let blogs: Content[] = [];
 
-    getProfileContent($profile._id, filter()).subscribe((res) => {
+    getProfileContent($profile._id, $app.filter).subscribe((res) => {
         works = res.works;
         blogs = res.blogs;
     });

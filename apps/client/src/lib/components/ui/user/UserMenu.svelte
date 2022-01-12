@@ -8,7 +8,7 @@
         CloseLine,
         AddBoxLine,
     } from 'svelte-remixicon';
-    import { currentProfile$, logout } from '$lib/repo/session.repo';
+    import { session, logout } from '$lib/repo/session.repo';
     import { abbreviate, pluralize, slugify } from '$lib/util';
     import RoleBadge from './RoleBadge.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
@@ -23,8 +23,8 @@
     let currPage = MenuPages.Main;
     const dispatch = createEventDispatcher();
 
-    function logOut() {
-        logout().subscribe(() => {
+    async function logOut() {
+        await logout().then(() => {
             dispatch('logout');
         });
     }
@@ -52,72 +52,68 @@
     </div>
     <div class="flex flex-col w-full h-full relative overflow-y-auto">
         {#if currPage === MenuPages.Main}
-            <div class="cover-pic" class:has-accent={!$currentProfile$.profile.coverPic}>
-                {#if $currentProfile$.profile.coverPic}
-                    <img src={$currentProfile$.profile.coverPic} alt="cover pic" />
+            <div class="cover-pic" class:has-accent={!$session.currProfile.profile.coverPic}>
+                {#if $session.currProfile.profile.coverPic}
+                    <img src={$session.currProfile.profile.coverPic} alt="cover pic" />
                 {/if}
             </div>
             <div class="user-avatar" style="background: var(--background)">
-                <img src={$currentProfile$.profile.avatar} alt="avatar" />
+                <img src={$session.currProfile.profile.avatar} alt="avatar" />
             </div>
-            <div class="user-header" class:has-cover={!!$currentProfile$.profile.coverPic}>
+            <div class="user-header" class:has-cover={!!$session.currProfile.profile.coverPic}>
                 <div class="text-center">
                     <h3 class="text-3xl font-medium flex items-center justify-center">
-                        <RoleBadge roles={$currentProfile$.roles} />
+                        <RoleBadge roles={$session.currProfile.roles} />
                         <a
-                            href={`/profile/${$currentProfile$._id}/${slugify(
-                                $currentProfile$.userTag,
-                            )}`}>{$currentProfile$.screenName}</a
+                            href={`/profile/${$session.currProfile._id}/${slugify(
+                                $session.currProfile.userTag,
+                            )}`}>{$session.currProfile.screenName}</a
                         >
                     </h3>
-                    <h4 class="text-xl">@{$currentProfile$.userTag}</h4>
+                    <h4 class="text-xl">@{$session.currProfile.userTag}</h4>
                 </div>
                 <div class="flex items-center justify-center font-serif mt-4 max-w-[344px] mx-auto">
                     <a
-                        href={`/profile/${$currentProfile$._id}/${slugify(
-                            $currentProfile$.userTag,
+                        href={`/profile/${$session.currProfile._id}/${slugify(
+                            $session.currProfile.userTag,
                         )}/works`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600 rounded-l-lg"
                         style="color: var(--text-color);"
                     >
-                        <span>{abbreviate($currentProfile$.stats.works)}</span>
-                        <span>work{pluralize($currentProfile$.stats.works)}</span>
+                        <span>{abbreviate($session.currProfile.stats.works)}</span>
+                        <span>work{pluralize($session.currProfile.stats.works)}</span>
                     </a>
                     <a
-                        href={`/profile/${$currentProfile$._id}/${slugify(
-                            $currentProfile$.userTag,
+                        href={`/profile/${$session.currProfile._id}/${slugify(
+                            $session.currProfile.userTag,
                         )}/blogs`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
-                        <span>{abbreviate($currentProfile$.stats.blogs)}</span>
-                        <span>blog{pluralize($currentProfile$.stats.blogs)}</span>
+                        <span>{abbreviate($session.currProfile.stats.blogs)}</span>
+                        <span>blog{pluralize($session.currProfile.stats.blogs)}</span>
                     </a>
                     <a
-                        href={`/profile/${$currentProfile$._id}/${slugify(
-                            $currentProfile$.userTag,
+                        href={`/profile/${$session.currProfile._id}/${slugify(
+                            $session.currProfile.userTag,
                         )}/followers`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
-                        <span>{abbreviate($currentProfile$.stats.followers)}</span>
-                        <span>follower{pluralize($currentProfile$.stats.followers)}</span>
+                        <span>{abbreviate($session.currProfile.stats.followers)}</span>
+                        <span>follower{pluralize($session.currProfile.stats.followers)}</span>
                     </a>
                     <a
-                        href={`/profile/${$currentProfile$._id}/${slugify(
-                            $currentProfile$.userTag,
+                        href={`/profile/${$session.currProfile._id}/${slugify(
+                            $session.currProfile.userTag,
                         )}/following`}
                         class="block flex flex-col items-center w-[86px] text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 rounded-r-lg hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
-                        <span>{abbreviate($currentProfile$.stats.following)}</span>
+                        <span>{abbreviate($session.currProfile.stats.following)}</span>
                         <span>following</span>
                     </a>
                 </div>
-                <button class="new-content flex items-center justify-center my-4 mx-auto w-11/12">
-                    <AddBoxLine size="20px" class="mr-2" />
-                    <span>New Content</span>
-                </button>
             </div>
         {:else if currPage === MenuPages.SwitchProfile}
             <SelectProfile on:profilesel={() => (currPage = MenuPages.Main)} />
@@ -145,19 +141,8 @@
 
 <style lang="scss">
     div.topbar {
-        @apply w-full p-4 flex items-center drop-shadow-xl relative z-40;
+        @apply w-full p-4 flex items-center drop-shadow-xl relative z-40 text-white;
         background: var(--accent);
-
-        button {
-            @apply rounded-full p-1 border border-white transition transform text-white;
-            &:hover {
-                @apply scale-105;
-            }
-
-            &:active {
-                @apply scale-100;
-            }
-        }
     }
 
     div.cover-pic {
@@ -187,20 +172,6 @@
 
         &.has-cover {
             top: 4rem;
-        }
-    }
-
-    button.new-content {
-        @apply flex items-center justify-center w-11/12 py-2 border rounded-lg transition transform;
-        &:hover {
-            @apply scale-105 text-white;
-            background: var(--accent);
-        }
-        &:active {
-            @apply scale-100;
-        }
-        span {
-            @apply uppercase text-xs font-bold tracking-widest;
         }
     }
 </style>

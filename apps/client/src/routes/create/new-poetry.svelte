@@ -4,7 +4,7 @@
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import Editor from '$lib/components/forms/Editor.svelte';
     import { Genres, WorkKind, WorkStatus, PoetryFormKind } from '$lib/models/content/works';
-    import { ContentRating } from '$lib/models/content';
+    import { ContentKind, ContentRating } from '$lib/models/content';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import { CloseLine, Save2Line } from 'svelte-remixicon';
     import {
@@ -16,10 +16,31 @@
         MAX_SHORT_DESC_LENGTH,
         MIN_LONG_DESC_LENGTH,
     } from '$lib/util';
+    import { CreatePoetry } from '$lib/models/content/works/forms';
+    import { createOne } from '$lib/services/content.service';
+    import { session } from '$lib/repo/session.repo';
 
     const { form, data, errors } = createForm({
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            const formInfo: CreatePoetry = {
+                title: values.title,
+                desc: values.shortDesc,
+                body: values.longDesc,
+                category: values.category.value,
+                form: values.poetryForm.value,
+                genres: values.genres.map((val) => {
+                    return val.value;
+                }),
+                tags: [],
+                rating: values.rating.value,
+                status: values.status.value,
+            };
+
+            await createOne($session.currProfile._id, ContentKind.PoetryContent, formInfo).then(
+                (res) => {
+                    console.log(res);
+                },
+            );
         },
         validate: (values) => {
             const errors = {

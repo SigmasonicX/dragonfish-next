@@ -1,218 +1,128 @@
-import { createState, select, Store, withProps } from '@ngneat/elf';
-import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
-import type { Profile, Account } from '$lib/models/accounts';
+import { browser } from '$app/env';
+import { writable, get } from 'svelte/store';
+import type { Account, Profile } from '$lib/models/accounts';
 import type { LoginForm, ProfileForm, RegisterForm } from '$lib/models/accounts/forms';
-import type { LoginPackage } from '$lib/models/accounts';
-import { Observable, tap, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { auth } from '../services';
-import {
-    addEntities,
-    deleteAllEntities,
-    selectActiveEntity,
-    selectAll,
-    setActiveId,
-    setEntities,
-    withActiveId,
-    withEntities,
-} from '@ngneat/elf-entities';
-
-//#region ---STORE METADATA---
-
-interface SessionProps {
-    token: string;
-    currentAccount: Account;
-    error: string;
-}
-
-const { state, config } = createState(
-    withProps<SessionProps>({ token: null, currentAccount: null, error: null }),
-    withEntities<Profile, '_id'>({ idKey: '_id' }),
-    withActiveId(),
-);
-
-const store = new Store({ state, name: 'session', config });
-persistState(store, { key: 'session', storage: localStorageStrategy });
-
-//#endregion
+import * as auth from '$lib/services/auth.service';
+import * as lodash from 'lodash';
 
 //#region ---SESSION---
 
-export const state$ = store.pipe(select((state) => state));
-export const token$ = store.pipe(select((state) => state.token));
-export const isLoggedIn$ = store.pipe(select((state) => !!state.token));
-export const currAccount$ = store.pipe(select((state) => state.currentAccount));
-
-/**
- * Logs a user in.
- * @param payload
- */
-export function login(payload: LoginForm): Observable<void> {
-    return auth.login(payload).pipe(
-        tap((user: LoginPackage) => {
-            store.update((state) => ({
-                ...state,
-                token: user.token,
-                currentAccount: user.account,
-            }));
-            setAllProfiles(user.account.pseudonyms);
-        }),
-        map(() => {
-            return;
-        }),
-        catchError((err) => {
-            //this.alerts.error(err.error.message);
-            return throwError(err);
-        }),
-    );
+interface SessionState {
+    token: string;
+    account: Account;
+    profiles: Profile[];
+    currProfile: Profile;
 }
 
-/**
- * Registers a new user.
- * @param payload
- */
-export function register(payload: RegisterForm): Observable<void> {
-    return auth.register(payload).pipe(
-        tap((user: LoginPackage) => {
-            store.update((state) => ({
-                ...state,
-                token: user.token,
-                currentAccount: user.account,
-            }));
-            setAllProfiles(user.account.pseudonyms);
-        }),
-        map(() => {
-            return;
-        }),
-        catchError((err) => {
-            //this.alerts.error(err.error.message);
-            return throwError(err);
-        }),
-    );
-}
+const defaultSessionState: SessionState = {
+    token: null,
+    account: null,
+    profiles: [],
+    currProfile: null,
+};
 
-/**
- * Logs a user out.
- */
-export function logout(): Observable<void> {
-    return auth.logout().pipe(
-        tap(() => {
-            store.update(
-                (state) => ({
-                    ...state,
-                    token: null,
-                    currentAccount: null,
-                }),
-                setActiveId(null),
-                deleteAllEntities(),
-            );
-            //this.alerts.success(`See you next time!`);
-        }),
-        catchError((err) => {
-            //this.alerts.error(err.error.message);
-            return throwError(err);
-        }),
-    );
-}
+const initialSessionState: SessionState = browser
+    ? JSON.parse(window.localStorage.getItem('session')) ?? defaultSessionState
+    : defaultSessionState;
+export const session = writable<SessionState>(initialSessionState);
 
-/**
- * Attempts to refresh a user's token. If the refresh token is expired, logs a user out.
- */
-export function refreshToken(): Observable<string> {
-    return auth.refreshToken().pipe(
-        tap((result: string | null) => {
-            if (result === null) {
-                store.update(
-                    (state) => ({
-                        ...state,
-                        token: null,
-                        currentAccount: null,
-                    }),
-                    setActiveId(null),
-                    deleteAllEntities(),
-                );
-                //this.alerts.info(`Your token has expired, and you've been logged out.`);
-            } else {
-                store.update((state) => ({
-                    ...state,
-                    token: result,
-                }));
-            }
-        }),
-        catchError((err) => {
-            this.alerts.error(err.error.message);
-            return throwError(err);
-        }),
-    );
-}
-
-/**
- * Creates a new profile associated with the current account
- * @param formData
- */
-export function createProfile(formData: ProfileForm): Observable<Profile> {
-    return auth.addProfile(formData).pipe(
-        tap((result: Profile) => {
-            const currAccount = store.getValue().currentAccount;
-            currAccount.pseudonyms = [...currAccount.pseudonyms, result];
-            store.update((state) => ({
-                ...state,
-                currentAccount: currAccount,
-            }));
-            addProfile(result);
-        }),
-        catchError((err) => {
-            //this.alerts.error(err.error.message);
-            return throwError(err);
-        }),
-    );
-}
-
-/**
- * Checks to see if the current profile is owned by the current session.
- * @param profileId
- */
-export function checkPseudonym(profileId: string): boolean {
-    if (currentAccount()) {
-        return currentAccount().pseudonyms.some((elem) => elem._id === profileId);
-    } else {
-        return false;
+session.subscribe((value) => {
+    if (browser) {
+        window.localStorage.setItem('session', JSON.stringify(value));
     }
-}
+});
 
 //#endregion
 
-//#region ---PROFILES---
+//#region ---SESSION HELPERS---
 
-export const allProfiles$ = store.pipe(selectAll());
-export const currentProfile$ = store.pipe(selectActiveEntity());
-
-export function setAllProfiles(profiles: Profile[]): void {
-    store.update(setEntities(profiles));
+export async function login(payload: LoginForm): Promise<void> {
+    return auth.login(payload).then((loginPackage) => {
+        session.update((state) => ({
+            ...state,
+            account: loginPackage.account,
+            token: loginPackage.token,
+            profiles: loginPackage.account.pseudonyms,
+        }));
+    });
 }
 
-export function setActiveProfile(id: string): void {
-    store.update(setActiveId(id));
+export async function register(payload: RegisterForm): Promise<void> {
+    return auth.register(payload).then((loginPackage) => {
+        session.update((state) => ({
+            ...state,
+            account: loginPackage.account,
+            token: loginPackage.token,
+            profiles: loginPackage.account.pseudonyms,
+        }));
+    });
 }
 
-export function deselect(): void {
-    store.update(setActiveId(null));
+export async function logout(): Promise<void> {
+    return auth.logout();
 }
 
-export function addProfile(profile: Profile): void {
-    store.update(addEntities(profile));
+export async function createProfile(formInfo: ProfileForm): Promise<void> {
+    return auth.addProfile(formInfo).then((res) => {
+        session.update((state) => ({
+            ...state,
+            profiles: lodash.unionBy(state.profiles, [res], '_id'),
+        }));
+    });
 }
 
-export function clearAll(): void {
-    store.update(setActiveId(null), deleteAllEntities());
+export function setCurrentProfile(profile: Profile): void {
+    session.update((state) => ({
+        ...state,
+        currProfile: profile,
+    }));
 }
 
 //#endregion
 
 //#region ---GETTERS---
 
-export const token = (): string => store.getValue().token;
-export const isLoggedIn = (): boolean => !!store.getValue().token;
-export const currentAccount = (): Account => store.getValue().currentAccount;
+export const isLoggedIn = (): boolean => !!get(session).token;
+export const token = (): string => get(session).token;
+
+//#endregion
+
+//#region ---TOKEN REFRESH---
+
+interface RefreshState {
+    isRefreshing: boolean;
+    refreshCall;
+}
+
+const refresh = writable<RefreshState>({ isRefreshing: false, refreshCall: null });
+
+export async function refreshToken(): Promise<unknown> {
+    if (get(refresh).isRefreshing) {
+        return get(refresh).refreshCall;
+    }
+
+    refresh.update((state) => ({
+        ...state,
+        isRefreshing: true,
+    }));
+
+    const refreshCall = auth.refreshToken().then((token) => {
+        refresh.update((state) => ({
+            ...state,
+            isRefreshing: false,
+            refreshCall: undefined,
+        }));
+        session.update((state) => ({
+            ...state,
+            token,
+        }));
+        return Promise.resolve(true);
+    });
+    refresh.update((state) => ({
+        ...state,
+        refreshCall,
+    }));
+    return refreshCall;
+}
 
 //#endregion

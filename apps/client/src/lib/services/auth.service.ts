@@ -2,62 +2,40 @@ import { http } from './http';
 import type { RegisterForm, LoginForm, ProfileForm } from '$lib/models/accounts/forms';
 import type { Profile } from '$lib/models/accounts';
 import type { LoginPackage } from '$lib/models/auth';
-import type { Observable } from 'rxjs';
-import { throwError, of, from, take } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
 import { baseUrl } from '$lib/util';
 
-/*
-});*/
-
-export function login(formInfo: LoginForm): Observable<LoginPackage> {
-    return from(http.post<LoginPackage>(`${baseUrl}/auth/login`, formInfo)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
-    );
+export async function login(formInfo: LoginForm): Promise<LoginPackage> {
+    return http.post<LoginPackage>(`${baseUrl}/auth/login`, formInfo).then((res) => {
+        return res.data;
+    });
 }
 
-export function register(formInfo: RegisterForm): Observable<LoginPackage> {
-    return from(http.post<LoginPackage>(`${baseUrl}/auth/register`, formInfo)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
-    );
+export async function register(formInfo: RegisterForm): Promise<LoginPackage> {
+    return http.post<LoginPackage>(`${baseUrl}/auth/register`, formInfo).then((res) => {
+        return res.data;
+    });
 }
 
-export function logout(): Observable<void> {
-    return from(http.get<void>(`${baseUrl}/auth/logout`)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
-    );
+export async function logout(): Promise<void> {
+    return http.get<void>(`${baseUrl}/auth/logout`).then(() => {
+        return;
+    });
 }
 
-export function refreshToken(): Observable<string | null> {
-    return from(http.get<{ newToken: string }>(`${baseUrl}/auth/refresh-token`)).pipe(
-        take(1),
-        map((res) => {
+export async function refreshToken(): Promise<string | null> {
+    return http
+        .get<{ newToken: string }>(`${baseUrl}/auth/refresh-token`)
+        .then((res) => {
             return res.data.newToken;
-        }),
-        catchError((err) => {
-            if (err.status === 403) {
-                return of(null);
-            } else {
-                return throwError(err);
-            }
-        }),
-    );
+        })
+        .catch((err) => {
+            console.log(err);
+            return null;
+        });
 }
 
-export function addProfile(formInfo: ProfileForm): Observable<Profile> {
-    return from(http.post<Profile>(`${baseUrl}/auth/add-pseudonym`, formInfo)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
-    );
+export async function addProfile(formInfo: ProfileForm): Promise<Profile> {
+    return http.post<Profile>(`${baseUrl}/auth/add-pseudonym`, formInfo).then((res) => {
+        return res.data;
+    });
 }

@@ -1,10 +1,7 @@
-import { Store, createState, withProps, select } from '@ngneat/elf';
-import { localStorageStrategy, persistState } from '@ngneat/elf-persist-state';
-import { ContentFilter } from '$lib/models/content';
+import { browser } from '$app/env';
+import { writable } from 'svelte/store';
 import { CardSize, ThemePref } from '$lib/models/site';
-import { Observable } from 'rxjs';
-
-//#region ---STORE METADATA---
+import { ContentFilter } from '$lib/models/content';
 
 interface AppState {
     isOfAge: boolean;
@@ -12,80 +9,75 @@ interface AppState {
     theme: ThemePref;
     darkMode: boolean;
     cardSize: CardSize;
+    error: {
+        title: string;
+        desc: string;
+    };
 }
 
-const { state, config } = createState(
-    withProps<AppState>({
-        isOfAge: false,
-        filter: ContentFilter.Default,
-        theme: ThemePref.Crimson,
-        darkMode: false,
-        cardSize: CardSize.Small,
-    }),
-);
+const defaultAppState: AppState = {
+    isOfAge: false,
+    filter: ContentFilter.Default,
+    theme: ThemePref.Crimson,
+    darkMode: false,
+    cardSize: CardSize.Medium,
+    error: null,
+};
 
-const store = new Store({ state, name: 'app', config });
-persistState(store, { key: 'app', storage: localStorageStrategy });
+const initialAppState: AppState = browser
+    ? JSON.parse(window.localStorage.getItem('app')) ?? defaultAppState
+    : defaultAppState;
+export const app = writable<AppState>(initialAppState);
 
-//#endregion
+app.subscribe((value) => {
+    if (browser) {
+        window.localStorage.setItem('app', JSON.stringify(value));
+    }
+});
 
-export const cardSize$ = store.pipe(select((state) => state.cardSize));
-export const theme$ = store.pipe(select((state) => state.theme));
-export const darkMode$ = store.pipe(select((state) => state.darkMode));
-export const filter$ = store.pipe(select((state) => state.filter));
-export const isOfAge$ = store.pipe(select((state) => state.isOfAge));
+export function setTheme(theme: ThemePref): void {
+    app.update((state) => ({
+        ...state,
+        theme,
+    }));
+}
+
+export function setCardSize(size: CardSize): void {
+    app.update((state) => ({
+        ...state,
+        cardSize: size,
+    }));
+}
+
+export function setDarkMode(isDark: boolean): void {
+    app.update((state) => ({
+        ...state,
+        darkMode: isDark,
+    }));
+}
 
 export function setOfAge(): void {
-    store.update((state) => ({
+    app.update((state) => ({
         ...state,
-        isOfAge: true,
+        isOfAge: !state.isOfAge,
     }));
 }
 
-export function setContentFilter(enableMature: boolean, enableExplicit: boolean): void {
-    const filter = determineContentFilter(enableMature, enableExplicit);
-    store.update((state) => ({
+export function setError(title: string, desc: string): void {
+    app.update((state) => ({
         ...state,
-        filter: filter,
+        error: { title, desc },
     }));
 }
 
-export function setTheme(newPref: ThemePref): void {
-    store.update((state) => ({
+export function setFilter(enableMature: boolean, enableExplicit: boolean): void {
+    app.update((state) => ({
         ...state,
-        theme: newPref,
+        filter: determineContentFilter(enableMature, enableExplicit),
     }));
 }
 
-export function setDarkMode(pref: Observable<boolean>): void {
-    store.update((state) => ({
-        ...state,
-        darkMode: pref,
-    }));
-}
-
-export function setWorkCardSize(newSize: CardSize): void {
-    store.update((state) => ({
-        ...state,
-        cardSize: newSize,
-    }));
-}
-
-//#region ---GETTERS---
-
-export const filter = (): ContentFilter => store.getValue().filter;
-
-//#endregion
-
-//#region ---PRIVATE---
-
-/**
- * Sets the contentFilter based on the values of the two provided booleans.
- *
- * @param enableMature Enable mature check
- * @param enableExplicit Enable explicit check
- */
-function determineContentFilter(enableMature: boolean, enableExplicit: boolean) {
+function determineContentFilter(enableMature: boolean, enableExplicit: boolean): ContentFilter {
     let filterSetting: ContentFilter = ContentFilter.Default;
 
     if (enableMature === true && enableExplicit === false) {
@@ -100,5 +92,3 @@ function determineContentFilter(enableMature: boolean, enableExplicit: boolean) 
 
     return filterSetting;
 }
-
-//#endregion

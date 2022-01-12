@@ -1,13 +1,14 @@
 <script lang="ts">
     import { delay, of } from 'rxjs';
     import { Loader5Line } from 'svelte-remixicon';
-    import { allProfiles$, setActiveProfile } from '$lib/repo/session.repo';
+    import { session, setCurrentProfile } from '$lib/repo/session.repo';
     import { goto } from '$app/navigation';
+    import type { Profile } from '$lib/models/accounts';
 
     const showProfiles = of(true).pipe(delay(1500));
 
-    function selectProfile(id: string): void {
-        setActiveProfile(id);
+    function selectProfile(profile: Profile): void {
+        setCurrentProfile(profile);
         goto('/');
     }
 </script>
@@ -17,10 +18,10 @@
         <h2 class="text-3xl font-medium">Select Profile</h2>
         <div class="my-4" />
         <div class="flex items-center">
-            {#each $allProfiles$ as profile}
+            {#each $session.profiles as profile}
                 <div
                     class="profile-box border border-gray-600 dark:border-white"
-                    on:click={() => selectProfile(profile._id)}
+                    on:click={() => selectProfile(profile)}
                 >
                     <img
                         src={profile.profile.avatar}
@@ -34,7 +35,7 @@
                     </div>
                 </div>
             {/each}
-            {#if $allProfiles$.length < 3}
+            {#if $session.profiles.length < 3}
                 <a class="profile-box" href="/registration/create-profile">
                     <span class="text-4xl font-extralight">+</span>
                     <span>Add</span>

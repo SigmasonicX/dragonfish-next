@@ -1,6 +1,6 @@
-import type { FrontendAccount } from '@dragonfish/models';
+import type { Account } from '$lib/models/accounts';
 
 export interface LoginPackage {
-    account: FrontendAccount;
+    account: Account;
     token: string;
 }

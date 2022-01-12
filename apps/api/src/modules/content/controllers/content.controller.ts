@@ -107,6 +107,7 @@ export class ContentController {
         @Query('kind') kind: ContentKind,
         @Body() formInfo: FormType,
     ) {
+        console.log(formInfo);
         if (isNullOrUndefined(kind)) {
             throw new BadRequestException(`You must include the content kind with this request.`);
         }

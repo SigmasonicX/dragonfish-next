@@ -1,7 +1,8 @@
 import Axios from 'axios';
+import { get as getValue } from 'svelte/store';
 import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { HttpOptions } from './http-options';
-import { token, refreshToken, logout } from '$lib/repo/session.repo';
+import { token, refreshToken, session } from '$lib/repo/session.repo';
 
 const http: AxiosInstance = Axios.create({
     timeout: 1000,
@@ -17,18 +18,21 @@ http.interceptors.request.use((request) => {
     return request;
 });
 
-http.interceptors.response.use((response) => {
-    console.log(`Response interceptor hit!`);
-    if (response.status === 401) {
-        refreshToken().subscribe({
-            error: (err) => {
-                console.log(err);
-                logout().subscribe();
-            },
-        });
-    }
-    return response;
-});
+http.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const status = error.response ? error.response.status : null;
+        if (status === 401) {
+            return refreshToken().then(() => {
+                error.config.headers.authorization = `Bearer ${getValue(session).token}`;
+                error.config.baseUrl = undefined;
+                return http.request(error.config);
+            });
+        }
+
+        return Promise.reject(error);
+    },
+);
 
 export async function request<T = unknown>(
     config: HttpOptions,

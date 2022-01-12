@@ -6,7 +6,7 @@ import {
     UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { argon2id, verify } from 'argon2';
+import { argon2id, verify, hash } from 'argon2';
 import { nanoid } from 'nanoid';
 import { JwtPayload, LoginPackage } from '$shared/auth';
 import { DeviceInfo, REFRESH_EXPIRATION } from '$shared/util';
@@ -43,7 +43,10 @@ export class AuthService {
         }
 
         try {
-            if (!(await verify(potentialAccount.password, password, { type: argon2id }))) {
+            const verifyPassword = await verify(potentialAccount.password, password, {
+                type: argon2id,
+            });
+            if (!verifyPassword) {
                 this.logger.warn(
                     `Someone attempted to log into Account ${potentialAccount._id} and failed!`,
                 );

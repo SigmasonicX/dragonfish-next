@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { isLoggedIn$, currentProfile$ } from '$lib/repo/session.repo';
-    import { filter } from '$lib/repo/app.repo';
+    import { session } from '$lib/repo/session.repo';
+    import { app } from '$lib/repo/app.repo';
     import { Loader5Line } from 'svelte-remixicon';
     import { content } from '$lib/services';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
@@ -8,7 +8,7 @@
 
 <div class="w-full overflow-y-auto">
     <div class="w-11/12 mx-auto my-6">
-        {#if $isLoggedIn$ && $currentProfile$ !== null}
+        {#if $session.currProfile && $session.token}
             <div class="section">
                 <div class="section-header border-zinc-600 dark:border-white">
                     <h3>Recommendations</h3>
@@ -50,7 +50,7 @@
                 <h3>New works</h3>
                 <a href="/explore/new-works">See more >></a>
             </div>
-            {#await content.fetchFirstNew(filter())}
+            {#await content.fetchFirstNew($app.filter)}
                 <div class="section-loading">
                     <div class="inner-loader">
                         <Loader5Line class="animate-spin mr-2" size="32px" />

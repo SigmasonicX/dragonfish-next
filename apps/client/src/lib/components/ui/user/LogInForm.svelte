@@ -12,7 +12,7 @@
     const dispatch = createEventDispatcher();
 
     const { form, data, errors } = createForm({
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             submitting = true;
 
             const formInfo: LoginForm = {
@@ -21,7 +21,7 @@
                 rememberMe: values.rememberMe,
             };
 
-            login(formInfo).subscribe(() => {
+            await login(formInfo).then(() => {
                 submitting = false;
                 dispatch('login');
             });

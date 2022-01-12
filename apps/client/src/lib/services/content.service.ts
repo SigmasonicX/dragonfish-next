@@ -1,10 +1,9 @@
 import { http } from './http';
-import type { ContentFilter, Content, ContentKind } from '$lib/models/content';
+import type { Content, ContentFilter, ContentKind } from '$lib/models/content';
 import type { PaginateResult, PubContent } from '$lib/models/util';
-import { from, Observable, take } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { baseUrl } from '$lib/util';
 import type { AxiosResponse } from 'axios';
+import type { FormType } from '$lib/models/content/works/forms';
 
 //#region ---BROWSING---
 
@@ -29,16 +28,24 @@ export async function fetchAllNew(
 
 //#region ---CONTENT---
 
-export function fetchOne(contentId: string, profileId?: string): Observable<PubContent> {
+export async function fetchOne(contentId: string, profileId?: string): Promise<PubContent> {
     const route = profileId
         ? `${baseUrl}/content/fetch-one?pseudId=${profileId}&contentId=${contentId}`
         : `${baseUrl}/content/fetch-one?contentId=${contentId}`;
 
-    return from(http.get<PubContent>(route)).pipe(
-        take(1),
-        map((res) => {
-            return res.data;
-        }),
+    return http.get<PubContent>(route).then((res) => {
+        return res.data;
+    });
+}
+
+export async function createOne(
+    profileId: string,
+    kind: ContentKind,
+    formInfo: FormType,
+): Promise<AxiosResponse<Content>> {
+    return http.put<Content>(
+        `${baseUrl}/content/create-one?pseudId=${profileId}&kind=${kind}`,
+        formInfo,
     );
 }
 

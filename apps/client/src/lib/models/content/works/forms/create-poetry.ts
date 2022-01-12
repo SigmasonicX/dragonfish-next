@@ -1,16 +1,15 @@
-import { WorkKind } from '../work-kind.enum';
-import { PoetryForm } from './poetry-form.enum';
-import { Genres } from '../genres.enum';
-import { ContentRating } from '../content-rating.enum';
-import { WorkStatus } from '../work-status.enum';
+import type { WorkKind } from '../work-kind';
+import type { PoetryFormKind } from '../poetry-form-kind';
+import type { Genres } from '../genres';
+import type { ContentRating } from '$lib/models/content';
+import type { WorkStatus } from '../work-status';
 
 export interface CreatePoetry {
     readonly title: string;
     readonly desc: string;
     readonly body: string;
     readonly category: WorkKind;
-    readonly collection: boolean;
-    readonly form: PoetryForm;
+    readonly form: PoetryFormKind;
     readonly genres: Genres[];
     readonly tags: string[];
     readonly rating: ContentRating;

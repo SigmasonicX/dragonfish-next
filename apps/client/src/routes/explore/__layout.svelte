@@ -1,7 +1,7 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import PageNav from '$lib/components/nav/PageNav.svelte';
-    import { isLoggedIn$ } from '$lib/repo/session.repo';
+    import { session } from '$lib/repo/session.repo';
     import {
         Compass3Line,
         SunLine,
@@ -43,7 +43,7 @@
                 <span class="link-icon"><MistFill /></span>
                 <span class="text">Overview</span>
             </a>
-            {#if $isLoggedIn$}
+            {#if $session.currProfile}
                 <a
                     href="/explore/recommendations"
                     class:active={$page.url.pathname === '/explore/recommendations'}
@@ -77,7 +77,7 @@
                 <span class="link-icon"><SunLine /></span>
                 <span class="text">Special events</span>
             </a>
-            {#if $isLoggedIn$}
+            {#if $session.currProfile}
                 <h5
                     class="flex items-center text-lg font-medium mb-1 mt-2"
                     style="color: var(--text-color);"

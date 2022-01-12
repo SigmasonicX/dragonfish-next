@@ -1,7 +1,7 @@
 <script lang="ts">
     import { slogans } from '$lib/models/site';
     import Jumbotron from '$lib/components/ui/misc/Jumbotron.svelte';
-    import { isLoggedIn$ } from '$lib/repo/session.repo';
+    import { session } from '$lib/repo/session.repo';
 
     const currSlogan = slogans[Math.floor(Math.random() * slogans.length)];
 </script>
@@ -48,7 +48,7 @@
             <Jumbotron />
         </div>
     </div>
-    {#if $isLoggedIn$}
+    {#if $session.currProfile}
         <div class="w-9/12 mx-auto my-6">
             <div class="w-full border border-gray-600 rounded-md p-4 flex items-center">
                 <img

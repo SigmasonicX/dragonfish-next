@@ -2,45 +2,40 @@
     import { createEventDispatcher } from 'svelte';
     import { createForm } from 'felte';
     import { ProfileForm } from '$lib/models/accounts/forms';
-    import {
-        allProfiles$,
-        setActiveProfile,
-        createProfile,
-        currAccount$,
-    } from '$lib/repo/session.repo';
+    import { session, setCurrentProfile, createProfile } from '$lib/repo/session.repo';
     import { AddBoxLine, CheckLine, CloseLine } from 'svelte-remixicon';
     import TextField from '$lib/components/forms/TextField.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
+    import type { Profile } from '$lib/models/accounts';
 
     let showAddForm = false;
     let submitting = false;
     const dispatch = createEventDispatcher();
 
-    function setCurrProfile(id: string) {
-        setActiveProfile(id);
+    function setCurrProfile(profile: Profile) {
+        setCurrentProfile(profile);
         dispatch('profilesel');
     }
 
     const { form, errors } = createForm({
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             submitting = true;
             const formInfo: ProfileForm = {
                 userTag: values.userTag.trim().split(' ').join(''),
                 screenName: values.screenName,
                 pronouns: [],
             };
-            createProfile(formInfo).subscribe(
-                () => {
+            await createProfile(formInfo)
+                .then(() => {
                     submitting = false;
                     showAddForm = false;
-                },
-                (err) => {
+                })
+                .catch(() => {
                     submitting = false;
-                    console.log(err);
-                },
-            );
+                });
         },
         validate: (values) => {
+            // TODO: implement errors
             const errors = {
                 userTag: '',
                 screenName: '',
@@ -55,7 +50,7 @@
 </script>
 
 <div class="w-11/12 mx-auto my-6">
-    {#each $allProfiles$ as profile}
+    {#each $session.profiles as profile}
         <div
             class="profile-box border-zinc-600 dark:border-white"
             on:click={() => setCurrProfile(profile._id)}
@@ -71,7 +66,7 @@
             </div>
         </div>
     {/each}
-    {#if $currAccount$.pseudonyms.length < 3}
+    {#if $session.profiles.length < 3}
         <div
             class="add-profile-box border-zinc-600 dark:border-white"
             class:auto-height={showAddForm}

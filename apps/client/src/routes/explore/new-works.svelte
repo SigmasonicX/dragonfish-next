@@ -2,7 +2,7 @@
     import { page } from '$app/stores';
     import { fetchAllNew } from '$lib/services/content.service';
     import { ContentKind } from '$lib/models/content';
-    import { filter } from '$lib/repo/app.repo';
+    import { app } from '$lib/repo/app.repo';
     import { Loader5Line } from 'svelte-remixicon';
     import Paginator from '$lib/components/ui/misc/Paginator.svelte';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
@@ -13,7 +13,7 @@
     }
 </script>
 
-{#await fetchAllNew(currPage, [ContentKind.PoetryContent, ContentKind.ProseContent], filter())}
+{#await fetchAllNew(currPage, [ContentKind.PoetryContent, ContentKind.ProseContent], $app.filter)}
     <div class="w-full h-screen flex flex-col items-center justify-center">
         <div class="flex items-center">
             <Loader5Line class="animate-spin mr-2" size="2rem" />
