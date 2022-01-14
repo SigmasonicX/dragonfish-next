@@ -2,13 +2,14 @@
     import { Loader5Line } from 'svelte-remixicon';
 
     export let loading = false;
+    export let isActive = false;
     export let loadingText = 'Loading...';
     export let type = 'button';
     export let kind: 'primary' | 'normal' = 'normal';
     export let title = '';
 </script>
 
-<button {type} class:primary={kind === 'primary'} {title} on:click>
+<button {type} class:primary={kind === 'primary'} class:active={isActive} {title} on:click>
     {#if loading}
         <Loader5Line class="button-icon animate-spin" />
         <span class="button-text">{loadingText}</span>
@@ -26,8 +27,10 @@
         letter-spacing: 1px;
         color: var(--text-color);
 
-        &.primary {
-            @apply border border-white text-white;
+        &.primary,
+        &.active {
+            @apply text-white;
+            background: var(--accent);
             &:hover {
                 background: var(--accent-light);
             }

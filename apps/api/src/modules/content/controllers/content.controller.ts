@@ -78,8 +78,9 @@ export class ContentController {
     @UseGuards(IdentityGuard)
     @Identity(Roles.User)
     @Get('fetch-all-by-kind')
-    async fetchAllByKind(@Query('pseudId') pseudId: string, @Query('kinds') kinds: ContentKind[]) {
-        return await this.content.fetchAllByKind(pseudId, kinds);
+    async fetchAllByKind(@Query('pseudId') pseudId: string, @Query('kind') kinds: ContentKind[]) {
+        const content = await this.content.fetchAllByKind(pseudId, kinds);
+        return content;
     }
 
     @Get('fetch-all-published')

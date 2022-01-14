@@ -38,6 +38,36 @@ export async function fetchOne(contentId: string, profileId?: string): Promise<P
     });
 }
 
+export async function fetchAllByKind(
+    profileId: string,
+    kinds: ContentKind[],
+): Promise<PaginateResult<Content>> {
+    const kindFragment = kinds.map((k) => `&kind=${k}`).join('');
+    return http
+        .get<PaginateResult<Content>>(
+            `${baseUrl}/content/fetch-all-by-kind?pseudId=${profileId}${kindFragment}`,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function fetchUserContent(
+    profileId: string,
+    filter: ContentFilter,
+    kinds: ContentKind[],
+    pageNum: number,
+): Promise<PaginateResult<Content>> {
+    const kindFragment = kinds.map((k) => `&kind=${k}`).join('');
+    return http
+        .get<PaginateResult<Content>>(
+            `${baseUrl}/content/fetch-all-published?filter=${filter}&userId=${profileId}&pageNum=${pageNum}${kindFragment}`,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
 export async function createOne(
     profileId: string,
     kind: ContentKind,

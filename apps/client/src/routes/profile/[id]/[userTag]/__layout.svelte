@@ -91,7 +91,7 @@
                     </Button>
                     <div class="mx-1" />
                     <Button kind="primary">
-                        <MenuLine class="button-icon no-text" size="1.5rem" />
+                        <MenuLine class="button-icon no-text" size="20px" />
                     </Button>
                 </div>
             </div>
@@ -101,14 +101,14 @@
                     class:active={$page.url.pathname ===
                         `/profile/${profileModel._id}/${slugify(profileModel.userTag)}`}
                 >
-                    <Home5Line size="1.25rem" class="mr-1" />
+                    <Home5Line size="20px" class="mr-1" />
                     <span>Home</span>
                 </a>
                 <a
                     href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/works"
                     class:active={$page.url.pathname.includes(`works`)}
                 >
-                    <QuillPenLine size="1.25rem" class="mr-1" />
+                    <QuillPenLine size="20px" class="mr-1" />
                     <span>{profileModel.stats.works} Work{pluralize(profileModel.stats.works)}</span
                     >
                 </a>
@@ -116,7 +116,7 @@
                     href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/blogs"
                     class:active={$page.url.pathname.includes(`blogs`)}
                 >
-                    <CupLine size="1.25rem" class="mr-1" />
+                    <CupLine size="20px" class="mr-1" />
                     <span>{profileModel.stats.blogs} Blog{pluralize(profileModel.stats.blogs)}</span
                     >
                 </a>
@@ -124,7 +124,7 @@
                     href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/shelves"
                     class:active={$page.url.pathname.includes(`shelves`)}
                 >
-                    <BarChart2Fill size="1.25rem" class="mr-1" />
+                    <BarChart2Fill size="20px" class="mr-1" />
                     <span>Shelves</span>
                 </a>
             </div>
