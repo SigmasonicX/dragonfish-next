@@ -3,13 +3,22 @@
 
     export let loading = false;
     export let isActive = false;
+    export let disabled = false;
     export let loadingText = 'Loading...';
     export let type = 'button';
     export let kind: 'primary' | 'normal' = 'normal';
     export let title = '';
 </script>
 
-<button {type} class:primary={kind === 'primary'} class:active={isActive} {title} on:click>
+<button
+    {type}
+    class:primary={kind === 'primary'}
+    class:active={isActive}
+    {title}
+    class:disabled
+    {disabled}
+    on:click
+>
     {#if loading}
         <Loader5Line class="button-icon animate-spin" />
         <span class="button-text">{loadingText}</span>
@@ -33,6 +42,29 @@
             background: var(--accent);
             &:hover {
                 background: var(--accent-light);
+            }
+        }
+
+        &.disabled {
+            @apply text-zinc-500 cursor-not-allowed;
+            &:hover,
+            &:active {
+                color: var(--text-color);
+                background: transparent;
+                text-decoration: none;
+                @apply scale-100;
+            }
+        }
+
+        &.primary.disabled {
+            @apply cursor-not-allowed;
+            color: var(--accent-dark);
+            &:hover,
+            &:active {
+                color: var(--accent-dark);
+                background: var(--accent);
+                text-decoration: none;
+                @apply scale-100;
             }
         }
 

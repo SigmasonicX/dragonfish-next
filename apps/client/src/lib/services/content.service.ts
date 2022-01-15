@@ -1,5 +1,6 @@
 import { http } from './http';
 import type { Content, ContentFilter, ContentKind } from '$lib/models/content';
+import type { PubChange } from '$lib/models/content/blogs';
 import type { PaginateResult, PubContent } from '$lib/models/util';
 import { baseUrl } from '$lib/util';
 import type { AxiosResponse } from 'axios';
@@ -77,6 +78,48 @@ export async function createOne(
         `${baseUrl}/content/create-one?pseudId=${profileId}&kind=${kind}`,
         formInfo,
     );
+}
+
+export async function saveChanges(
+    profileId: string,
+    contentId: string,
+    kind: ContentKind,
+    formData: FormType,
+): Promise<Content> {
+    return http
+        .patch<Content>(
+            `${baseUrl}/content/save-changes?pseudId=${profileId}&contentId=${contentId}&kind=${kind}`,
+            formData,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function deleteOne(profileId: string, contentId: string): Promise<void> {
+    return http
+        .patch<void>(
+            `${baseUrl}/content/delete-one?pseudId=${profileId}&contentId=${contentId}`,
+            {},
+        )
+        .then(() => {
+            return;
+        });
+}
+
+export async function publishOne(
+    profileId: string,
+    contentId: string,
+    pubChange?: PubChange,
+): Promise<Content> {
+    return http
+        .patch<Content>(
+            `${baseUrl}/content/publish-one?pseudId=${profileId}&contentId=${contentId}`,
+            pubChange,
+        )
+        .then((res) => {
+            return res.data;
+        });
 }
 
 //#endregion

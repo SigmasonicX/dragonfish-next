@@ -72,7 +72,7 @@
                                 profileModel.stats.followers,
                             )}
                         </a>
-                        <span class="mx-1">•</span>
+                        <span class="mx-1 text-white">•</span>
                         <a
                             class="text-white"
                             href="/profile/{profileModel._id}/{slugify(

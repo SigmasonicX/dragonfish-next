@@ -34,3 +34,10 @@ export function setContent(
         libraryDoc: libraryDoc ? libraryDoc : null,
     }));
 }
+
+export function updateContent(contentModel: Content): void {
+    content.update((state) => ({
+        ...state,
+        content: contentModel,
+    }));
+}
