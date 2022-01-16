@@ -60,6 +60,7 @@
     export let label;
     export let value;
     export let errorMessage;
+    export let hasHeader = false;
 
     onMount(() => {
         editor = createEditor({
@@ -124,7 +125,8 @@
 {/if}
 <div
     id="offprint-editor"
-    class="w-full flex flex-col rounded-lg bg-zinc-300 dark:bg-zinc-700 dark:highlight-shadowed"
+    class="w-full flex flex-col rounded-b-lg bg-zinc-300 dark:bg-zinc-700 dark:highlight-shadowed"
+    class:rounded-t-lg={!hasHeader}
 >
     {#if $editor}
         <div class="editor-bar">

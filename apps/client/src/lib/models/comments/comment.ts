@@ -1,20 +1,19 @@
-import { ActionType } from '../case-files';
-import { CommentHistory } from './comment-history.model';
-import { CommentKind } from './comment-kind.enum';
-import { Pseudonym } from '../accounts';
+import type { CommentHistory } from './comment-history';
+import type { CommentKind } from './comment-kind';
+import type { Profile } from '../accounts';
 
 export interface Comment {
     readonly _id: string;
-    readonly user: string | Pseudonym;
+    readonly user: Profile;
     body: string;
     repliesTo: string[];
     history: CommentHistory[];
     audit: {
         isActioned: boolean;
         canEdit: boolean;
-        action: ActionType;
+        // action: ActionType;
         actionReason: string;
-        actionedBy: string | Pseudonym;
+        actionedBy: Profile;
     };
     readonly createdAt: Date;
     readonly updatedAt: Date;

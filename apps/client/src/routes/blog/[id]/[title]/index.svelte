@@ -22,10 +22,12 @@
         CloseLine,
         CheckboxBlankCircleLine,
         CheckboxCircleLine,
+        EmotionLaughLine,
     } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import TextField from '$lib/components/forms/TextField.svelte';
     import Editor from '$lib/components/forms/Editor.svelte';
+    import Comments from '$lib/components/comments/Comments.svelte';
     import { ContentKind, PubStatus } from '$lib/models/content';
     import type { BlogForm } from '$lib/models/content/works/forms';
 
@@ -262,7 +264,18 @@
                 >
                     {@html $content.content.body}
                 </div>
+                <div class="p-2 border-t border-b border-zinc-700 dark:border-white">
+                    <Button>
+                        <EmotionLaughLine class="button-icon" />
+                        <span class="button-text">Add Reaction</span>
+                    </Button>
+                </div>
             {/if}
         </div>
+        {#if $content.content.audit.published === 'Published'}
+            <div class="w-11/12 md:w-full max-w-3xl mx-auto mt-6">
+                <Comments />
+            </div>
+        {/if}
     </div>
 </div>

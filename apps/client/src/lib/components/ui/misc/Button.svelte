@@ -17,6 +17,7 @@
     {title}
     class:disabled
     {disabled}
+    tabindex="0"
     on:click
 >
     {#if loading}

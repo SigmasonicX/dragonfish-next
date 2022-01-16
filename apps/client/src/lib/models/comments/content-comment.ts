@@ -1,4 +1,4 @@
-import { Comment } from './comment.model';
+import type { Comment } from './comment';
 
 export interface ContentComment extends Comment {
     readonly contentId: string;
