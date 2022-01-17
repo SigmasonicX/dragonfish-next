@@ -9,6 +9,8 @@
     <CommentForm />
 {/if}
 
+<div class="w-full border-b border-zinc-700 dark:border-white my-6"><!--separator--></div>
+
 {#if $comments.totalComments === 0}
     <div class="my-6">
         <div class="empty">

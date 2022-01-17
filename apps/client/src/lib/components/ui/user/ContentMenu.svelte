@@ -28,17 +28,6 @@
     div.topbar {
         @apply w-full px-4 flex items-center drop-shadow-xl relative z-40 py-6;
         background: var(--accent);
-
-        button {
-            @apply rounded-full p-1 border border-white transition transform text-white;
-            &:hover {
-                @apply scale-105;
-            }
-
-            &:active {
-                @apply scale-100;
-            }
-        }
     }
 
     a.create-button {

@@ -9,9 +9,11 @@
     import { CheckLine } from 'svelte-remixicon';
     import type { CommentForm } from '$lib/models/comments';
 
-    const { form, data } = createForm({
+    const { form, data, reset } = createForm({
         onSubmit: async (values) => {
-            const formData: CommentForm = {
+            console.log(values);
+            resetForm();
+            /*const formData: CommentForm = {
                 body: values.body,
                 repliesTo: [],
             };
@@ -22,8 +24,9 @@
                 $comments.kind,
                 formData,
             ).then(() => {
-                values.data = '';
-            });
+                console.log(`attempting to reset`);
+                resetForm();
+            });*/
         },
         validate: (values) => {
             const errors = {
@@ -37,6 +40,10 @@
             return errors;
         },
     });
+
+    function resetForm() {
+        data.update((state) => ({ ...state, body: '' }));
+    }
 </script>
 
 <form use:form>
