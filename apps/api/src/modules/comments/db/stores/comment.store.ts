@@ -49,11 +49,10 @@ export class CommentStore {
         form: CommentForm,
     ): Promise<CommentDocument> {
         const newComment = await this.createDocument(user, itemId, kind, form);
-        const savedComment = await newComment.save();
-
+        await newComment.save();
         await this.updateCount(itemId);
 
-        return savedComment;
+        return await this.comments.findById(newComment._id);
     }
 
     /**

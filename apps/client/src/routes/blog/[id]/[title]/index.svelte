@@ -259,12 +259,14 @@
                 {/if}
 
                 <div
-                    class="blog-body"
+                    class="blog-body w-11/12 md:w-full mx-auto"
                     class:mt-6={$content.content.audit.published === 'Published'}
                 >
                     {@html $content.content.body}
                 </div>
-                <div class="p-2 border-t border-b border-zinc-700 dark:border-white">
+                <div
+                    class="p-2 border-t border-b border-zinc-700 dark:border-white w-11/12 md:w-full mx-auto"
+                >
                     <Button>
                         <EmotionLaughLine class="button-icon" />
                         <span class="button-text">Add Reaction</span>

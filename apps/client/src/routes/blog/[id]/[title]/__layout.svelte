@@ -2,6 +2,8 @@
     import type { Load } from '@sveltejs/kit';
     import type { Blog } from '$lib/models/content/blogs';
     import { setContent } from '$lib/repo/content.repo';
+    import { getPage } from '$lib/repo/comments.repo';
+    import { CommentKind } from '$lib/models/comments';
 
     export const load: Load = async ({ params, fetch }) => {
         const blogId: string = params.id;
@@ -14,6 +16,7 @@
         return {
             props: {
                 blog,
+                comments: await getPage(blog._id, CommentKind.ContentComment, 1),
             },
         };
     };
