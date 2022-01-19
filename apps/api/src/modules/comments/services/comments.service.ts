@@ -25,6 +25,7 @@ export class CommentsService {
             const commentEvent: ContentCommentPayload = {
                 contentId: itemId,
                 commentId: newComment._id,
+                repliesTo: newComment.repliesTo,
                 poster: newComment.user as Pseudonym,
             };
             this.events.emit(NotificationKind.ContentComment, commentEvent);

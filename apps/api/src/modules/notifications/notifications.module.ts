@@ -21,6 +21,7 @@ import * as Controllers from './controllers';
                 useFactory: Schemas.setupNotificationsCollection,
                 discriminators: [
                     { name: NotificationKind.ContentComment, schema: Schemas.ContentCommentSchema },
+                    { name: NotificationKind.CommentReply, schema: Schemas.CommentReplySchema },
                     { name: NotificationKind.ContentNew, schema: Schemas.ContentNewSchema },
                     { name: NotificationKind.ContentUpdate, schema: Schemas.ContentUpdatedSchema },
                     { name: NotificationKind.AddedToLibrary, schema: Schemas.AddedToLibrarySchema },
@@ -60,6 +61,7 @@ import * as Controllers from './controllers';
         Stores.NotificationStore,
         Stores.SubscriptionsStore,
         Stores.ContentCommentStore,
+        Stores.CommentReplyStore,
         Stores.AddedToLibraryStore,
         Stores.ContentUpdatedStore,
         Services.FollowersService,

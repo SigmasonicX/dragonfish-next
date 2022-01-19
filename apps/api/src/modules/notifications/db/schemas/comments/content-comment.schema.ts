@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ContentCommentNotification } from '$shared/models/notifications/content';
+import { ContentCommentNotification } from '$shared/models/notifications/comments';
 import { NotificationKind } from '$shared/models/notifications';
 import { ContentKind } from '$shared/models/content';
 

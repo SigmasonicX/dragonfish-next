@@ -96,7 +96,6 @@
                 Dropcursor,
                 BubbleMenu.configure({ element: bubbleMenu }),
             ],
-            content: value,
             onUpdate: (props) => {
                 value = props.editor.getHTML();
             },
@@ -108,6 +107,14 @@
             $editor.chain().focus().setLink({ href: linkText }).run();
             linkText = undefined;
             linkMenuOpen = false;
+        }
+    }
+
+    $: {
+        if ($editor) {
+            if (value === '' || value === undefined || value === null) {
+                $editor.commands.setContent(value);
+            }
         }
     }
 </script>

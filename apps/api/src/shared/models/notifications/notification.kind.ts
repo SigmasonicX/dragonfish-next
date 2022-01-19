@@ -1,5 +1,6 @@
 export enum NotificationKind {
     ContentComment = 'notification.content-comment',
+    CommentReply = 'notification.comment-reply',
     ContentUpdate = 'notification.content-update',
     ContentNew = 'notification.content-new',
     AddedToLibrary = 'notification.added-to-library',

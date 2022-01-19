@@ -11,6 +11,8 @@ import { DoneCallback, Job } from 'bull';
 import { NotificationKind } from '$shared/models/notifications';
 import {
     AddedToLibraryJob,
+    CommentReplyDBJob,
+    CommentReplyJob,
     ContentCommentJob,
     ContentUpdatedJob,
 } from '$shared/models/notifications/jobs';
@@ -58,6 +60,30 @@ export class NotificationConsumer {
         } else {
             done();
         }
+    }
+
+    @Process(NotificationKind.CommentReply)
+    async repliedToComment(job: Job<CommentReplyJob>, done: DoneCallback) {
+        this.logger.log(`Job ${job.id} (CommentReply) received!`);
+
+        for (const recipientId in job.data.recipients) {
+            if (job.data.poster._id !== recipientId) {
+                const newJob: CommentReplyDBJob = {
+                    recipientId: recipientId,
+                    commentId: job.data.commentId,
+                    threadId: job.data.threadId,
+                    threadTitle: job.data.threadTitle,
+                    poster: job.data.poster,
+                };
+                const notification = await this.notifications.notifyOne(
+                    newJob,
+                    NotificationKind.CommentReply,
+                );
+                done(null, notification);
+            }
+        }
+
+        done();
     }
 
     @Process(NotificationKind.AddedToLibrary)

@@ -11,9 +11,7 @@
 
     const { form, data, reset } = createForm({
         onSubmit: async (values) => {
-            console.log(values);
-            resetForm();
-            /*const formData: CommentForm = {
+            const formData: CommentForm = {
                 body: values.body,
                 repliesTo: [],
             };
@@ -26,7 +24,7 @@
             ).then(() => {
                 console.log(`attempting to reset`);
                 resetForm();
-            });*/
+            });
         },
         validate: (values) => {
             const errors = {
@@ -42,7 +40,7 @@
     });
 
     function resetForm() {
-        data.update((state) => ({ ...state, body: '' }));
+        reset();
     }
 </script>
 

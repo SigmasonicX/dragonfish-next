@@ -6,11 +6,13 @@ import { ContentStore } from '$modules/content';
 import { NotificationKind, SubscriptionKind } from '$shared/models/notifications';
 import {
     AddedToLibraryPayload,
+    CommentReplyPayload,
     ContentCommentPayload,
     ContentUpdatedPayload,
 } from '$shared/models/notifications/payloads';
 import {
     AddedToLibraryJob,
+    CommentReplyJob,
     ContentCommentJob,
     ContentUpdatedJob,
 } from '$shared/models/notifications/jobs';
@@ -47,6 +49,23 @@ export class NotificationService {
 
         this.logger.log(`Adding new job to queue...`);
         await this.queue.add(NotificationKind.ContentComment, job);
+
+        this.logger.log(`Checking if comment replies to others...`);
+        if (payload.repliesTo.length === 0) {
+            this.logger.log(`No replies detected! Skipping...`);
+        } else {
+            this.logger.log(`Dispatching replies...`);
+
+            const replyPayload: CommentReplyPayload = {
+                threadId: content._id,
+                threadTitle: content.title,
+                repliesTo: payload.repliesTo,
+                commentId: payload.commentId,
+                poster: payload.poster,
+            };
+
+            await this.handleCommentReplies(replyPayload);
+        }
     }
 
     @OnEvent(NotificationKind.AddedToLibrary, { async: true })
@@ -80,6 +99,21 @@ export class NotificationService {
 
         this.logger.log(`Adding new job to queue...`);
         await this.queue.add(NotificationKind.ContentUpdate, job);
+    }
+
+    private async handleCommentReplies(payload: CommentReplyPayload) {
+        this.logger.log(`Received payload of type ${NotificationKind.CommentReply}`);
+
+        const job: CommentReplyJob = {
+            recipients: payload.repliesTo,
+            commentId: payload.commentId,
+            threadId: payload.threadId,
+            threadTitle: payload.threadTitle,
+            poster: payload.poster,
+        };
+
+        this.logger.log(`Adding new job to queue...`);
+        await this.queue.add(NotificationKind.CommentReply, job);
     }
 
     //#endregion

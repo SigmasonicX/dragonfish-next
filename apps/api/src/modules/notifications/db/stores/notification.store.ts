@@ -2,9 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginateModel } from 'mongoose';
 import { NotificationDocument } from '../schemas';
-import { AddedToLibraryJob, ContentCommentJob, JobType } from '$shared/models/notifications/jobs';
+import {
+    AddedToLibraryJob,
+    CommentReplyDBJob,
+    ContentCommentJob,
+    JobType,
+} from '$shared/models/notifications/jobs';
 import { NotificationKind } from '$shared/models/notifications';
-import { AddedToLibraryStore, ContentCommentStore, ContentUpdatedStore } from './content';
+import { AddedToLibraryStore, ContentUpdatedStore } from './content';
+import { ContentCommentStore, CommentReplyStore } from './comments';
 
 @Injectable()
 export class NotificationStore {
@@ -12,6 +18,7 @@ export class NotificationStore {
         @InjectModel('Notification')
         private readonly notifications: PaginateModel<NotificationDocument>,
         private readonly contentComment: ContentCommentStore,
+        private readonly commentReply: CommentReplyStore,
         private readonly addedToLibrary: AddedToLibraryStore,
         private readonly contentUpdated: ContentUpdatedStore,
     ) {}
@@ -27,6 +34,8 @@ export class NotificationStore {
         switch (kind) {
             case NotificationKind.ContentComment:
                 return await this.contentComment.create(job as ContentCommentJob);
+            case NotificationKind.CommentReply:
+                return await this.commentReply.create(job as CommentReplyDBJob);
             case NotificationKind.AddedToLibrary:
                 return await this.addedToLibrary.create(job as AddedToLibraryJob);
             default:
