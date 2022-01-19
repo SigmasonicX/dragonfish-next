@@ -96,6 +96,7 @@
                 Dropcursor,
                 BubbleMenu.configure({ element: bubbleMenu }),
             ],
+            content: value,
             onUpdate: (props) => {
                 value = props.editor.getHTML();
             },

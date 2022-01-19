@@ -8,6 +8,7 @@ import type { PaginateResult } from '$lib/models/util';
 interface CommentsState {
     threadId: string;
     kind: CommentKind;
+    repliesTo: Comment[];
     comments: Comment[];
     currPage: number;
     totalComments: number;
@@ -18,6 +19,7 @@ interface CommentsState {
 const defaultCommentsState: CommentsState = {
     threadId: null,
     kind: CommentKind.ContentComment,
+    repliesTo: [],
     comments: [],
     currPage: 1,
     totalComments: 0,
@@ -38,6 +40,7 @@ export async function getPage(
         comments.set({
             threadId: itemId,
             kind: kind,
+            repliesTo: [],
             comments: res.docs,
             currPage: res.page,
             totalComments: res.totalDocs,
@@ -79,20 +82,11 @@ export async function editComment(
     });
 }
 
-/*
-
-public editComment(commentId: string, formInfo: CommentForm) {
-  return this.network.editComment(this.pseudQuery.currentId, commentId, formInfo).pipe(
-    tap(() => {
-      this.comments.update(commentId, {
-        body: formInfo.body,
-      });
-    }),
-    catchError((err) => {
-      this.alerts.error(`Something went wrong editing this comment!`);
-      return throwError(err);
-    }),
-  );
-}*/
+export function addReply(comment: Comment): void {
+    comments.update((state) => ({
+        ...state,
+        repliesTo: [...state.repliesTo, comment],
+    }));
+}
 
 //#endregion
