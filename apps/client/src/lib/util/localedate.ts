@@ -17,7 +17,7 @@ type dateFormat =
  * @param value
  * @param format
  */
-export function localeDate(value: Date | string, format: dateFormat): string {
+export function localeDate(value: Date | string, format: dateFormat = 'short'): string {
     const date = new Date(value);
     let options: Intl.DateTimeFormatOptions;
 

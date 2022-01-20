@@ -2,13 +2,11 @@ import { writable } from 'svelte/store';
 import { comments as commentsService } from '$lib/services';
 import type { Comment, CommentForm } from '$lib/models/comments';
 import { CommentKind } from '$lib/models/comments';
-import * as lodash from 'lodash';
 import type { PaginateResult } from '$lib/models/util';
 
 interface CommentsState {
     threadId: string;
     kind: CommentKind;
-    repliesTo: Comment[];
     comments: Comment[];
     currPage: number;
     totalComments: number;
@@ -19,7 +17,6 @@ interface CommentsState {
 const defaultCommentsState: CommentsState = {
     threadId: null,
     kind: CommentKind.ContentComment,
-    repliesTo: [],
     comments: [],
     currPage: 1,
     totalComments: 0,
@@ -40,7 +37,6 @@ export async function getPage(
         comments.set({
             threadId: itemId,
             kind: kind,
-            repliesTo: [],
             comments: res.docs,
             currPage: res.page,
             totalComments: res.totalDocs,
@@ -73,20 +69,29 @@ export async function editComment(
     return await commentsService.editComment(profileId, commentId, formData).then((res) => {
         comments.update((state) => ({
             ...state,
-            comments: state.comments.splice(
-                lodash.findIndex(state.comments, { _id: res._id }),
-                1,
-                res,
-            ),
+            comments: replaceComment(state.comments, res),
         }));
     });
 }
 
-export function addReply(comment: Comment): void {
-    comments.update((state) => ({
-        ...state,
-        repliesTo: [...state.repliesTo, comment],
-    }));
+export function addReply(comment: Comment): string {
+    return `
+                <blockquote data-commentid="${comment._id}">
+                    <span style="display: flex; align-items: center; margin-bottom: 1.5rem;">
+                        <img src="${comment.user.profile.avatar}" alt="avatar" style="display: block; width: 2rem; height: 2rem; border-radius: 9999px;" />
+                        <h5 style="font-weight: 500; font-size: 1.15rem;">${comment.user.screenName} said:</h5>
+                    </span>
+                    ${comment.body}
+                </blockquote>
+            `;
+}
+
+function replaceComment(comments: Comment[], newComment: Comment) {
+    const index = comments.findIndex((value) => {
+        return value._id === newComment._id;
+    });
+    comments[index] = newComment;
+    return comments;
 }
 
 //#endregion

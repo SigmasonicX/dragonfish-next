@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
     import { fade } from 'svelte/transition';
     import { createForm } from 'felte';
     import type { Comment } from '$lib/models/comments';
@@ -17,22 +18,17 @@
     import { CommentForm } from '$lib/models/comments';
     import { editComment } from '$lib/repo/comments.repo';
     import { session } from '$lib/repo/session.repo';
+    import Time from '$lib/components/ui/misc/Time.svelte';
 
     export let comment: Comment;
+    export let index = 1;
 
+    const dispatch = createEventDispatcher();
     let isEditing = false;
 
-    const { form, data, reset } = createForm({
-        onSubmit: async (values) => {
-            const formData: CommentForm = {
-                body: values.body,
-                repliesTo: [],
-            };
-
-            await editComment($session.currProfile._id, comment._id, formData).then(() => {
-                isEditing = false;
-                resetForm();
-            });
+    const { form, data, reset, createSubmitHandler } = createForm({
+        onSubmit: () => {
+            console.log(`Alt submit used!`);
         },
         validate: (values) => {
             const errors = {
@@ -50,8 +46,26 @@
         },
     });
 
+    const saveChanges = createSubmitHandler({
+        onSubmit: async (values) => {
+            const formData: CommentForm = {
+                body: values.body,
+                repliesTo: [],
+            };
+
+            await editComment($session.currProfile._id, comment._id, formData).then(() => {
+                isEditing = false;
+                resetForm();
+            });
+        },
+    });
+
     function resetForm() {
         reset();
+    }
+
+    function reply() {
+        dispatch('reply', comment);
     }
 </script>
 
@@ -71,14 +85,14 @@
                     <span class="text-xs relative top-0.5">Member</span>
                 {/if}
                 <span class="mx-1">•</span>
-                <span class="text-xs relative top-0.5"
-                    >{localeDate(comment.createdAt, 'shortDate')}</span
-                >
+                <span class="text-xs relative top-0.5">
+                    <Time timestamp={comment.createdAt} relative live />
+                </span>
             </div>
         </div>
         {#if $session.currProfile && $session.currProfile._id === comment.user._id}
             {#if isEditing}
-                <Button>
+                <Button on:click={saveChanges}>
                     <Save2Line class="button-icon" />
                     <span class="button-text">Save</span>
                 </Button>
@@ -94,7 +108,7 @@
                 </Button>
             {/if}
         {:else if $session.currProfile}
-            <Button>
+            <Button on:click={reply}>
                 <ReplyLine class="button-icon" />
                 <span class="button-text">Reply</span>
             </Button>
@@ -112,10 +126,19 @@
         <div class="comment-body px-4 flex-1" in:fade|local={{ delay: 0, duration: 200 }}>
             {@html comment.body}
         </div>
-        <div
-            class="flex items-center justify-end p-0.5"
-            in:fade|local={{ delay: 0, duration: 200 }}
-        >
+        <div class="flex items-center p-0.5" in:fade|local={{ delay: 0, duration: 200 }}>
+            <div>
+                <a class="block mx-2 relative top-0.5 text-xs">#{index}</a>
+            </div>
+            <div class="flex-1 text-xs relative top-0.5 text-zinc-500">
+                {#if comment.history.length !== 0}
+                    Last edited: <Time
+                        timestamp={comment.history[comment.history.length - 1].createdAt}
+                        relative
+                        live
+                    />
+                {/if}
+            </div>
             <button
                 class="flex items-center rounded-lg p-2 hover:bg-transparent text-zinc-500 hover:text-zinc-800"
             >

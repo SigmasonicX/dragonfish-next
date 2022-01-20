@@ -2,9 +2,9 @@
     import { ArrowLeftSLine, ArrowRightSLine } from 'svelte-remixicon';
     import { createEventDispatcher } from 'svelte';
 
-    export let currPage;
-    export let perPage;
-    export let totalPages;
+    export let currPage: number;
+    export let perPage: number;
+    export let totalPages: number;
     export let from;
     export let to;
 
@@ -26,7 +26,7 @@
         class="rounded-full bg-zinc-300 dark:bg-zinc-700 highlight-shadowed-black dark:highlight-shadowed"
     >
         <li class="ml-0" class:disabled={currPage === 1}>
-            <button on:click={() => changePage(currPage - 1)}>
+            <button on:click={() => changePage(currPage - 1)} disabled={currPage === 1}>
                 <ArrowLeftSLine size="1.75rem" />
             </button>
         </li>
@@ -38,7 +38,7 @@
             </li>
         {/each}
         <li class="mr-0" class:disabled={currPage === totalPages}>
-            <button on:click={() => changePage(currPage + 1)}>
+            <button on:click={() => changePage(currPage + 1)} disabled={currPage === totalPages}>
                 <ArrowRightSLine size="1.75rem" />
             </button>
         </li>
@@ -70,6 +70,14 @@
                         box-shadow: inset 0 1px 0 0 rgb(255 255 255/0.05),
                             var(--tw-ring-offset-shadow, 0 0 #0000),
                             var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+                    }
+                }
+                &.disabled {
+                    button {
+                        @apply cursor-not-allowed text-zinc-500;
+                        &:hover {
+                            @apply text-zinc-500 bg-transparent;
+                        }
                     }
                 }
             }

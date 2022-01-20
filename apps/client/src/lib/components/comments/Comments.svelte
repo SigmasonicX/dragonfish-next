@@ -1,8 +1,13 @@
 <script lang="ts">
-    import { comments } from '$lib/repo/comments.repo';
+    import { comments, getPage } from '$lib/repo/comments.repo';
     import { session } from '$lib/repo/session.repo';
     import CommentBox from '$lib/components/comments/CommentBox.svelte';
     import CommentForm from './CommentForm.svelte';
+    import Paginator from '$lib/components/ui/misc/Paginator.svelte';
+
+    async function changePage(page: number) {
+        await getPage($comments.threadId, $comments.kind, page);
+    }
 </script>
 
 {#if $session.currProfile}
@@ -19,7 +24,14 @@
         </div>
     </div>
 {:else}
-    {#each $comments.comments as comment}
-        <CommentBox {comment} />
+    {#each $comments.comments as comment, i}
+        <CommentBox {comment} index={$comments.perPage * ($comments.currPage - 1) + (i + 1)} />
     {/each}
+    <Paginator
+        currPage={$comments.currPage}
+        perPage={$comments.perPage}
+        totalPages={$comments.totalPages}
+        totalDocs={$comments.totalComments}
+        on:change={(e) => changePage(e.detail)}
+    />
 {/if}
