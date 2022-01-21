@@ -21,15 +21,4 @@
     };
 </script>
 
-<script lang="ts">
-    import type { Content } from '$lib/models/content';
-    import WorkBanner from '$lib/components/ui/content/WorkBanner.svelte';
-
-    export let content: Content;
-</script>
-
-<div class="w-full h-screen overflow-y-auto">
-    <WorkBanner {content} />
-
-    <slot />
-</div>
+<slot />
