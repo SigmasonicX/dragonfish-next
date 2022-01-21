@@ -155,11 +155,11 @@
 
         &.big-text {
             :global(svg) {
-                @apply w-6;
+                @apply w-6 mr-0.5;
             }
 
             span.tag-label {
-                @apply text-base;
+                @apply text-sm mr-1;
             }
         }
 

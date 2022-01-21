@@ -42,7 +42,7 @@ export class IdentityGuard implements CanActivate {
         if (optional) {
             const jwtToken: string = request.headers['authorization'];
             if (jwtToken) {
-                return await this.verifyToken(request, roles);
+                return await this.verifyTokenNoPseud(request, roles);
             } else {
                 return true;
             }
@@ -96,6 +96,46 @@ export class IdentityGuard implements CanActivate {
         } else {
             this.logger.error(`Someone attempted to impersonate User ${verifiedToken.sub}!`);
             throw new UnauthorizedException(`You don't have permission to do that.`);
+        }
+    }
+
+    private async verifyTokenNoPseud(request, roles: Roles[]): Promise<boolean> {
+        // Getting the JSON Web Token from the authorization header.
+        const jwtToken: string = request.headers['authorization'];
+
+        // Checking to see if the token matches the correct format.
+        // If it does, then grab the token. If not, throw an
+        // Unauthorized exception.
+        let bearerToken: string;
+        if (jwtToken.startsWith('Bearer ')) {
+            bearerToken = jwtToken.substring(7, jwtToken.length);
+        } else {
+            throw new UnauthorizedException(`You don't have permission to do that.`);
+        }
+
+        // Verifying that the token is legitimate.
+        let verifiedToken: JwtPayload;
+        try {
+            verifiedToken = this.jwtService.verify<JwtPayload>(bearerToken, {
+                ignoreExpiration: false,
+            });
+        } catch (err) {
+            if (err instanceof TokenExpiredError) {
+                throw new UnauthorizedException('Your token has expired.');
+            } else {
+                throw err;
+            }
+        }
+
+        if (verifiedToken) {
+            if (await this.auth.checkRoles(verifiedToken.sub, ...roles)) {
+                request.user = verifiedToken;
+                return true;
+            } else {
+                throw new UnauthorizedException(`You don't have permission to do that.`);
+            }
+        } else {
+            return false;
         }
     }
 }

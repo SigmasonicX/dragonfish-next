@@ -1,12 +1,14 @@
 <script lang="ts">
+    import { page } from '$app/stores';
     import { profile } from '$lib/repo/profile.repo';
     import { session } from '$lib/repo/session.repo';
     import { slugify } from '$lib/util';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import { CheckLine, DraftLine, Loader5Line, TimeLine } from 'svelte-remixicon';
-    import { fetchAllByKind } from '$lib/services/content.service';
+    import { fetchAllByKind, fetchUserContent } from '$lib/services/content.service';
     import { ContentKind } from '$lib/models/content';
     import BlogCard from '$lib/components/ui/content/BlogCard.svelte';
+    import { app } from '$lib/repo/app.repo';
 
     enum BlogTabs {
         Published,
@@ -15,6 +17,8 @@
     }
 
     let currentTab = BlogTabs.Published;
+
+    const pageNum = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
 </script>
 
 <svelte:head>
@@ -135,8 +139,32 @@
         {/if}
     </div>
 {:else}
-    <div class="empty">
-        <h3>Pardon our dust—</h3>
-        <p>This feature is not yet available.</p>
+    <div class="w-11/12 lg:max-w-3xl mx-auto flex flex-col mb-6">
+        {#await fetchUserContent($profile._id, $app.filter, [ContentKind.BlogContent], pageNum)}
+            <div class="w-full h-96 flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <Loader5Line size="24px" class="animate-spin" />
+                    <span class="text-sm uppercase tracking-widest font-bold">Loading...</span>
+                </div>
+            </div>
+        {:then blogs}
+            {#if blogs.docs.length === 0}
+                <div class="empty">
+                    <h3>Nothing's been posted yet...</h3>
+                    <p>Check back when this user has posted a blog!</p>
+                </div>
+            {:else}
+                {#each blogs.docs as blog}
+                    <div class="my-3">
+                        <BlogCard {blog} />
+                    </div>
+                {/each}
+            {/if}
+        {:catch error}
+            <div class="empty">
+                <h3>Oops! Something went wrong!</h3>
+                <p>Something went wrong trying to fetch this user's blogs!</p>
+            </div>
+        {/await}
     </div>
 {/if}

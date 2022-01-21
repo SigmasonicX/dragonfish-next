@@ -56,7 +56,7 @@
             by {content.author.screenName}
         </div>
         <div class="flex items-center">
-            <HeartLine size="1rem" />
+            <HeartLine size="16px" />
             <span>{calculateApprovalRating(content.stats.likes, content.stats.dislikes)}%</span>
         </div>
     </div>
@@ -113,17 +113,17 @@
     </div>
     <div class="work-meta bg-gray-200 dark:bg-gray-600">
         <div class="flex items-center">
-            <RhythmFill size="1rem" />
+            <RhythmFill size="16px" />
             <span>{abbreviate(content.stats.views)}</span>
         </div>
         <div class="text-sm mx-0.5 relative -top-0.5">•</div>
         <div class="flex items-center">
-            <PenNibLine size="1rem" />
+            <PenNibLine size="16px" />
             <span>{abbreviate(content.stats.words)}</span>
         </div>
         <div class="text-sm mx-0.5 relative -top-0.5">•</div>
         <div class="flex items-center">
-            <DiscussLine size="1rem" />
+            <DiscussLine size="16px" />
             <span>{abbreviate(content.stats.comments)}</span>
         </div>
         <div class="text-sm mx-0.5 relative -top-0.5">•</div>
@@ -132,8 +132,14 @@
         </div>
         <div class="flex-1" />
         <div class="flex items-center">
-            <Calendar2Line size="1rem" />
-            <span>{localeDate(content.audit.publishedOn, 'shortDate')}</span>
+            <Calendar2Line size="16px" />
+            <span>
+                {#if content.audit.publishedOn}
+                    {localeDate(content.audit.publishedOn, 'shortDate')}
+                {:else}
+                    {localeDate(content.createdAt, 'shortDate')}
+                {/if}
+            </span>
         </div>
     </div>
 </a>
