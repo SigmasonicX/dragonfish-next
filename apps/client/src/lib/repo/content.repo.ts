@@ -13,7 +13,7 @@ interface ContentState {
 
 const defaultContentState: ContentState = {
     content: null,
-    sections: null,
+    sections: [],
     ratings: null,
     libraryDoc: null,
 };
@@ -29,7 +29,7 @@ export function setContent(
     content.update((state) => ({
         ...state,
         content: contentModel,
-        sections: sections ? sections : null,
+        sections: sections ? sections : [],
         ratings: ratings ? ratings : null,
         libraryDoc: libraryDoc ? libraryDoc : null,
     }));

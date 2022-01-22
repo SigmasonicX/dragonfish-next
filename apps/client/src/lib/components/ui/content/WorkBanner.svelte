@@ -10,8 +10,8 @@
 </script>
 
 <div class="work-banner">
-    <div class="flex w-11/12 mx-auto md:max-w-4xl px-4 py-6">
-        <div class="flex flex-col justify-end flex-1">
+    <div class="flex flex-col items-center md:flex-row w-11/12 mx-auto md:max-w-4xl px-4 py-6">
+        <div class="flex flex-col items-center md:justify-end md:items-baseline flex-1">
             <h1 class="text-4xl font-medium text-white">{content.title}</h1>
             <a
                 href="/profile/{content.author._id}/{slugify(content.author.userTag)}"
@@ -20,7 +20,7 @@
             >
                 by {content.author.screenName}
             </a>
-            <div class="flex items-center flex-wrap">
+            <div class="flex items-center justify-center md:justify-start flex-wrap mb-4 md:mb-0">
                 <TagBadge kind={TagKind.Type} type={content.kind} size={'large'} />
                 <TagBadge kind={TagKind.Category} category={content.meta.category} size={'large'} />
                 {#each content.meta.genres as genre}

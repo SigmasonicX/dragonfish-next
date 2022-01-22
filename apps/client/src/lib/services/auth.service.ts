@@ -1,6 +1,6 @@
 import { http } from './http';
 import type { RegisterForm, LoginForm, ProfileForm } from '$lib/models/accounts/forms';
-import type { Profile } from '$lib/models/accounts';
+import type { Account, Profile } from '$lib/models/accounts';
 import type { LoginPackage } from '$lib/models/auth';
 import { baseUrl } from '$lib/util';
 
@@ -38,4 +38,8 @@ export async function addProfile(formInfo: ProfileForm): Promise<Profile> {
     return http.post<Profile>(`${baseUrl}/auth/add-pseudonym`, formInfo).then((res) => {
         return res.data;
     });
+}
+
+export function checkProfile(profile: Profile, account: Account): boolean {
+    return !!account.pseudonyms.find((value) => value._id === profile._id);
 }

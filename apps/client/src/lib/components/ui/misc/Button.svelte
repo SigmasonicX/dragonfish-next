@@ -4,6 +4,7 @@
     export let loading = false;
     export let isActive = false;
     export let disabled = false;
+    export let classes = '';
     export let loadingText = 'Loading...';
     export let type = 'button';
     export let kind: 'primary' | 'normal' = 'normal';
@@ -14,6 +15,7 @@
     {type}
     class:primary={kind === 'primary'}
     class:active={isActive}
+    class={classes}
     {title}
     class:disabled
     {disabled}
