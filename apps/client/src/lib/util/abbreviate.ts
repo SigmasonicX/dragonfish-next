@@ -5,5 +5,9 @@ import numbro from 'numbro';
  * @param toAbbreviate
  */
 export function abbreviate(toAbbreviate: number): string {
-    return numbro(toAbbreviate).format({ average: true });
+    if (toAbbreviate < 1000) {
+        return `${toAbbreviate}`;
+    } else {
+        return numbro(toAbbreviate).format({ average: true, totalLength: 2 });
+    }
 }

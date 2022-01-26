@@ -5,6 +5,7 @@ import type { PaginateResult, PubContent } from '$lib/models/util';
 import { baseUrl } from '$lib/util';
 import type { AxiosResponse } from 'axios';
 import type { FormType } from '$lib/models/content/works/forms';
+import type { Section, SectionForm, PublishSection } from '$lib/models/content/works';
 
 //#region ---BROWSING---
 
@@ -119,6 +120,72 @@ export async function publishOne(
         )
         .then((res) => {
             return res.data;
+        });
+}
+
+//#endregion
+
+//#region ---SECTIONS---
+
+export async function createSection(
+    profileId: string,
+    contentId: string,
+    formData: SectionForm,
+): Promise<Section> {
+    return http
+        .put<Section>(
+            `${baseUrl}/sections/create-section?pseudId=${profileId}&contentId=${contentId}`,
+            formData,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function editSection(
+    profileId: string,
+    contentId: string,
+    sectionId: string,
+    formData: SectionForm,
+): Promise<Section> {
+    return http
+        .patch<Section>(
+            `${baseUrl}/sections/edit-section?pseudId=${profileId}&contentId=${contentId}&sectionId=${sectionId}`,
+            formData,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function publishSection(
+    profileId: string,
+    contentId: string,
+    sectionId: string,
+    formData: PublishSection,
+): Promise<Section> {
+    return http
+        .patch<Section>(
+            `${baseUrl}/sections/publish-section?pseudId=${profileId}&contentId=${contentId}&sectionId=${sectionId}`,
+            formData,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function deleteSection(
+    profileId: string,
+    contentId: string,
+    sectionId: string,
+): Promise<void> {
+    return http
+        .patch<void>(
+            `${baseUrl}/sections/delete-section?pseudId=${profileId}&contentId=${contentId}&sectionId=${sectionId}`,
+            {},
+        )
+        .then(() => {
+            return;
         });
 }
 

@@ -48,6 +48,11 @@
             }
         }
 
+        &.primary.active {
+            @apply text-white;
+            background: var(--accent-light);
+        }
+
         &.disabled {
             @apply text-zinc-500 cursor-not-allowed;
             &:hover,

@@ -6,6 +6,7 @@
         abbreviate,
         pluralize,
         localeDate,
+        slugify,
         MIN_TITLE_LENGTH,
         MAX_TITLE_LENGTH,
         MIN_GENRE,
@@ -40,6 +41,7 @@
     import { ContentKind, ContentRating } from '$lib/models/content';
     import type { CreateProse } from '$lib/models/content/works/forms';
     import { saveChanges } from '$lib/services/content.service';
+    import Comments from '$lib/components/comments/Comments.svelte';
 
     let showDesc = true;
     let editMode = false;
@@ -169,6 +171,49 @@
         },
     });
 </script>
+
+<svelte:head>
+    {#if $content.content}
+        <title>{$content.content.title} &mdash; Offprint</title>
+        <!-- Primary Meta Tags -->
+        <meta name="title" content={$content.content.title} />
+        <meta name="description" content={$content.content.desc} />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:url"
+            content="https://offprint.net/prose/{$content.content._id}/{slugify(
+                $content.content.title,
+            )}"
+        />
+        <meta property="og:title" content={$content.content.title} />
+        <meta property="og:description" content={$content.content.desc} />
+        <meta
+            property="og:image"
+            content={$content.content.meta.coverArt
+                ? $content.content.meta.coverArt
+                : $content.content.author.profile.avatar}
+        />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+            property="twitter:url"
+            content="https://offprint.net/prose/{$content.content._id}/{slugify(
+                $content.content.title,
+            )}"
+        />
+        <meta property="twitter:title" content={$content.content.title} />
+        <meta property="twitter:description" content={$content.content.desc} />
+        <meta
+            property="twitter:image"
+            content={$content.content.meta.coverArt
+                ? $content.content.meta.coverArt
+                : $content.content.author.profile.avatar}
+        />
+    {/if}
+</svelte:head>
 
 <div class="w-full h-screen overflow-y-auto">
     <WorkBanner content={$content.content} />
@@ -377,11 +422,18 @@
                             </div>
                         {/if}
                     </div>
-                    <SectionList />
+                    <SectionList
+                        baseUrl="/prose/{$content.content._id}/{slugify($content.content.title)}"
+                    />
                 </div>
             {/if}
         </div>
     </div>
+    {#if $content.content.audit.published === 'Unpublished'}
+        <div class="w-11/12 md:w-full max-w-3xl mx-auto mt-6">
+            <Comments />
+        </div>
+    {/if}
 </div>
 
 <style lang="scss">

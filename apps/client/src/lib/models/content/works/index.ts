@@ -7,3 +7,5 @@ export { PoetryFormKind } from './poetry-form-kind';
 export type { Section } from './section';
 export { TagKind } from './tag-kind';
 export type { TagsModel, TagsTree } from './tags-model';
+export type { SectionForm } from './section-form';
+export type { PublishSection } from './publish-section';

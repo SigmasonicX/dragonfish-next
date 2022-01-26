@@ -1,4 +1,4 @@
-import { AuthorsNotePos } from './authors-note-pos.enum';
+import type { AuthorsNotePos } from '../authors-note-pos';
 
 export interface SectionForm {
     readonly title: string;
