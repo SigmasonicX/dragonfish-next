@@ -153,6 +153,8 @@ export class ContentService {
         contentId: string,
         pubChange?: PubChange,
     ): Promise<ContentModel> {
+        const content = await this.content.fetchOne(contentId, user);
+
         const publishedContent = await this.content.publishOne(user, contentId, pubChange);
 
         await this.updateCounts(user);

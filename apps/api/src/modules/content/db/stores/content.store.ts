@@ -267,6 +267,7 @@ export class ContentStore {
      * @param user The author of the content
      * @param contentId The content to submit
      */
+
     /*async submitForApproval(user: string, contentId: string): Promise<ContentDocument> {
         const thisContent = await this.content.findOne({
             _id: contentId,
