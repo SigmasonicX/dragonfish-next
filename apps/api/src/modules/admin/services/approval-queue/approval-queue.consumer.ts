@@ -11,6 +11,8 @@ import { DoneCallback, Job } from 'bull';
 import { ApprovalQueueStore } from '../../db/stores';
 import { ApprovalQueueEventsKind, SubmitToQueueJob } from '$shared/models/admin/approval-queue';
 import { ContentService } from '$modules/content/services';
+import { Pseudonym } from '$shared/models/accounts';
+import { PubStatus } from '$shared/models/content';
 
 @Processor('approval-queue')
 export class ApprovalQueueConsumer {
@@ -48,5 +50,16 @@ export class ApprovalQueueConsumer {
     @Process(ApprovalQueueEventsKind.SubmitToQueue)
     async submittedToQueue(job: Job<SubmitToQueueJob>, done: DoneCallback) {
         this.logger.log(`Job ${job.id} (SubmitToQueue) received!`);
+        const content = job.data.content;
+
+        await this.store.addOneWork(content._id).then(async () => {
+            await this.content.updatePublishStatus(
+                (content.author as Pseudonym)._id,
+                content._id,
+                PubStatus.Pending,
+            );
+        });
+
+        done();
     }
 }

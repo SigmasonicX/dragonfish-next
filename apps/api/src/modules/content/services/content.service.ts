@@ -23,6 +23,8 @@ import {
 import { RatingsModel } from '$shared/models/ratings';
 import { UserService } from '$modules/accounts';
 import { xor } from 'lodash';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ApprovalQueueEventsKind, SubmitToQueuePayload } from '$shared/models/admin/approval-queue';
 
 @Injectable()
 export class ContentService {
@@ -34,6 +36,7 @@ export class ContentService {
         private readonly blogs: BlogsStore,
         private readonly users: UserService,
         private readonly tagsStore: TagsStore,
+        private readonly events: EventEmitter2,
     ) {}
 
     public async fetchOne(contentId: string, pseudId?: string): Promise<ContentModel> {
@@ -154,12 +157,26 @@ export class ContentService {
         pubChange?: PubChange,
     ): Promise<ContentModel> {
         const content = await this.content.fetchOne(contentId, user);
+        switch (content.kind) {
+            case ContentKind.ProseContent || ContentKind.PoetryContent:
+                const payload: SubmitToQueuePayload = {
+                    content,
+                };
+                this.events.emit(ApprovalQueueEventsKind.SubmitToQueue, payload);
+                return content;
+            case ContentKind.BlogContent:
+                const blog = await this.blogs.changePublishStatus(user, contentId, pubChange);
+                await this.updateCounts(user);
+                return blog;
+        }
+    }
 
-        const publishedContent = await this.content.publishOne(user, contentId, pubChange);
-
-        await this.updateCounts(user);
-
-        return publishedContent;
+    public async updatePublishStatus(
+        user: string,
+        contentId: string,
+        pubStatus: PubStatus,
+    ): Promise<ContentModel> {
+        return this.content.updatePublishStatus(user, contentId, pubStatus);
     }
 
     public async updateCoverArt(

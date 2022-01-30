@@ -26,13 +26,11 @@ export class ApprovalQueueStore {
     /**
      * Fetches the entire queue.
      */
-    async fetchAll(pageNum: number): Promise<PaginateResult<ApprovalQueueDocument>> {
-        return await this.approvalQueue.paginate(
+    async fetchAll(): Promise<ApprovalQueueDocument[]> {
+        return await this.approvalQueue.find(
             {},
             {
                 sort: { createdAt: -1 },
-                page: pageNum,
-                limit: 15,
             },
         );
     }
@@ -58,12 +56,24 @@ export class ApprovalQueueStore {
     }
 
     /**
+     * Fetch one that's been claimed by a specified mod
+     * @param docId
+     * @param modId
+     */
+    async fetchOneFromClaim(docId: string, modId: string): Promise<ApprovalQueueDocument> {
+        return await this.approvalQueue.findOne({
+            _id: docId,
+            claimedBy: modId,
+        });
+    }
+
+    /**
      * Claims a queue item for a user, throwing if only there's a conflict.
      *
      * @param pseudId The user claiming this work for review
      * @param docId The document ID of the queue entry
      */
-    async claimWork(pseudId: string, docId: string): Promise<ApprovalQueueDocument> {
+    async claimWork(docId: string, pseudId: string): Promise<ApprovalQueueDocument> {
         const thisEntry = await this.approvalQueue.findById(docId);
 
         if (thisEntry.claimedBy === null) {
@@ -81,9 +91,8 @@ export class ApprovalQueueStore {
      * Removes a queue document from the collection after it's been processed.
      *
      * @param docId The document to remove
-     * @param claimedBy The user who claimed it
      */
-    async removeFromQueue(docId: string, claimedBy: string) {
-        await this.approvalQueue.deleteOne({ _id: docId, claimedBy: claimedBy });
+    async removeFromQueue(docId: string) {
+        await this.approvalQueue.deleteOne({ _id: docId });
     }
 }

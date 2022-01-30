@@ -65,7 +65,7 @@ import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
             }),
         }),
     ],
-    exports: [Stores.ContentStore, Stores.ContentGroupStore],
+    exports: [Stores.ContentStore, Stores.ContentGroupStore, Services.ContentService],
     controllers: [
         Controllers.ContentController,
         Controllers.ContentLibraryController,

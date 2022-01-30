@@ -6,10 +6,13 @@ import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
 import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
 import * as Services from './services';
+import * as Controllers from './controllers';
 import { ContentModule } from '$modules/content';
+import { AccountsModule } from '$modules/accounts';
 
 @Module({
     imports: [
+        AccountsModule,
         ContentModule,
         MongooseModule.forFeatureAsync([
             {
@@ -37,6 +40,6 @@ import { ContentModule } from '$modules/content';
         Services.ApprovalQueueService,
         Services.ApprovalQueueConsumer,
     ],
-    controllers: [],
+    controllers: [Controllers.ApprovalQueueController],
 })
 export class AdminModule {}

@@ -16,9 +16,7 @@ import { BlogsContentDocument } from '../schemas';
 import { BlogsStore } from './blogs.store';
 import { ProseStore } from './prose.store';
 import { PoetryStore } from './poetry.store';
-//import { ApprovalQueueStore } from '../../approval-queue';
 import { SectionsStore } from './sections.store';
-//import { MIN_PROSE_LENGTH } from '@dragonfish/shared/constants/content-constants';
 
 /**
  * ## Content Store
@@ -228,6 +226,25 @@ export class ContentStore {
         }
     }
 
+    async updatePublishStatus(
+        user: string,
+        contentId: string,
+        pubStatus: PubStatus,
+    ): Promise<ContentDocument> {
+        const content = await this.content.findOne({
+            _id: contentId,
+            author: user,
+            'audit.isDeleted': false,
+        });
+
+        if (content === null || content === undefined) {
+            throw new UnauthorizedException(`You don't have permission to do that.`);
+        } else {
+            content.audit.published = pubStatus;
+            return await content.save();
+        }
+    }
+
     /**
      * Sets the `isDeleted` flag of a piece of content belonging to the specified user to `true`.
      *
@@ -254,99 +271,6 @@ export class ContentStore {
 
         return this.content.count(query);
     }
-
-    //#endregion
-
-    //#region ---WORKS PUBLISHING---
-
-    // TODO: reimplement works publishing
-
-    /**
-     * Submits a piece of content to the approval queue.
-     *
-     * @param user The author of the content
-     * @param contentId The content to submit
-     */
-
-    /*async submitForApproval(user: string, contentId: string): Promise<ContentDocument> {
-        const thisContent = await this.content.findOne({
-            _id: contentId,
-            author: user,
-            'audit.isDeleted': false,
-        });
-
-        if (
-            thisContent.kind !== ContentKind.PoetryContent &&
-            thisContent.stats.words < MIN_PROSE_LENGTH
-        ) {
-            throw new BadRequestException(
-                `Content that isn't poetry needs to have a minimum word-count of ${MIN_PROSE_LENGTH}. `,
-            );
-        }
-
-        await this.queue.addOneWork(contentId);
-        return await this.pendingWork(contentId, user);
-    }*/
-
-    /**
-     * Sets the approval status of a work to Approved.
-     *
-     * @param docId
-     * @param modId
-     * @param contentId The work to approve
-     * @param authorId The author of the work
-     */
-    /*async approveWork(
-        docId: string,
-        modId: string,
-        contentId: string,
-        authorId: string,
-    ): Promise<void> {
-        await this.content.updateOne(
-            { _id: contentId, author: authorId, 'audit.isDeleted': false },
-            {
-                'audit.published': PubStatus.Published,
-                'audit.publishedOn': new Date(),
-            },
-        );
-        await this.queue.removeFromQueue(docId, modId);
-        await this.users.changeWorkCount(authorId, true);
-    }*/
-
-    /**
-     * Sets the approval status of a work to Rejected.
-     *
-     * @param docId
-     * @param modId
-     * @param contentId The work to reject
-     * @param authorId The author of the work
-     */
-    /*async rejectWork(
-        docId: string,
-        modId: string,
-        contentId: string,
-        authorId: string,
-    ): Promise<void> {
-        await this.content.updateOne(
-            { _id: contentId, author: authorId, 'audit.isDeleted': false },
-            { 'audit.published': PubStatus.Rejected },
-        );
-        await this.queue.removeFromQueue(docId, modId);
-    }*/
-
-    /**
-     * Sets the approval status of a work to Pending.
-     *
-     * @param contentId The work to set to pending
-     * @param authorId The author of the work
-     */
-    /*async pendingWork(contentId: string, authorId: string): Promise<ContentDocument> {
-        return this.content.findOneAndUpdate(
-            { _id: contentId, author: authorId, 'audit.isDeleted': false },
-            { 'audit.published': PubStatus.Pending },
-            { new: true },
-        );
-    }*/
 
     //#endregion
 

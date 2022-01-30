@@ -23,10 +23,10 @@ export class ApprovalQueueDocument extends Document implements ApprovalQueue {
     claimedBy: string | Pseudonym;
 
     @Prop()
-    createdAt: Date;
+    readonly createdAt: Date;
 
     @Prop()
-    updatedAt: Date;
+    readonly updatedAt: Date;
 }
 
 export const ApprovalQueueSchema = SchemaFactory.createForClass(ApprovalQueueDocument);
