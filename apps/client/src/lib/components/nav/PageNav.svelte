@@ -19,18 +19,16 @@
         background: var(--accent);
         border-color: var(--accent-light);
 
-        & > div {
-            @apply flex items-center;
-            h3 {
-                @apply font-medium text-3xl flex-1 text-white;
-            }
+        @apply flex items-center;
+        h3 {
+            @apply font-medium text-3xl flex-1 text-white;
+        }
 
-            svg {
-                @apply relative -top-0.5;
-                color: white !important;
-                width: 1.75rem !important;
-                height: 1.75rem !important;
-            }
+        svg {
+            @apply relative -top-0.5;
+            color: white !important;
+            width: 1.75rem !important;
+            height: 1.75rem !important;
         }
     }
 

@@ -26,11 +26,11 @@
 
 <div class="flex w-full h-screen">
     <PageNav>
-        <div slot="header">
+        <svelte:fragment slot="header">
             <h3>Explore</h3>
             <Compass3Line />
-        </div>
-        <div slot="pages">
+        </svelte:fragment>
+        <svete:fragment slot="pages">
             <form on:submit|preventDefault>
                 <input
                     type="text"
@@ -119,7 +119,7 @@
                     <span class="text">Add bookshelf</span>
                 </a>
             {/if}
-        </div>
+        </svete:fragment>
     </PageNav>
     <slot />
 </div>

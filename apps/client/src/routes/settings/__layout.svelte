@@ -18,11 +18,11 @@
 
 <div class="flex w-full h-screen">
     <PageNav>
-        <div slot="header">
+        <svelte:fragment slot="header">
             <h3>Settings</h3>
             <Settings5Line />
-        </div>
-        <div slot="pages">
+        </svelte:fragment>
+        <svelte:fragment slot="pages">
             <a href="/settings" class:active={$page.url.pathname === '/settings'}>
                 <span class="link-icon"><Apps2Line /></span>
                 <span class="text">General</span>
@@ -54,7 +54,7 @@
                     <span class="text">Notifications</span>
                 </a>
             {/if}
-        </div>
+        </svelte:fragment>
     </PageNav>
     <slot />
 </div>

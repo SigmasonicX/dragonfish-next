@@ -3,6 +3,8 @@ import type { RegisterForm, LoginForm, ProfileForm } from '$lib/models/accounts/
 import type { Account, Profile } from '$lib/models/accounts';
 import type { LoginPackage } from '$lib/models/auth';
 import { baseUrl } from '$lib/util';
+import type { Roles } from '$lib/models/accounts';
+import * as lodash from 'lodash';
 
 export async function login(formInfo: LoginForm): Promise<LoginPackage> {
     return http.post<LoginPackage>(`${baseUrl}/auth/login`, formInfo).then((res) => {
@@ -42,4 +44,10 @@ export async function addProfile(formInfo: ProfileForm): Promise<Profile> {
 
 export function checkProfile(profile: Profile, account: Account): boolean {
     return !!account.pseudonyms.find((value) => value._id === profile._id);
+}
+
+export function isAllowed(roles: Roles[], requiredRoles: Roles[]): boolean {
+    const hasRoles = lodash.intersection(roles, requiredRoles);
+
+    return hasRoles.length > 0;
 }

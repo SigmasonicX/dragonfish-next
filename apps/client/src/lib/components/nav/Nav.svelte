@@ -9,12 +9,15 @@
         CloseLine,
         InboxLine,
         AddBoxLine,
+        Dashboard2Line,
     } from 'svelte-remixicon';
     import Sidenav from '$lib/components/nav/Sidenav.svelte';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
     import { session } from '$lib/repo/session.repo';
     import InboxMenu from '$lib/components/ui/user/InboxMenu.svelte';
     import ContentMenu from '../ui/user/ContentMenu.svelte';
+    import { isAllowed } from '$lib/services/auth.service';
+    import { Roles } from '$lib/models/accounts/index.js';
 
     enum MenuOptions {
         NoMenu,
@@ -134,6 +137,17 @@
             <span class="link-icon"><GroupLine size="24px" /></span>
             <span class="link-name">Social</span>
         </a>
+        {#if isAllowed($session.account.roles, [Roles.Moderator, Roles.WorkApprover, Roles.Admin])}
+            <a
+                class="link"
+                href="/dashboard"
+                class:active={$page.url.pathname.startsWith('/dashboard') &&
+                    currentMenu === MenuOptions.NoMenu}
+            >
+                <span class="link-icon"><Dashboard2Line size="24px" /></span>
+                <span class="link-name">Dash</span>
+            </a>
+        {/if}
         <div class="flex-1"><!--fill space--></div>
         <div class="w-10/12 mx-auto border-b border-white my-2"><!--separator--></div>
         <a
