@@ -4,12 +4,13 @@
         LoginCircleLine,
         Home5Line,
         Compass3Line,
-        GroupLine,
+        TeamLine,
         Settings5Line,
         CloseLine,
         InboxLine,
         AddBoxLine,
         Dashboard2Line,
+        SearchEyeLine,
     } from 'svelte-remixicon';
     import Sidenav from '$lib/components/nav/Sidenav.svelte';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
@@ -17,7 +18,7 @@
     import InboxMenu from '$lib/components/ui/user/InboxMenu.svelte';
     import ContentMenu from '../ui/user/ContentMenu.svelte';
     import { isAllowed } from '$lib/services/auth.service';
-    import { Roles } from '$lib/models/accounts/index.js';
+    import { Roles } from '$lib/models/accounts';
 
     enum MenuOptions {
         NoMenu,
@@ -119,6 +120,10 @@
             <span class="link-icon"><Home5Line size="24px" /></span>
             <span class="link-name">Home</span>
         </a>
+        <a class="link" href="/search" class:active={$page.url.pathname.startsWith('/search')}>
+            <span class="link-icon"><SearchEyeLine size="24px" /></span>
+            <span class="link-name">Search</span>
+        </a>
         <a
             class="link"
             href="/explore"
@@ -134,10 +139,10 @@
             class:active={$page.url.pathname.startsWith('/social') &&
                 currentMenu === MenuOptions.NoMenu}
         >
-            <span class="link-icon"><GroupLine size="24px" /></span>
+            <span class="link-icon"><TeamLine size="24px" /></span>
             <span class="link-name">Social</span>
         </a>
-        {#if isAllowed($session.account.roles, [Roles.Moderator, Roles.WorkApprover, Roles.Admin])}
+        {#if $session.account && isAllowed( $session.account.roles, [Roles.Moderator, Roles.WorkApprover, Roles.Admin], )}
             <a
                 class="link"
                 href="/dashboard"

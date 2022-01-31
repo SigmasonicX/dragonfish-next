@@ -1,59 +1,28 @@
 {
-	"name": "dragonfish",
-	"version": "0.0.0",
-	"private": true,
-	"workspaces": {
-		"packages": [
-			"apps/*",
-			"packages/*"
-		],
-		"nohoist": [
-			"**/@nestjs/**",
-			"**/@ngneat/**"
-		]
-	},
-	"scripts": {
-		"build": "CI=true turbo run build --parallel",
-		"dev": "turbo run dev --parallel",
-		"dev:client": "yarn workspace @dragonfish/client run dev",
-		"start": "turbo run start",
-		"start:api": "yarn workspace @dragonfish/api run start"
-	},
-	"turbo": {
-		"baseBranch": "origin/main",
-		"pipeline": {
-			"build": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": [
-					".svelte-kit/**",
-					"dist"
-				]
-			},
-			"test": {
-				"dependsOn": [
-					"^build"
-				],
-				"outputs": []
-			},
-			"lint": {
-				"outputs": []
-			},
-			"dev": {
-				"cache": false
-			},
-			"start": {
-				"dependsOn": [
-					"^build"
-				]
-			}
-		}
-	},
-	"devDependencies": {
-		"prettier": "^2.5.1",
-		"prettier-plugin-svelte": "^2.4.0",
-		"turbo": "^1.0.24",
-		"typescript": "^4.5.4"
-	}
+  "name": "dragonfish",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@nestjs/**",
+      "**/@ngneat/**"
+    ]
+  },
+  "scripts": {
+    "build": "CI=true turbo run build --parallel",
+    "dev": "turbo run dev --parallel",
+    "dev:client": "yarn workspace @dragonfish/client run dev",
+    "start": "turbo run start",
+    "start:api": "yarn workspace @dragonfish/api run start"
+  },
+  "devDependencies": {
+    "prettier": "^2.5.1",
+    "prettier-plugin-svelte": "^2.4.0",
+    "turbo": "^1.0.24",
+    "typescript": "^4.5.4"
+  }
 }
