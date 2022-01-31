@@ -31,14 +31,6 @@
             <Compass3Line />
         </svelte:fragment>
         <svete:fragment slot="pages">
-            <form on:submit|preventDefault>
-                <input
-                    type="text"
-                    placeholder="Search Offprint..."
-                    aria-placeholder="Search Offprint"
-                    class="bg-zinc-400 dark:bg-zinc-600 placeholder-gray-600 dark:placeholder-zinc-400"
-                />
-            </form>
             <a href="/explore" class:active={$page.url.pathname === '/explore'}>
                 <span class="link-icon"><MistFill /></span>
                 <span class="text">Overview</span>
