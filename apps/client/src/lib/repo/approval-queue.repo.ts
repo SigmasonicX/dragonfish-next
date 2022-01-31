@@ -14,8 +14,8 @@ export const approvalQueue = writable<ApprovalQueueState>({
 
 //#region ---HELPERS---
 
-export async function setQueue(): Promise<void> {
-    return getQueue().then((res) => {
+export async function setQueue(profileId: string): Promise<void> {
+    return getQueue(profileId).then((res) => {
         approvalQueue.update((state) => ({
             ...state,
             queue: res,

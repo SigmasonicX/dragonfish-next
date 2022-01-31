@@ -27,12 +27,7 @@ export class ApprovalQueueStore {
      * Fetches the entire queue.
      */
     async fetchAll(): Promise<ApprovalQueueDocument[]> {
-        return await this.approvalQueue.find(
-            {},
-            {
-                sort: { createdAt: -1 },
-            },
-        );
+        return await this.approvalQueue.find().sort({ createdAt: -1 });
     }
 
     /**
