@@ -42,6 +42,8 @@
     import type { CreateProse } from '$lib/models/content/works/forms';
     import { saveChanges } from '$lib/services/content.service';
     import Comments from '$lib/components/comments/Comments.svelte';
+    import { submitToQueue } from '$lib/repo/content.repo';
+    import ApprovalOptions from '$lib/components/ui/content/ApprovalOptions.svelte';
 
     let showDesc = true;
     let editMode = false;
@@ -170,6 +172,18 @@
             return errors;
         },
     });
+
+    async function processSubmission() {
+        if (
+            $content.content.stats.words < 750 &&
+            $content.content.kind === ContentKind.ProseContent
+        ) {
+            alert(`You must have at least 750 words in your work in order to submit to the queue`);
+            return;
+        }
+
+        await submitToQueue($session.currProfile._id, $content.content._id);
+    }
 </script>
 
 <svelte:head>
@@ -217,6 +231,7 @@
 
 <div class="w-full h-screen overflow-y-auto">
     <WorkBanner content={$content.content} />
+    <ApprovalOptions />
     <div class="w-11/12 mx-auto md:max-w-4xl my-6 flex flex-col md:flex-row">
         <div
             class="flex flex-col w-full md:mr-6 md:max-w-[128px] md:max-h-[35.875rem] md:mb-0 rounded-lg bg-zinc-300 dark:bg-zinc-700 dark:highlight-shadowed mb-6"
@@ -251,7 +266,11 @@
                                 <span class="button-text">Published</span>
                             </Button>
                         {:else if $content.content.audit.published === 'Unpublished'}
-                            <Button classes="md:w-full md:justify-center" disabled={editMode}>
+                            <Button
+                                classes="md:w-full md:justify-center"
+                                disabled={editMode}
+                                on:click={processSubmission}
+                            >
                                 <CheckboxBlankCircleLine class="button-icon" />
                                 <span class="button-text">Draft</span>
                             </Button>
@@ -429,7 +448,7 @@
             {/if}
         </div>
     </div>
-    {#if $content.content.audit.published === 'Unpublished'}
+    {#if $content.content.audit.published === 'Published'}
         <div class="w-11/12 md:w-full max-w-3xl mx-auto mt-6">
             <Comments />
         </div>

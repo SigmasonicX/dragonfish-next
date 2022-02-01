@@ -1,9 +1,10 @@
 import { writable } from 'svelte/store';
 import type { Content } from '$lib/models/content';
+import { PubStatus } from '$lib/models/content';
 import type { Ratings } from '$lib/models/content/ratings';
 import type { ContentLibrary } from '$lib/models/content/library';
 import type { PublishSection, Section } from '$lib/models/content/works';
-import { publishSection } from '$lib/services/content.service';
+import { publishOne, publishSection } from '$lib/services/content.service';
 
 interface ContentState {
     content: Content;
@@ -108,6 +109,15 @@ export async function togglePubStatus(
                 state.content.stats.words -= section.stats.words;
             }
 
+            return state;
+        });
+    });
+}
+
+export async function submitToQueue(profileId: string, contentId: string): Promise<void> {
+    return publishOne(profileId, contentId).then(() => {
+        content.update((state) => {
+            state.content.audit.published = PubStatus.Pending;
             return state;
         });
     });

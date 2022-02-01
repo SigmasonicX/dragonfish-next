@@ -28,8 +28,8 @@ export class ApprovalQueueController {
     @Patch('approve-content')
     async approveContent(@Query('pseudId') pseudId: string, @Body() decision: Decision) {
         return await this.queue.approveWork(
-            pseudId,
             decision.docId,
+            pseudId,
             decision.workId,
             decision.authorId,
         );

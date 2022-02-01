@@ -191,41 +191,6 @@ export class ContentStore {
         }
     }
 
-    /**
-     * Checks to see if a piece of content exists with the correct user and content ID. If so, routes
-     * the function to dedicated publishing functions across the API. If not, throw an `UnauthorizedException`.
-     *
-     * @param user The author of the content
-     * @param contentId The content ID
-     * @param pubChange (Optional) Publishing status updates for Blogs and News
-     */
-    async publishOne(
-        user: string,
-        contentId: string,
-        pubChange?: PubChange,
-    ): Promise<ContentDocument | BlogsContentDocument> {
-        const content = await this.content.findOne({
-            _id: contentId,
-            author: user,
-            'audit.isDeleted': false,
-        });
-
-        if (content === null || content === undefined) {
-            throw new UnauthorizedException(`You don't have permission to do that.`);
-        } else {
-            switch (content.kind) {
-                case ContentKind.BlogContent:
-                    return await this.blogContent.changePublishStatus(user, contentId, pubChange);
-                case ContentKind.PoetryContent:
-                //return await this.submitForApproval(user, contentId);
-                case ContentKind.ProseContent:
-                //return await this.submitForApproval(user, contentId);
-                default:
-                    throw new BadRequestException(`Invalid content kind.`);
-            }
-        }
-    }
-
     async updatePublishStatus(
         user: string,
         contentId: string,
@@ -240,6 +205,12 @@ export class ContentStore {
         if (content === null || content === undefined) {
             throw new UnauthorizedException(`You don't have permission to do that.`);
         } else {
+            if (
+                content.audit.published === PubStatus.Pending &&
+                pubStatus === PubStatus.Published
+            ) {
+                content.audit.publishedOn = new Date();
+            }
             content.audit.published = pubStatus;
             return await content.save();
         }

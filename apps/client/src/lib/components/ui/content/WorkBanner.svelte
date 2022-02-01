@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { slugify, abbreviate, pluralize } from '$lib/util';
+    import { slugify, abbreviate } from '$lib/util';
     import type { Content } from '$lib/models/content';
     import { TagKind } from '$lib/models/content/works';
     import TagBadge from '$lib/components/ui/content/TagBadge.svelte';

@@ -1,11 +1,23 @@
 <script lang="ts">
+    import { goto } from '$app/navigation';
     import { slugify, abbreviate, localeDate } from '$lib/util';
-    import { approvalQueue } from '$lib/repo/approval-queue.repo';
+    import { approvalQueue, setCurrItem, claimItem } from '$lib/repo/approval-queue.repo';
     import { session } from '$lib/repo/session.repo';
     import { CheckLine, CloseLine, Loader5Line } from 'svelte-remixicon';
     import { setQueue } from '$lib/repo/approval-queue.repo';
     import TagBadge from '$lib/components/ui/content/TagBadge.svelte';
     import { TagKind } from '$lib/models/content/works';
+    import type { Content } from '$lib/models/content';
+    import { ContentKind } from '$lib/models/content';
+
+    function openItem(docId: string, content: Content) {
+        setCurrItem(docId);
+        if (content.kind === ContentKind.ProseContent) {
+            goto(`/prose/${content._id}/${slugify(content.title)}`);
+        } else if (content.kind === ContentKind.PoetryContent) {
+            goto(`/poetry/${content._id}/${slugify(content.title)}`);
+        }
+    }
 </script>
 
 {#if $session.account && $session.currProfile}
@@ -45,7 +57,10 @@
                             <tr class="border-b border-zinc-700 dark:border-white">
                                 <td class="p-2 border-r border-zinc-700 dark:border-white">
                                     {#if item.claimedBy && item.claimedBy._id === $session.currProfile._id}
-                                        <a>View >></a>
+                                        <button
+                                            on:click={() => openItem(item._id, item.workToApprove)}
+                                            >View >></button
+                                        >
                                     {:else if item.claimedBy && item.claimedBy._id !== $session.currProfile._id}
                                         <img
                                             class="w-12 h-12 rounded-md border border-gray-600 dark:border-white"
@@ -53,7 +68,11 @@
                                             alt="avatar"
                                         />
                                     {:else}
-                                        <button>Claim</button>
+                                        <button
+                                            on:click={() =>
+                                                claimItem($session.currProfile._id, item._id)}
+                                            >Claim</button
+                                        >
                                     {/if}
                                 </td>
                                 <td class="p-2 border-r border-gray-600 dark:border-white">
