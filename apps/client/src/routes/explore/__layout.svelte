@@ -17,6 +17,7 @@
         BarChart2Fill,
         AddBoxLine,
         Gift2Line,
+        Hashtag,
     } from 'svelte-remixicon';
 </script>
 
@@ -49,25 +50,29 @@
                 class:active={$page.url.pathname === '/explore/popular-this-week'}
             >
                 <span class="link-icon"><CalendarLine /></span>
-                <span class="text">Popular this week</span>
+                <span class="text">Popular This Week</span>
             </a>
             <a
                 href="/explore/popular-today"
                 class:active={$page.url.pathname === '/explore/popular-today'}
             >
                 <span class="link-icon"><CalendarEventLine /></span>
-                <span class="text">Popular today</span>
+                <span class="text">Popular Today</span>
             </a>
             <a href="/explore/new-works" class:active={$page.url.pathname === '/explore/new-works'}>
                 <span class="link-icon"><NewspaperLine /></span>
-                <span class="text">New works</span>
+                <span class="text">New Works</span>
+            </a>
+            <a href="/explore/tags" class:active={$page.url.pathname === '/explore/tags'}>
+                <span class="link-icon"><Hashtag /></span>
+                <span class="text">Fandom Tags</span>
             </a>
             <a
                 href="/explore/special-events"
                 class:active={$page.url.pathname === '/explore/special-events'}
             >
                 <span class="link-icon"><SunLine /></span>
-                <span class="text">Special events</span>
+                <span class="text">Special Events</span>
             </a>
             {#if $session.currProfile}
                 <h5
@@ -76,25 +81,37 @@
                 >
                     <span class="relative top-1">Library</span>
                 </h5>
-                <a href="/explore">
+                <a href="/explore/library" class:active={$page.url.pathname === '/explore/library'}>
                     <span class="link-icon"><BookOpenLine /></span>
-                    <span class="text">All works</span>
+                    <span class="text">Prose & Poetry</span>
                 </a>
-                <a href="/explore">
+                <a
+                    href="/explore/library/favorite-blogs"
+                    class:active={$page.url.pathname === '/explore/library/favorite-blogs'}
+                >
                     <span class="link-icon"><HeartLine /></span>
-                    <span class="text">Favorite blogs</span>
+                    <span class="text">Favorite Blogs</span>
                 </a>
-                <a href="/explore">
+                <a
+                    href="/explore/library/read-it-later"
+                    class:active={$page.url.pathname === '/explore/library/read-it-later'}
+                >
                     <span class="link-icon"><ArrowRightCircleLine /></span>
-                    <span class="text">Read it later</span>
+                    <span class="text">Read It Later</span>
                 </a>
-                <a href="/explore">
+                <a
+                    href="/explore/library/finished-reading"
+                    class:active={$page.url.pathname === '/explore/library/finished-reading'}
+                >
                     <span class="link-icon"><BookmarkLine /></span>
-                    <span class="text">Finished reading</span>
+                    <span class="text">Finished Reading</span>
                 </a>
-                <a href="/explore">
+                <a
+                    href="/explore/library/reading-history"
+                    class:active={$page.url.pathname === '/explore/library/reading-history'}
+                >
                     <span class="link-icon"><HistoryLine /></span>
-                    <span class="text">Reading history</span>
+                    <span class="text">Reading History</span>
                 </a>
                 <h5
                     class="flex items-center text-lg font-medium mb-1 mt-2"
@@ -108,7 +125,7 @@
                 </a>
                 <a href="/explore">
                     <span class="link-icon"><AddBoxLine /></span>
-                    <span class="text">Add bookshelf</span>
+                    <span class="text">Add Bookshelf</span>
                 </a>
             {/if}
         </svete:fragment>

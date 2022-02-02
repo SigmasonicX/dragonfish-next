@@ -8,7 +8,7 @@
 
 <div class="w-full overflow-y-auto">
     <div class="w-11/12 mx-auto my-6">
-        {#if $session.currProfile && $session.token}
+        <!--{#if $session.currProfile && $session.token}
             <div class="section">
                 <div class="section-header border-zinc-600 dark:border-white">
                     <h3>Recommendations</h3>
@@ -44,7 +44,7 @@
                     <span>Loading...</span>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div class="section">
             <div class="section-header border-zinc-600 dark:border-white">
                 <h3>New works</h3>
@@ -73,7 +73,7 @@
                 </div>
             {/await}
         </div>
-        <div class="section">
+        <!--<div class="section">
             <div class="section-header border-zinc-600 dark:border-white">
                 <h3>Special events</h3>
                 <a href="/explore/special-events">See more >></a>
@@ -83,7 +83,7 @@
                     <span>No Events Currently Running</span>
                 </div>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
 

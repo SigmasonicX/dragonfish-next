@@ -40,6 +40,10 @@
                 <span class="link-icon"><ListUnordered /></span>
                 <span class="text">Approval Queue</span>
             </a>
+            <a href="/dashboard/tags" class:active={$page.url.pathname.includes('tags')}>
+                <span class="link-icon"><Hashtag /></span>
+                <span class="text">Tags</span>
+            </a>
             {#if $session.account && isAllowed( $session.account.roles, [Roles.Admin, Roles.Moderator], )}
                 <h5
                     class="flex items-center text-lg font-medium mb-1 mt-2"
@@ -53,10 +57,6 @@
                 >
                     <span class="link-icon"><ClipboardLine /></span>
                     <span class="text">Case Files</span>
-                </a>
-                <a href="/dashboard/tags" class:active={$page.url.pathname.includes('tags')}>
-                    <span class="link-icon"><Hashtag /></span>
-                    <span class="text">Tags</span>
                 </a>
                 <a
                     href="/dashboard/audit-log"

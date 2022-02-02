@@ -46,6 +46,19 @@
             @apply w-full px-1.5 py-2 rounded-md text-sm mb-0.5 flex items-center cursor-pointer select-none transition transform;
             color: var(--text-color);
 
+            &.big-button {
+                @apply py-4;
+                span.text {
+                    @apply text-lg relative top-[0.075rem];
+                }
+                span.link-icon {
+                    svg {
+                        width: 30px !important;
+                        height: 30px !important;
+                    }
+                }
+            }
+
             &:hover,
             &.active {
                 @apply transition-all;
