@@ -90,7 +90,7 @@
                     class:active={$page.url.pathname === '/explore/library/favorite-blogs'}
                 >
                     <span class="link-icon"><HeartLine /></span>
-                    <span class="text">Favorite Blogs</span>
+                    <span class="text">Blogs</span>
                 </a>
                 <a
                     href="/explore/library/read-it-later"

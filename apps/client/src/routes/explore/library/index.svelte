@@ -2,6 +2,7 @@
     import { session } from '$lib/repo/session.repo';
     import { fetchLibrary } from '$lib/services/content-library.service';
     import { Loader5Line } from 'svelte-remixicon';
+    import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 </script>
 
 {#if $session.currProfile}
@@ -14,7 +15,17 @@
         </div>
     {:then items}
         {#if items.length > 0}
-            there's some items here!
+            <div class="w-full overflow-y-auto">
+                <div class="w-11/12 mx-auto my-6 max-w-7xl">
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                    >
+                        {#each items as item}
+                            <WorkCard content={item.content} />
+                        {/each}
+                    </div>
+                </div>
+            </div>
         {:else}
             <div class="empty">
                 <h3>You haven't added anything yet...</h3>

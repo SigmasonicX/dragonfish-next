@@ -15,7 +15,7 @@
         MAX_SHORT_DESC_LENGTH,
         MIN_LONG_DESC_LENGTH,
     } from '$lib/util';
-    import { content, updateContent } from '$lib/repo/content.repo';
+    import { content, updateContent, updateLibraryDoc } from '$lib/repo/content.repo';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import WorkBanner from '$lib/components/ui/content/WorkBanner.svelte';
     import {
@@ -32,6 +32,7 @@
         TimeLine,
         Save2Line,
         CloseLine,
+        CheckboxLine,
     } from 'svelte-remixicon';
     import SectionList from '$lib/components/ui/content/SectionList.svelte';
     import TextField from '$lib/components/forms/TextField.svelte';
@@ -44,6 +45,7 @@
     import Comments from '$lib/components/comments/Comments.svelte';
     import { submitToQueue } from '$lib/repo/content.repo';
     import ApprovalOptions from '$lib/components/ui/content/ApprovalOptions.svelte';
+    import { addToLibrary, removeFromLibrary } from '$lib/services/content-library.service';
 
     let showDesc = true;
     let editMode = false;
@@ -184,6 +186,20 @@
 
         await submitToQueue($session.currProfile._id, $content.content._id);
     }
+
+    async function addContentToLibrary() {
+        if ($session.currProfile) {
+            const newDoc = await addToLibrary($session.currProfile._id, $content.content._id);
+            updateLibraryDoc(newDoc);
+        }
+    }
+
+    async function removeContentFromLibrary() {
+        if ($session.currProfile) {
+            await addToLibrary($session.currProfile._id, $content.content._id);
+            updateLibraryDoc(null);
+        }
+    }
 </script>
 
 <svelte:head>
@@ -296,10 +312,23 @@
                         <span class="button-text">Delete</span>
                     </Button>
                 {:else}
-                    <Button classes="md:w-full md:justify-center">
-                        <AddBoxLine class="button-icon" />
-                        <span class="button-text">Library</span>
-                    </Button>
+                    {#if $content.libraryDoc && $session.currProfile}
+                        <Button
+                            classes="md:w-full md:justify-center"
+                            on:click={removeContentFromLibrary}
+                        >
+                            <CheckboxLine class="button-icon" />
+                            <span class="button-text">Added</span>
+                        </Button>
+                    {:else if $session.currProfile}
+                        <Button
+                            classes="md:w-full md:justify-center"
+                            on:click={addContentToLibrary}
+                        >
+                            <AddBoxLine class="button-icon" />
+                            <span class="button-text">Library</span>
+                        </Button>
+                    {/if}
                     <div class="mx-0.5 md:mx-0 md:my-0.5"><!--separator--></div>
                     <Button classes="md:w-full md:justify-center">
                         <ShareBoxLine class="button-icon" />

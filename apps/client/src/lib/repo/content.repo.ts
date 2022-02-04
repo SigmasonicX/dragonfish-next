@@ -46,6 +46,13 @@ export function updateContent(contentModel: Content): void {
     }));
 }
 
+export function updateLibraryDoc(doc: ContentLibrary | null): void {
+    content.update((state) => ({
+        ...state,
+        libraryDoc: doc,
+    }));
+}
+
 export function addSection(section: Section): void {
     content.update((state) => ({
         ...state,
