@@ -6,6 +6,7 @@ import { baseUrl } from '$lib/util';
 import type { AxiosResponse } from 'axios';
 import type { FormType } from '$lib/models/content/works/forms';
 import type { Section, SectionForm, PublishSection } from '$lib/models/content/works';
+import type { Ratings, RatingOption } from '$lib/models/content/ratings';
 
 //#region ---BROWSING---
 
@@ -186,6 +187,21 @@ export async function deleteSection(
         )
         .then(() => {
             return;
+        });
+}
+
+//#endregion
+
+//#region ---RATINGS---
+
+export async function changeVote(contentId: string, rating: RatingOption): Promise<Ratings> {
+    return http
+        .patch<Ratings>(
+            `${baseUrl}/ratings/change-vote?contentId=${contentId}&rating=${rating}`,
+            {},
+        )
+        .then((res) => {
+            return res.data;
         });
 }
 

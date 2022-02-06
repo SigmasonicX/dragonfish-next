@@ -42,41 +42,18 @@ export class RatingsStore {
     }
 
     /**
-     * Switches a user's rating option to Liked.
+     * Changes a user's vote.
      * @param user
      * @param contentId
+     * @param newVote
      */
-    public async addLike(user: JwtPayload, contentId: string): Promise<RatingsDocument> {
+    public async changeVote(
+        user: JwtPayload,
+        contentId: string,
+        newVote: RatingOption,
+    ): Promise<RatingsDocument> {
         const doc = await this.ratings.findOne({ contentId: contentId, userId: user.sub });
-        doc.rating = RatingOption.Liked;
-
-        const savedDoc = await doc.save();
-        await this.updateCounts(contentId);
-        return savedDoc;
-    }
-
-    /**
-     * Switches a user's rating option to Disliked.
-     * @param user
-     * @param contentId
-     */
-    public async addDislike(user: JwtPayload, contentId: string): Promise<RatingsDocument> {
-        const doc = await this.ratings.findOne({ contentId: contentId, userId: user.sub });
-        doc.rating = RatingOption.Disliked;
-
-        const savedDoc = await doc.save();
-        await this.updateCounts(contentId);
-        return savedDoc;
-    }
-
-    /**
-     * Switches a user's rating option to NoVote.
-     * @param user
-     * @param contentId
-     */
-    public async setNoVote(user: JwtPayload, contentId: string): Promise<RatingsDocument> {
-        const doc = await this.ratings.findOne({ contentId: contentId, userId: user.sub });
-        doc.rating = RatingOption.NoVote;
+        doc.rating = newVote;
 
         const savedDoc = await doc.save();
         await this.updateCounts(contentId);

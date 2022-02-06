@@ -1,12 +1,29 @@
 <script lang="ts">
+    import { session } from '$lib/repo/session.repo';
+    import { setVote } from '$lib/repo/content.repo';
     import { slugify, abbreviate } from '$lib/util';
     import type { Content } from '$lib/models/content';
     import { TagKind } from '$lib/models/content/works';
     import TagBadge from '$lib/components/ui/content/TagBadge.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
-    import { HeartLine, DislikeLine } from 'svelte-remixicon';
+    import { HeartLine, DislikeLine, HeartFill, DislikeFill } from 'svelte-remixicon';
+    import type { Ratings } from '$lib/models/content/ratings';
+    import { RatingOption } from '$lib/models/content/ratings';
 
     export let content: Content;
+    export let ratings: Ratings;
+
+    async function setLike() {
+        await setVote(content._id, RatingOption.Liked);
+    }
+
+    async function setDislike() {
+        await setVote(content._id, RatingOption.Disliked);
+    }
+
+    async function setNoVote() {
+        await setVote(content._id, RatingOption.NoVote);
+    }
 </script>
 
 <div class="work-banner">
@@ -29,19 +46,65 @@
             </div>
         </div>
         <div class="flex items-center">
-            <Button kind="primary">
-                <HeartLine class="button-icon" size="20px" />
-                <span class="button-text relative top-[0.02rem]">
-                    {abbreviate(content.stats.likes)}
-                </span>
-            </Button>
-            <div class="mx-0.5"><!--separator--></div>
-            <Button kind="primary">
-                <DislikeLine class="button-icon" size="20px" />
-                <span class="button-text relative top-[0.02rem]">
-                    {abbreviate(content.stats.dislikes)}
-                </span>
-            </Button>
+            {#if $session.account}
+                {#if ratings.rating === RatingOption.Liked}
+                    <Button kind="primary" isActive on:click={setNoVote}>
+                        <HeartFill class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.likes)}
+                        </span>
+                    </Button>
+                    <div class="mx-0.5"><!--separator--></div>
+                    <Button kind="primary" on:click={setDislike}>
+                        <DislikeLine class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.dislikes)}
+                        </span>
+                    </Button>
+                {:else if ratings.rating === RatingOption.Disliked}
+                    <Button kind="primary" on:click={setLike}>
+                        <HeartLine class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.likes)}
+                        </span>
+                    </Button>
+                    <div class="mx-0.5"><!--separator--></div>
+                    <Button kind="primary" isActive on:click={setNoVote}>
+                        <DislikeFill class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.dislikes)}
+                        </span>
+                    </Button>
+                {:else}
+                    <Button kind="primary" on:click={setLike}>
+                        <HeartLine class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.likes)}
+                        </span>
+                    </Button>
+                    <div class="mx-0.5"><!--separator--></div>
+                    <Button kind="primary" on:click={setDislike}>
+                        <DislikeLine class="button-icon" size="20px" />
+                        <span class="button-text relative top-[0.02rem]">
+                            {abbreviate(content.stats.dislikes)}
+                        </span>
+                    </Button>
+                {/if}
+            {:else}
+                <Button kind="primary" disabled>
+                    <HeartLine class="button-icon" size="20px" />
+                    <span class="button-text relative top-[0.02rem]">
+                        {abbreviate(content.stats.likes)}
+                    </span>
+                </Button>
+                <div class="mx-0.5"><!--separator--></div>
+                <Button kind="primary" disabled>
+                    <DislikeLine class="button-icon" size="20px" />
+                    <span class="button-text relative top-[0.02rem]">
+                        {abbreviate(content.stats.dislikes)}
+                    </span>
+                </Button>
+            {/if}
         </div>
     </div>
 </div>

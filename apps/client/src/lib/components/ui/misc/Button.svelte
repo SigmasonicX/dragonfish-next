@@ -9,6 +9,9 @@
     export let type = 'button';
     export let kind: 'primary' | 'normal' = 'normal';
     export let title = '';
+
+    let isDisabled: boolean;
+    $: isDisabled = disabled || loading;
 </script>
 
 <button
@@ -18,7 +21,7 @@
     class={classes}
     {title}
     class:disabled
-    {disabled}
+    disabled={isDisabled}
     tabindex="0"
     on:click
 >

@@ -3,9 +3,6 @@
     import { createForm } from 'felte';
     import { session } from '$lib/repo/session.repo';
     import {
-        abbreviate,
-        pluralize,
-        localeDate,
         slugify,
         MIN_TITLE_LENGTH,
         MAX_TITLE_LENGTH,
@@ -15,25 +12,10 @@
         MAX_SHORT_DESC_LENGTH,
         MIN_LONG_DESC_LENGTH,
     } from '$lib/util';
-    import { content, updateContent, updateLibraryDoc } from '$lib/repo/content.repo';
+    import { content, updateContent } from '$lib/repo/content.repo';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import WorkBanner from '$lib/components/ui/content/WorkBanner.svelte';
-    import {
-        AddBoxLine,
-        FlagLine,
-        ShareBoxLine,
-        ArrowDownSLine,
-        ArrowUpSLine,
-        Edit2Line,
-        DeleteBinLine,
-        CheckboxCircleLine,
-        CheckboxBlankCircleLine,
-        CloseCircleLine,
-        TimeLine,
-        Save2Line,
-        CloseLine,
-        CheckboxLine,
-    } from 'svelte-remixicon';
+    import { ArrowDownSLine, ArrowUpSLine } from 'svelte-remixicon';
     import SectionList from '$lib/components/ui/content/SectionList.svelte';
     import TextField from '$lib/components/forms/TextField.svelte';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
@@ -43,9 +25,8 @@
     import type { CreateProse } from '$lib/models/content/works/forms';
     import { saveChanges } from '$lib/services/content.service';
     import Comments from '$lib/components/comments/Comments.svelte';
-    import { submitToQueue } from '$lib/repo/content.repo';
     import ApprovalOptions from '$lib/components/ui/content/ApprovalOptions.svelte';
-    import { addToLibrary, removeFromLibrary } from '$lib/services/content-library.service';
+    import WorkStats from '$lib/components/ui/content/WorkStats.svelte';
 
     let showDesc = true;
     let editMode = false;
@@ -77,7 +58,7 @@
     }
 
     const { form, data, createSubmitHandler, errors } = createForm({
-        onSubmit: (values) => {
+        onSubmit: () => {
             console.log(`Primary submit handler triggered!`);
         },
         initialValues: {
@@ -174,32 +155,6 @@
             return errors;
         },
     });
-
-    async function processSubmission() {
-        if (
-            $content.content.stats.words < 750 &&
-            $content.content.kind === ContentKind.ProseContent
-        ) {
-            alert(`You must have at least 750 words in your work in order to submit to the queue`);
-            return;
-        }
-
-        await submitToQueue($session.currProfile._id, $content.content._id);
-    }
-
-    async function addContentToLibrary() {
-        if ($session.currProfile) {
-            const newDoc = await addToLibrary($session.currProfile._id, $content.content._id);
-            updateLibraryDoc(newDoc);
-        }
-    }
-
-    async function removeContentFromLibrary() {
-        if ($session.currProfile) {
-            await addToLibrary($session.currProfile._id, $content.content._id);
-            updateLibraryDoc(null);
-        }
-    }
 </script>
 
 <svelte:head>
@@ -246,139 +201,15 @@
 </svelte:head>
 
 <div class="w-full h-screen overflow-y-auto">
-    <WorkBanner content={$content.content} />
+    <WorkBanner content={$content.content} ratings={$content.ratings} />
     <ApprovalOptions />
     <div class="w-11/12 mx-auto md:max-w-4xl my-6 flex flex-col md:flex-row">
-        <div
-            class="flex flex-col w-full md:mr-6 md:max-w-[128px] md:max-h-[35.875rem] md:mb-0 rounded-lg bg-zinc-300 dark:bg-zinc-700 dark:highlight-shadowed mb-6"
-        >
-            <div class="flex items-center md:flex-col p-2 border-b-2 border-zinc-500">
-                {#if $session.currProfile && $session.currProfile._id === $content.content.author._id}
-                    {#if editMode}
-                        <Button classes="md:w-full md:justify-center" on:click={saveProse}>
-                            <Save2Line class="button-icon" />
-                            <span class="button-text">Save</span>
-                        </Button>
-                        <div class="mx-0.5 md:mx-0 md:my-0.5"><!--separator--></div>
-                        <Button
-                            classes="md:w-full md:justify-center"
-                            on:click={() => (editMode = !editMode)}
-                        >
-                            <CloseLine class="button-icon" />
-                            <span class="button-text">Cancel</span>
-                        </Button>
-                    {:else}
-                        <Button
-                            classes="md:w-full md:justify-center"
-                            on:click={() => (editMode = !editMode)}
-                        >
-                            <Edit2Line class="button-icon" />
-                            <span class="button-text">Edit</span>
-                        </Button>
-                        <div class="mx-0.5 md:mx-0 md:my-0.5"><!--separator--></div>
-                        {#if $content.content.audit.published === 'Published'}
-                            <Button classes="md:w-full md:justify-center" disabled={editMode}>
-                                <CheckboxCircleLine class="button-icon" />
-                                <span class="button-text">Published</span>
-                            </Button>
-                        {:else if $content.content.audit.published === 'Unpublished'}
-                            <Button
-                                classes="md:w-full md:justify-center"
-                                disabled={editMode}
-                                on:click={processSubmission}
-                            >
-                                <CheckboxBlankCircleLine class="button-icon" />
-                                <span class="button-text">Draft</span>
-                            </Button>
-                        {:else if $content.content.audit.published === 'Pending'}
-                            <Button classes="md:w-full md:justify-center" disabled={editMode}>
-                                <TimeLine class="button-icon" />
-                                <span class="button-text">Pending</span>
-                            </Button>
-                        {:else if $content.content.audit.published === 'Rejected'}
-                            <Button classes="md:w-full md:justify-center" disabled={editMode}>
-                                <CloseCircleLine class="button-icon" />
-                                <span class="button-text">Rejected</span>
-                            </Button>
-                        {/if}
-                    {/if}
-                    <div class="flex-1 md:flex-auto md:my-0.5"><!--separator--></div>
-                    <Button
-                        classes="md:w-full md:justify-center"
-                        disabled={editMode}
-                        on:click={() => console.log(`Delete button hit!`)}
-                    >
-                        <DeleteBinLine class="button-icon" />
-                        <span class="button-text">Delete</span>
-                    </Button>
-                {:else}
-                    {#if $content.libraryDoc && $session.currProfile}
-                        <Button
-                            classes="md:w-full md:justify-center"
-                            on:click={removeContentFromLibrary}
-                        >
-                            <CheckboxLine class="button-icon" />
-                            <span class="button-text">Added</span>
-                        </Button>
-                    {:else if $session.currProfile}
-                        <Button
-                            classes="md:w-full md:justify-center"
-                            on:click={addContentToLibrary}
-                        >
-                            <AddBoxLine class="button-icon" />
-                            <span class="button-text">Library</span>
-                        </Button>
-                    {/if}
-                    <div class="mx-0.5 md:mx-0 md:my-0.5"><!--separator--></div>
-                    <Button classes="md:w-full md:justify-center">
-                        <ShareBoxLine class="button-icon" />
-                        <span class="button-text">Share</span>
-                    </Button>
-                    <div class="flex-1 md:flex-auto md:my-0.5"><!--separator--></div>
-                    <Button classes="md:w-full md:justify-center">
-                        <FlagLine class="button-icon" />
-                        <span class="button-text">Report</span>
-                    </Button>
-                {/if}
-            </div>
-            <div class="flex items-center justify-center md:flex-col">
-                <div class="stat-box border-r-2 md:border-r-0 md:border-b-2 border-zinc-500">
-                    {#if $content.content.audit.publishedOn}
-                        <span class="text text-zinc-500 dark:text-zinc-400">Published</span>
-                        <span class="stat">
-                            {localeDate($content.content.audit.publishedOn, 'mediumDate')}
-                        </span>
-                    {:else}
-                        <span class="text text-zinc-500 dark:text-zinc-400">Created</span>
-                        <span class="stat">
-                            {localeDate($content.content.createdAt, 'mediumDate')}
-                        </span>
-                    {/if}
-                </div>
-                <div class="stat-box border-r-2 md:border-r-0 md:border-b-2 border-zinc-500">
-                    <span class="text text-zinc-500 dark:text-zinc-400">
-                        View{pluralize($content.content.stats.views)}
-                    </span>
-                    <span class="stat">{abbreviate($content.content.stats.views)}</span>
-                </div>
-                <div class="stat-box border-r-2 md:border-r-0 md:border-b-2 border-zinc-500">
-                    <span class="text text-zinc-500 dark:text-zinc-400">
-                        Word{pluralize($content.content.stats.words)}
-                    </span>
-                    <span class="stat">{abbreviate($content.content.stats.words)}</span>
-                </div>
-                <div class="stat-box border-r-2 md:border-r-0 md:border-b-2 border-zinc-500">
-                    <span class="text text-zinc-500 dark:text-zinc-400">
-                        Comment{pluralize($content.content.stats.comments)}
-                    </span>
-                    <span class="stat">{abbreviate($content.content.stats.comments)}</span>
-                </div>
-                <div class="stat-box">
-                    <span class="text text-zinc-500 dark:text-zinc-400">Status</span>
-                    <span class="stat">{$content.content.meta.status}</span>
-                </div>
-            </div>
-        </div>
+        <WorkStats
+            content={$content.content}
+            libraryDoc={$content.libraryDoc}
+            bind:editMode
+            on:save={saveProse}
+        />
         <div class="w-full">
             {#if editMode}
                 <form use:form in:fade={{ delay: 0, duration: 150 }}>
@@ -400,7 +231,7 @@
                                 }}
                             />
                         </div>
-                        <div class="hidden md:block md:mx-2" />
+                        <div class="hidden md:block md:mx-2"><!--separator--></div>
                         <div class="md:w-1/2 w-full">
                             <SelectMenu
                                 items={genres}
@@ -420,7 +251,7 @@
                         placeholder="One of the best things never told"
                         errorMessage={$errors.shortDesc}
                     />
-                    <div class="my-4" />
+                    <div class="my-4"><!--separator--></div>
                     <Editor label="Long Description" bind:value={$data.longDesc} />
                     <div class="flex items-center mt-4 flex-wrap md:flex-nowrap">
                         <div class="md:w-1/2 w-full">
@@ -433,7 +264,7 @@
                                 }}
                             />
                         </div>
-                        <div class="hidden md:block md:mx-2" />
+                        <div class="hidden md:block md:mx-2"><!--separator--></div>
                         <div class="md:w-1/2 w-full">
                             <SelectMenu
                                 items={statuses}
@@ -483,15 +314,3 @@
         </div>
     {/if}
 </div>
-
-<style lang="scss">
-    div.stat-box {
-        @apply flex flex-col items-center justify-center w-[8rem] h-[4.5rem] md:h-[5.5rem];
-        span.text {
-            @apply font-semibold uppercase mb-2 text-[0.7rem] md:text-xs tracking-widest;
-        }
-        span.stat {
-            @apply md:text-base text-sm font-serif;
-        }
-    }
-</style>

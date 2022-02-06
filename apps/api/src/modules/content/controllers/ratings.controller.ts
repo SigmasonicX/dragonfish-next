@@ -3,6 +3,7 @@ import { RatingsStore } from '../db/stores';
 import { RolesGuard } from '$shared/guards';
 import { Roles } from '$shared/models/accounts';
 import { User, Identity, JwtPayload } from '$shared/auth';
+import type { RatingOption } from '$shared/models/ratings';
 
 @Controller('ratings')
 export class RatingsController {
@@ -10,22 +11,12 @@ export class RatingsController {
 
     @UseGuards(RolesGuard)
     @Identity(Roles.User)
-    @Patch('add-like')
-    async addLike(@User() user: JwtPayload, @Query('contentId') contentId: string) {
-        return this.ratings.addLike(user, contentId);
-    }
-
-    @UseGuards(RolesGuard)
-    @Identity(Roles.User)
-    @Patch('add-dislike')
-    async addDislike(@User() user: JwtPayload, @Query('contentId') contentId: string) {
-        return this.ratings.addDislike(user, contentId);
-    }
-
-    @UseGuards(RolesGuard)
-    @Identity(Roles.User)
-    @Patch('set-no-vote')
-    async setNoVote(@User() user: JwtPayload, @Query('contentId') contentId: string) {
-        return this.ratings.setNoVote(user, contentId);
+    @Patch('change-vote')
+    async changeVote(
+        @User() user: JwtPayload,
+        @Query('contentId') contentId: string,
+        @Query('rating') rating: RatingOption,
+    ) {
+        return this.ratings.changeVote(user, contentId, rating);
     }
 }
