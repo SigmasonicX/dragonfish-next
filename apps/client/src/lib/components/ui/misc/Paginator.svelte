@@ -3,10 +3,7 @@
     import { createEventDispatcher } from 'svelte';
 
     export let currPage: number;
-    export let perPage: number;
     export let totalPages: number;
-    export let from;
-    export let to;
 
     const dispatch = createEventDispatcher();
 
@@ -27,7 +24,7 @@
     >
         <li class="ml-0" class:disabled={currPage === 1}>
             <button on:click={() => changePage(currPage - 1)} disabled={currPage === 1}>
-                <ArrowLeftSLine size="1.75rem" />
+                <ArrowLeftSLine size="28px" />
             </button>
         </li>
         {#each range(totalPages, 1) as page}
@@ -39,7 +36,7 @@
         {/each}
         <li class="mr-0" class:disabled={currPage === totalPages}>
             <button on:click={() => changePage(currPage + 1)} disabled={currPage === totalPages}>
-                <ArrowRightSLine size="1.75rem" />
+                <ArrowRightSLine size="28px" />
             </button>
         </li>
     </ul>

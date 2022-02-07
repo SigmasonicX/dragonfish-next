@@ -1,6 +1,7 @@
 <script lang="ts">
     import { profile } from '$lib/repo/profile.repo';
     import { slugify } from '$lib/util';
+    import { InformationLine } from 'svelte-remixicon';
 </script>
 
 <svelte:head>
@@ -33,7 +34,12 @@
     <meta property="twitter:image" content={$profile.profile.avatar} />
 </svelte:head>
 
-<div class="empty">
-    <h3>Pardon our dust—</h3>
-    <p>This feature is not yet available.</p>
+<div class="w-11/12 mx-auto md:max-w-4xl">
+    <div class="w-full rounded-lg border border-zinc-600 dark:border-white flex items-center p-4">
+        <InformationLine class="mr-4" size="24px" />
+        <span>
+            This page only shows <strong>public</strong> bookshelves. To see all your bookshelves, and
+            make any changes, head over to the Explore page!
+        </span>
+    </div>
 </div>

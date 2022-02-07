@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { fade } from 'svelte/transition';
+    import { createForm } from 'felte';
     import { page } from '$app/stores';
     import PageNav from '$lib/components/nav/PageNav.svelte';
     import { session } from '$lib/repo/session.repo';
@@ -18,7 +20,62 @@
         AddBoxLine,
         Gift2Line,
         Hashtag,
+        CloseLine,
+        CheckLine,
+        Loader5Line,
+        InformationLine,
     } from 'svelte-remixicon';
+    import Button from '$lib/components/ui/misc/Button.svelte';
+    import { useQuery, useMutation } from '@sveltestack/svelte-query';
+    import { fetchShelves, createShelf } from '$lib/services/content-library.service';
+    import type { Bookshelf, BookshelfForm } from '$lib/models/content/library';
+    import { queryClient } from '$lib/util';
+
+    const shelfList = useQuery('shelfList', () => fetchShelves($session.currProfile?._id), {
+        enabled: !!$session.currProfile,
+    });
+
+    const makeShelf = useMutation(
+        (newShelf: BookshelfForm) => createShelf($session.currProfile?._id, newShelf),
+        {
+            onMutate: async (newShelf) => {
+                await queryClient.cancelQueries('shelfList');
+                const previousShelves = queryClient.getQueryData<Bookshelf[]>('shelfList');
+                queryClient.setQueryData('shelfList', (oldData) => [...oldData, newShelf]);
+                return { previousShelves };
+            },
+            onError: (err, newShelf, context) => {
+                queryClient.setQueryData('shelfList', context.previousShelves);
+            },
+            onSettled: () => {
+                queryClient.invalidateQueries('shelfList');
+            },
+        },
+    );
+
+    let showNewShelfForm = false;
+    const { form } = createForm({
+        onSubmit: (values) => {
+            const shelfForm: BookshelfForm = {
+                name: values.name,
+            };
+
+            $makeShelf.mutate(shelfForm);
+            showNewShelfForm = false;
+        },
+        initialValues: {
+            name: '',
+        },
+        validate: (values) => {
+            const errors = {
+                name: '',
+            };
+            if (values.name.length < 3 || values.name.length > 32) {
+                errors.name = `Bookshelf names must be between 3 and 32 characters in length`;
+            }
+            return errors;
+        },
+    });
 </script>
 
 <svelte:head>
@@ -119,14 +176,82 @@
                 >
                     <span class="relative top-1">Bookshelves</span>
                 </h5>
-                <a href="/explore">
-                    <span class="link-icon"><BarChart2Fill /></span>
-                    <span class="text">My new favorite things</span>
-                </a>
-                <a href="/explore">
-                    <span class="link-icon"><AddBoxLine /></span>
-                    <span class="text">Add Bookshelf</span>
-                </a>
+                {#if $shelfList.isLoading}
+                    <div class="w-full h-12 flex flex-col items-center justify-center">
+                        <div class="flex items-center">
+                            <Loader5Line class="animate-spin mr-2" />
+                            <span
+                                class="text-xs uppercase font-bold tracking-wider relative top-[0.075rem]"
+                                >Loading...</span
+                            >
+                        </div>
+                    </div>
+                {:else if $shelfList.isError}
+                    <div class="w-full h-12 flex flex-col items-center justify-center">
+                        <div class="flex items-center">
+                            <CloseLine class="mr-2" />
+                            <span
+                                class="text-xs uppercase font-bold tracking-wider relative top-[0.075rem]"
+                                >Error!</span
+                            >
+                        </div>
+                    </div>
+                {:else if $shelfList.data.length === 0}
+                    <div class="w-full h-12 flex flex-col items-center justify-center">
+                        <div class="flex items-center">
+                            <InformationLine class="mr-2" />
+                            <span
+                                class="text-xs uppercase font-bold tracking-wider relative top-[0.075rem]"
+                                >No shelves yet...</span
+                            >
+                        </div>
+                    </div>
+                {:else}
+                    {#each $shelfList.data as shelf}
+                        <a href="/explore/library/shelf-{shelf._id}">
+                            <span class="link-icon"><BarChart2Fill /></span>
+                            <span class="text">{shelf.name}</span>
+                        </a>
+                    {/each}
+                {/if}
+                {#if showNewShelfForm}
+                    <form in:fade={{ delay: 0, duration: 150 }} use:form>
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="My new favorite things"
+                            class="rounded-lg bg-zinc-400 dark:bg-zinc-600 ring-0 w-full"
+                        />
+                        <div class="flex items-center justify-center mt-2">
+                            <Button
+                                type="button"
+                                on:click={() => (showNewShelfForm = !showNewShelfForm)}
+                            >
+                                <CloseLine class="button-icon" />
+                                <span class="button-text">Cancel</span>
+                            </Button>
+                            <div class="mx-1"><!--separator--></div>
+                            <Button
+                                type="submit"
+                                kind="primary"
+                                loading={$makeShelf.isLoading}
+                                loadingText="Saving..."
+                            >
+                                <CheckLine class="button-icon" />
+                                <span class="button-text">Submit</span>
+                            </Button>
+                        </div>
+                    </form>
+                {:else}
+                    <button
+                        class="wide-button"
+                        in:fade={{ delay: 0, duration: 150 }}
+                        on:click={() => (showNewShelfForm = !showNewShelfForm)}
+                    >
+                        <span class="link-icon"><AddBoxLine /></span>
+                        <span class="text">Add Bookshelf</span>
+                    </button>
+                {/if}
             {/if}
         </svete:fragment>
     </PageNav>

@@ -10,21 +10,25 @@ import type { Ratings, RatingOption } from '$lib/models/content/ratings';
 
 //#region ---BROWSING---
 
-export async function fetchFirstNew(
-    contentFilter: ContentFilter,
-): Promise<AxiosResponse<Content[]>> {
-    return http.get<Content[]>(`${baseUrl}/browse/fetch-first-new?filter=${contentFilter}`);
+export async function fetchFirstNew(contentFilter: ContentFilter): Promise<Content[]> {
+    return http
+        .get<Content[]>(`${baseUrl}/browse/fetch-first-new?filter=${contentFilter}`)
+        .then((res) => {
+            return res.data;
+        });
 }
 
 export async function fetchAllNew(
     page: number,
     kinds: ContentKind[],
     filter: ContentFilter,
-): Promise<AxiosResponse<PaginateResult<Content>>> {
+): Promise<PaginateResult<Content>> {
     const kindFragment = kinds.map((k) => `&kind=${k}`).join('');
     const route = `${baseUrl}/browse/fetch-all-new?filter=${filter}&pageNum=${page}${kindFragment}`;
 
-    return http.get<PaginateResult<Content>>(route);
+    return http.get<PaginateResult<Content>>(route).then((res) => {
+        return res.data;
+    });
 }
 
 //#endregion

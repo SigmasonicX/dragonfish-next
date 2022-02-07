@@ -29,9 +29,7 @@
     {/each}
     <Paginator
         currPage={$comments.currPage}
-        perPage={$comments.perPage}
         totalPages={$comments.totalPages}
-        totalDocs={$comments.totalComments}
         on:change={(e) => changePage(e.detail)}
     />
 {/if}

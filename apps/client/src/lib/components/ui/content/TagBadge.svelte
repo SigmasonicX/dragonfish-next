@@ -24,10 +24,10 @@
     export let size: 'small' | 'medium' | 'large' = 'medium';
     export let hasIcon = true;
     export let kind: TagKind;
-    export let type: ContentKind;
-    export let category: WorkKind;
-    export let genre: Genres;
-    export let rating: ContentRating;
+    export let type: ContentKind = null;
+    export let category: WorkKind = null;
+    export let genre: Genres = null;
+    export let rating: ContentRating = null;
 </script>
 
 <div

@@ -42,7 +42,8 @@
             }
         }
 
-        a {
+        a,
+        button.wide-button {
             @apply w-full px-1.5 py-2 rounded-md text-sm mb-0.5 flex items-center cursor-pointer select-none transition transform;
             color: var(--text-color);
 
@@ -72,7 +73,7 @@
             }
 
             span.text {
-                @apply flex-1 truncate;
+                @apply truncate;
             }
 
             span.link-icon {

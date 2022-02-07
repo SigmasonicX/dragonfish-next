@@ -1,9 +1,11 @@
 <script lang="ts">
-    import { session } from '$lib/repo/session.repo';
+    import { useQuery } from '@sveltestack/svelte-query';
     import { app } from '$lib/repo/app.repo';
     import { Loader5Line } from 'svelte-remixicon';
-    import { content } from '$lib/services';
+    import { fetchFirstNew } from '$lib/services/content.service';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
+
+    const newWorks = useQuery('newWorks', () => fetchFirstNew($app.filter));
 </script>
 
 <div class="w-full overflow-y-auto">
@@ -50,28 +52,28 @@
                 <h3>New works</h3>
                 <a href="/explore/new-works">See more >></a>
             </div>
-            {#await content.fetchFirstNew($app.filter)}
+            {#if $newWorks.isLoading}
                 <div class="section-loading">
                     <div class="inner-loader">
                         <Loader5Line class="animate-spin mr-2" size="32px" />
                         <span>Loading...</span>
                     </div>
                 </div>
-            {:then content}
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4"
-                >
-                    {#each content.data as work}
-                        <WorkCard content={work} />
-                    {/each}
-                </div>
-            {:catch error}
+            {:else if $newWorks.isError}
                 <div class="section-loading">
                     <div class="inner-loader">
                         <span>ERROR: Could not fetch content</span>
                     </div>
                 </div>
-            {/await}
+            {:else}
+                <div
+                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4"
+                >
+                    {#each $newWorks.data as work}
+                        <WorkCard content={work} />
+                    {/each}
+                </div>
+            {/if}
         </div>
         <!--<div class="section">
             <div class="section-header border-zinc-600 dark:border-white">

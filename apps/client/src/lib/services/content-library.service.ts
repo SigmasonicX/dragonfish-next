@@ -1,6 +1,7 @@
 import { http } from './http';
 import { baseUrl } from '$lib/util';
-import type { ContentLibrary } from '$lib/models/content/library';
+import type { BookshelfForm, ContentLibrary } from '$lib/models/content/library';
+import type { Bookshelf } from '$lib/models/content/library';
 
 //#region ---CONTENT LIBRARY---
 
@@ -37,25 +38,75 @@ export async function removeFromLibrary(profileId: string, contentId: string): P
 
 //#region ---BOOKSHELVES---
 
-export async function fetchShelves() {}
+export async function fetchShelves(profileId: string): Promise<Bookshelf[]> {
+    return http
+        .get<Bookshelf[]>(`${baseUrl}/bookshelves/fetch-bookshelves?pseudId=${profileId}`)
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function fetchShelf() {}
+export async function fetchShelf(profileId: string, shelfId: string): Promise<Bookshelf> {
+    return http
+        .get<Bookshelf>(
+            `${baseUrl}/bookshelves/fetch-one-bookshelf?pseudId=${profileId}&shelfId=${shelfId}`,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function createShelf() {}
+export async function createShelf(profileId: string, shelfForm: BookshelfForm): Promise<Bookshelf> {
+    return http
+        .post<Bookshelf>(`${baseUrl}/bookshelves/create-bookshelf?pseudId=${profileId}`, shelfForm)
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function editShelf() {}
+export async function editShelf(
+    profileId: string,
+    shelfId: string,
+    shelfForm: BookshelfForm,
+): Promise<Bookshelf> {
+    return http
+        .patch<Bookshelf>(
+            `${baseUrl}/bookshelves/edit-bookshelf?pseudId=${profileId}&shelfId=${shelfId}`,
+            shelfForm,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function addToShelf() {}
+export async function toggleVisibility(profileId: string, shelfId: string): Promise<Bookshelf> {
+    return http
+        .patch<Bookshelf>(
+            `${baseUrl}/bookshelves/toggle-visibility?pseudId=${profileId}&shelfId=${shelfId}`,
+            {},
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function removeFromShelf() {}
-
-export async function toggleVisibility() {}
-
-export async function deleteShelf() {}
+export async function deleteShelf(profileId: string, shelfId: string): Promise<void> {
+    return http
+        .deleteReq<void>(
+            `${baseUrl}/bookshelves/delete-bookshelf?pseudId=${profileId}&shelfId=${shelfId}`,
+        )
+        .then(() => {
+            return;
+        });
+}
 
 //#endregion
 
 //#region ---SHELF ITEMS---
+
+export async function addToShelf() {}
+
+export async function removeFromShelf() {}
 
 export async function fetchShelfItems() {}
 
