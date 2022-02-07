@@ -1,3 +1,26 @@
+<script context="module" lang="ts">
+    import type { Load } from '@sveltejs/kit';
+    import { setContent } from '$lib/repo/content.repo';
+    import { getPage } from '$lib/repo/comments.repo';
+    import { CommentKind } from '$lib/models/comments';
+    import { fetchOne } from '$lib/services/content.service';
+
+    export const load: Load = async ({ params, url }) => {
+        const blogId: string = params.id;
+        const content = await fetchOne(blogId);
+        const page: number = url.searchParams.has('page') ? +url.searchParams.get('page') : 1;
+
+        setContent(content.content);
+
+        return {
+            props: {
+                content,
+                comments: await getPage(content.content._id, CommentKind.ContentComment, page),
+            },
+        };
+    };
+</script>
+
 <script lang="ts">
     import { createForm } from 'felte';
     import { content, updateContent } from '$lib/repo/content.repo';
@@ -144,9 +167,8 @@
                     <span
                         >by <a
                             class="text-white underline hover:no-underline"
-                            href="/profile/{$content.content.author._id}/{slugify(
-                                $content.content.author.userTag,
-                            )}">{$content.content.author.screenName}</a
+                            href="/profile/{$content.content.author._id}"
+                            >{$content.content.author.screenName}</a
                         ></span
                     >
                     <span class="mx-2">|</span>

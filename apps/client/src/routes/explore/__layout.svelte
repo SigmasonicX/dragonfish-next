@@ -208,7 +208,7 @@
                     </div>
                 {:else}
                     {#each $shelfList.data as shelf}
-                        <a href="/explore/library/shelf-{shelf._id}">
+                        <a href="/explore/library/shelf/{shelf._id}">
                             <span class="link-icon"><BarChart2Fill /></span>
                             <span class="text">{shelf.name}</span>
                         </a>

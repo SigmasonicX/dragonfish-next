@@ -12,7 +12,6 @@
         PenNibLine,
         RhythmFill,
     } from 'svelte-remixicon';
-    import slug from 'slug';
 
     export let content: Content;
     export let size: CardSize = CardSize.Medium;
@@ -31,10 +30,10 @@
     if (content) {
         switch (content.kind) {
             case ContentKind.ProseContent:
-                contentUrl = `/prose/${content._id}/${slug(content.title)}`;
+                contentUrl = `/prose/${content._id}`;
                 break;
             case ContentKind.PoetryContent:
-                contentUrl = `/poetry/${content._id}/${slug(content.title)}`;
+                contentUrl = `/poetry/${content._id}`;
         }
     }
 </script>

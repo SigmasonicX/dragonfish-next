@@ -79,11 +79,7 @@
                                     {item.workToApprove.title}
                                 </td>
                                 <td class="p-2 border-r border-gray-600 dark:border-white">
-                                    <a
-                                        href="/profile/{item.workToApprove.author._id}/{slugify(
-                                            item.workToApprove.author.userTag,
-                                        )}"
-                                    >
+                                    <a href="/profile/{item.workToApprove.author._id}">
                                         {item.workToApprove.author.screenName}
                                     </a>
                                 </td>

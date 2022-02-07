@@ -62,7 +62,7 @@
                                     <CheckboxBlankCircleLine class="button-icon no-text" />
                                 </button>
                             {/if}
-                            <a href="{baseUrl}/section-{section._id}">
+                            <a href="{baseUrl}/section/{section._id}">
                                 <span class="title">{section.title}</span>
                                 <span class="words">{section.stats.words} words</span>
                             </a>
@@ -76,7 +76,7 @@
                         return item.published === true;
                     }) as section}
                         <li class="section-item odd:bg-zinc-300 odd:dark:bg-zinc-700">
-                            <a href="{baseUrl}/section-{section._id}">
+                            <a href="{baseUrl}/section/{section._id}">
                                 <span class="title">{section.title}</span>
                                 <span class="words">{section.stats.words} words</span>
                             </a>

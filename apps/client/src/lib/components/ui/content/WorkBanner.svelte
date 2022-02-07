@@ -31,7 +31,7 @@
         <div class="flex flex-col items-center md:justify-end md:items-baseline flex-1">
             <h1 class="text-4xl font-medium text-white">{content.title}</h1>
             <a
-                href="/profile/{content.author._id}/{slugify(content.author.userTag)}"
+                href="/profile/{content.author._id}"
                 class="text-xl font-light text-white"
                 style="font-family: var(--header-text);"
             >

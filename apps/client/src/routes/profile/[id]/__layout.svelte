@@ -5,11 +5,12 @@
     import type { Load } from '@sveltejs/kit';
     import { profile } from '$lib/repo/profile.repo';
     import type { Profile } from '$lib/models/accounts';
+    import { getProfile } from '$lib/services/profile.service';
 
-    export const load: Load = async ({ params, fetch }) => {
+    export const load: Load = async ({ params }) => {
         const profileId: string = params.id;
-        const profileModel: Profile = await fetch(`/api/profile/${profileId}`).then(async (res) => {
-            return await res.json();
+        const profileModel = await getProfile(profileId).then((res) => {
+            return res.data;
         });
 
         profile.set(profileModel);
@@ -62,23 +63,13 @@
                     </h1>
                     <h3 class="text-base text-white">@{profileModel.userTag}</h3>
                     <span class="text-xs mt-1">
-                        <a
-                            class="text-white"
-                            href="/profile/{profileModel._id}/{slugify(
-                                profileModel.userTag,
-                            )}/followers"
-                        >
+                        <a class="text-white" href="/profile/{profileModel._id}/followers">
                             {profileModel.stats.followers} follower{pluralize(
                                 profileModel.stats.followers,
                             )}
                         </a>
                         <span class="mx-1 text-white">•</span>
-                        <a
-                            class="text-white"
-                            href="/profile/{profileModel._id}/{slugify(
-                                profileModel.userTag,
-                            )}/following"
-                        >
+                        <a class="text-white" href="/profile/{profileModel._id}/following">
                             {profileModel.stats.following} following
                         </a>
                     </span>
@@ -97,15 +88,14 @@
             </div>
             <div class="user-nav">
                 <a
-                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}"
-                    class:active={$page.url.pathname ===
-                        `/profile/${profileModel._id}/${slugify(profileModel.userTag)}`}
+                    href="/profile/{profileModel._id}"
+                    class:active={$page.url.pathname === `/profile/${profileModel._id}`}
                 >
                     <Home5Line size="20px" class="mr-1" />
                     <span>Home</span>
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/works"
+                    href="/profile/{profileModel._id}/works"
                     class:active={$page.url.pathname.includes(`works`)}
                 >
                     <QuillPenLine size="20px" class="mr-1" />
@@ -113,7 +103,7 @@
                     >
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/blogs"
+                    href="/profile/{profileModel._id}/blogs"
                     class:active={$page.url.pathname.includes(`blogs`)}
                 >
                     <CupLine size="20px" class="mr-1" />
@@ -121,7 +111,7 @@
                     >
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/{slugify(profileModel.userTag)}/shelves"
+                    href="/profile/{profileModel._id}/shelves"
                     class:active={$page.url.pathname.includes(`shelves`)}
                 >
                     <BarChart2Fill size="20px" class="mr-1" />

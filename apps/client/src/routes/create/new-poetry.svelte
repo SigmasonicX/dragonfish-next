@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from '$app/navigation';
     import { createForm } from 'felte';
     import TextField from '$lib/components/forms/TextField.svelte';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
@@ -38,7 +39,7 @@
 
             await createOne($session.currProfile._id, ContentKind.PoetryContent, formInfo).then(
                 (res) => {
-                    console.log(res);
+                    goto(`/poetry/${res.data._id}`);
                 },
             );
         },

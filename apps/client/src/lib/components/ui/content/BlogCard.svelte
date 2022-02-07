@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Blog } from '$lib/models/content/blogs';
-    import { slugify, abbreviate, localeDate } from '$lib/util';
+    import { abbreviate, localeDate } from '$lib/util';
     import Avatar from '$lib/components/ui/user/Avatar.svelte';
     import { DiscussLine, BarChartBoxLine } from 'svelte-remixicon';
 
@@ -9,7 +9,7 @@
 
 <a
     class="blog-card border-zinc-700 dark:border-white hover:bg-zinc-200 dark:hover:bg-zinc-700"
-    href="/blog/{blog._id}/{slugify(blog.title)}"
+    href="/blog/{blog._id}"
 >
     <div class="flex items-center p-4">
         <Avatar size="4rem" src={blog.author.profile.avatar} />

@@ -293,7 +293,7 @@
                                 <li class:active={section._id === $content.currSection._id}>
                                     <a
                                         class="w-full px-2.5 flex items-center"
-                                        href="{baseUrl}/section-{section._id}"
+                                        href="{baseUrl}/section/{section._id}"
                                     >
                                         {#if section.published}
                                             <CheckboxCircleLine class="mr-2" />
@@ -307,7 +307,7 @@
                         {:else}
                             {#each $content.sections.filter((value) => value.published === true) as section}
                                 <li class:active={section._id === $content.currSection._id}>
-                                    <a class="w-full px-2.5" href="{baseUrl}/section-{section._id}"
+                                    <a class="w-full px-2.5" href="{baseUrl}/section/{section._id}"
                                         >{section.title}</a
                                     >
                                 </li>

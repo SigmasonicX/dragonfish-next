@@ -6,7 +6,7 @@
     import { ContentKind, ContentRating } from '$lib/models/content';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import { CloseLine, Save2Line } from 'svelte-remixicon';
-    import { MAX_TITLE_LENGTH, MIN_TITLE_LENGTH, MIN_LONG_DESC_LENGTH, slugify } from '$lib/util';
+    import { MAX_TITLE_LENGTH, MIN_TITLE_LENGTH, MIN_LONG_DESC_LENGTH } from '$lib/util';
     import type { BlogForm } from '$lib/models/content/works/forms';
     import { createOne } from '$lib/services/content.service';
     import { session } from '$lib/repo/session.repo';
@@ -21,7 +21,7 @@
 
             await createOne($session.currProfile._id, ContentKind.BlogContent, formInfo).then(
                 (res) => {
-                    goto(`/blog/${res.data._id}/${slugify(res.data.title)}`);
+                    goto(`/blog/${res.data._id}`);
                 },
             );
         },

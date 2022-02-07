@@ -64,19 +64,15 @@
                 <div class="text-center">
                     <h3 class="text-3xl font-medium flex items-center justify-center">
                         <RoleBadge roles={$session.currProfile.roles} />
-                        <a
-                            href={`/profile/${$session.currProfile._id}/${slugify(
-                                $session.currProfile.userTag,
-                            )}`}>{$session.currProfile.screenName}</a
+                        <a href={`/profile/${$session.currProfile._id}`}
+                            >{$session.currProfile.screenName}</a
                         >
                     </h3>
                     <h4 class="text-xl">@{$session.currProfile.userTag}</h4>
                 </div>
                 <div class="flex items-center justify-center font-serif mt-4 max-w-[344px] mx-auto">
                     <a
-                        href={`/profile/${$session.currProfile._id}/${slugify(
-                            $session.currProfile.userTag,
-                        )}/works`}
+                        href={`/profile/${$session.currProfile._id}/works`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600 rounded-l-lg"
                         style="color: var(--text-color);"
                     >
@@ -84,9 +80,7 @@
                         <span>work{pluralize($session.currProfile.stats.works)}</span>
                     </a>
                     <a
-                        href={`/profile/${$session.currProfile._id}/${slugify(
-                            $session.currProfile.userTag,
-                        )}/blogs`}
+                        href={`/profile/${$session.currProfile._id}/blogs`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
@@ -94,9 +88,7 @@
                         <span>blog{pluralize($session.currProfile.stats.blogs)}</span>
                     </a>
                     <a
-                        href={`/profile/${$session.currProfile._id}/${slugify(
-                            $session.currProfile.userTag,
-                        )}/followers`}
+                        href={`/profile/${$session.currProfile._id}/followers`}
                         class="block flex flex-col items-center w-[86px] border-r border-zinc-300 dark:border-white text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >
@@ -104,9 +96,7 @@
                         <span>follower{pluralize($session.currProfile.stats.followers)}</span>
                     </a>
                     <a
-                        href={`/profile/${$session.currProfile._id}/${slugify(
-                            $session.currProfile.userTag,
-                        )}/following`}
+                        href={`/profile/${$session.currProfile._id}/following`}
                         class="block flex flex-col items-center w-[86px] text-lg hover:no-underline transition transform hover:scale-105 active:scale-100 hover:bg-zinc-300 rounded-r-lg hover:dark:bg-zinc-600"
                         style="color: var(--text-color);"
                     >

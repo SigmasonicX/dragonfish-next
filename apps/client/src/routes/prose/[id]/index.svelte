@@ -20,15 +20,9 @@
     import TextField from '$lib/components/forms/TextField.svelte';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import Editor from '$lib/components/forms/Editor.svelte';
-    import {
-        Genres,
-        PoetryFormKind,
-        Poetry,
-        WorkKind,
-        WorkStatus,
-    } from '$lib/models/content/works';
+    import { Genres, Prose, WorkKind, WorkStatus } from '$lib/models/content/works';
     import { ContentKind, ContentRating } from '$lib/models/content';
-    import type { CreatePoetry } from '$lib/models/content/works/forms';
+    import type { CreateProse } from '$lib/models/content/works/forms';
     import { saveChanges } from '$lib/services/content.service';
     import Comments from '$lib/components/comments/Comments.svelte';
     import ApprovalOptions from '$lib/components/ui/content/ApprovalOptions.svelte';
@@ -47,10 +41,6 @@
         label: value,
     }));
     const statuses = Object.entries(WorkStatus).map(([key, value]) => ({
-        value: key,
-        label: value,
-    }));
-    const poetryForms = Object.entries(PoetryFormKind).map(([key, value]) => ({
         value: key,
         label: value,
     }));
@@ -76,29 +66,25 @@
             shortDesc: $content.content.desc,
             longDesc: $content.content.body,
             category: categories.find(
-                (item) => item.value === WorkKind[($content.content as Poetry).meta.category],
-            ),
-            poetryForm: poetryForms.find(
-                (item) => item.value === PoetryFormKind[($content.content as Poetry).meta.form],
+                (item) => item.value === WorkKind[($content.content as Prose).meta.category],
             ),
             rating: ratings.find(
-                (item) => item.value === ContentRating[($content.content as Poetry).meta.rating],
+                (item) => item.value === ContentRating[($content.content as Prose).meta.rating],
             ),
-            genres: mapGenres(($content.content as Poetry).meta.genres),
+            genres: mapGenres(($content.content as Prose).meta.genres),
             status: statuses.find(
-                (item) => item.value === WorkStatus[($content.content as Poetry).meta.status],
+                (item) => item.value === WorkStatus[($content.content as Prose).meta.status],
             ),
         },
     });
 
-    const savePoetry = createSubmitHandler({
+    const saveProse = createSubmitHandler({
         onSubmit: async (values) => {
-            const formInfo: CreatePoetry = {
+            const formInfo: CreateProse = {
                 title: values.title,
                 desc: values.shortDesc,
                 body: values.longDesc,
                 category: values.category.value,
-                form: values.poetryForm.value,
                 genres: values.genres.map((val) => {
                     return val.value;
                 }),
@@ -110,7 +96,7 @@
             await saveChanges(
                 $session.currProfile._id,
                 $content.content._id,
-                ContentKind.PoetryContent,
+                ContentKind.ProseContent,
                 formInfo,
             ).then((res) => {
                 updateContent(res);
@@ -222,7 +208,7 @@
             content={$content.content}
             libraryDoc={$content.libraryDoc}
             bind:editMode
-            on:save={savePoetry}
+            on:save={saveProse}
         />
         <div class="w-full">
             {#if editMode}
@@ -235,7 +221,7 @@
                         errorMessage={$errors.title}
                     />
                     <div class="flex items-center my-4 flex-wrap md:flex-nowrap">
-                        <div class="md:w-1/3 w-full">
+                        <div class="md:w-1/2 w-full">
                             <SelectMenu
                                 items={categories}
                                 label="Category"
@@ -246,7 +232,7 @@
                             />
                         </div>
                         <div class="hidden md:block md:mx-2"><!--separator--></div>
-                        <div class="md:w-1/3 w-full">
+                        <div class="md:w-1/2 w-full">
                             <SelectMenu
                                 items={genres}
                                 label="Genre(s)"
@@ -254,16 +240,6 @@
                                 bind:value={$data.genres}
                                 on:select={(e) => {
                                     $data.genres = e.detail;
-                                }}
-                            />
-                        </div>
-                        <div class="hidden md:block md:mx-2"><!--separator--></div>
-                        <div class="md:w-1/3 w-full">
-                            <SelectMenu
-                                items={poetryForms}
-                                label="Form"
-                                on:select={(e) => {
-                                    $data.poetryForm = e.detail;
                                 }}
                             />
                         </div>
@@ -325,9 +301,7 @@
                             </div>
                         {/if}
                     </div>
-                    <SectionList
-                        baseUrl="/prose/{$content.content._id}/{slugify($content.content.title)}"
-                    />
+                    <SectionList baseUrl="/prose/{$content.content._id}" />
                 </div>
             {/if}
         </div>

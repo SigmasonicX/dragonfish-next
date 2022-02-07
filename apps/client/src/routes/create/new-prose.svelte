@@ -19,6 +19,7 @@
         MAX_SHORT_DESC_LENGTH,
         MIN_LONG_DESC_LENGTH,
     } from '$lib/util';
+    import { goto } from '$app/navigation';
 
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
@@ -37,7 +38,7 @@
 
             await createOne($session.currProfile._id, ContentKind.ProseContent, formInfo).then(
                 (res) => {
-                    console.log(res);
+                    goto(`/prose/${res.data._id}`);
                 },
             );
         },
