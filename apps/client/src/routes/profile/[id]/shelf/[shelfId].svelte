@@ -6,7 +6,7 @@
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 
     export const load: Load = async ({ params }) => {
-        const shelfId: string = params.id;
+        const shelfId: string = params.shelfId;
 
         const bookshelf = await fetchShelf(get(session).currProfile._id, shelfId);
 
@@ -59,43 +59,41 @@
         </div>
     </div>
 {:else}
-    <div class="flex-1 h-screen overflow-y-auto">
-        <div class="w-11/12 mx-auto md:max-w-4xl my-6">
-            <BookshelfHeader shelf={$thisShelf.data} showTools="true" />
-            {#if $shelfItems.isLoading}
-                <div class="h-96 w-full flex flex-col items-center justify-center">
-                    <div class="flex items-center">
-                        <Loader5Line class="mr-2 animate-spin" size="24px" />
-                        <span class="text-lg uppercase font-bold tracking-widest">Loading...</span>
-                    </div>
+    <div class="w-11/12 mx-auto md:max-w-4xl mb-6">
+        <BookshelfHeader shelf={$thisShelf.data} />
+        {#if $shelfItems.isLoading}
+            <div class="h-96 w-full flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <Loader5Line class="mr-2 animate-spin" size="24px" />
+                    <span class="text-lg uppercase font-bold tracking-widest">Loading...</span>
                 </div>
-            {:else if $shelfItems.isError}
-                <div class="h-96 w-full flex flex-col items-center justify-center">
-                    <div class="flex items-center">
-                        <CloseLine class="mr-2" size="24px" />
-                        <span class="text-lg uppercase font-bold tracking-widest"
-                            >Error fetching shelf items!</span
-                        >
-                    </div>
+            </div>
+        {:else if $shelfItems.isError}
+            <div class="h-96 w-full flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <CloseLine class="mr-2" size="24px" />
+                    <span class="text-lg uppercase font-bold tracking-widest"
+                        >Error fetching shelf items!</span
+                    >
                 </div>
-            {:else if $shelfItems.data.length > 0}
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                >
-                    {#each $shelfItems.data as work}
-                        <WorkCard content={work} />
-                    {/each}
+            </div>
+        {:else if $shelfItems.data.length > 0}
+            <div
+                class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+            >
+                {#each $shelfItems.data as work}
+                    <WorkCard content={work} />
+                {/each}
+            </div>
+        {:else}
+            <div class="h-96 w-full flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <InformationLine class="mr-2" size="24px" />
+                    <span class="text-lg uppercase font-bold tracking-widest"
+                        >You haven't added anything here yet</span
+                    >
                 </div>
-            {:else}
-                <div class="h-96 w-full flex flex-col items-center justify-center">
-                    <div class="flex items-center">
-                        <InformationLine class="mr-2" size="24px" />
-                        <span class="text-lg uppercase font-bold tracking-widest"
-                            >You haven't added anything here yet</span
-                        >
-                    </div>
-                </div>
-            {/if}
-        </div>
+            </div>
+        {/if}
     </div>
 {/if}

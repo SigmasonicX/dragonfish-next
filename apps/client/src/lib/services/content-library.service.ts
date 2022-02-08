@@ -1,7 +1,11 @@
 import { http } from './http';
 import { baseUrl } from '$lib/util';
-import type { BookshelfForm, ContentLibrary } from '$lib/models/content/library';
-import type { Bookshelf } from '$lib/models/content/library';
+import type {
+    BookshelfForm,
+    ContentLibrary,
+    Bookshelf,
+    ShelfItem,
+} from '$lib/models/content/library';
 
 //#region ---CONTENT LIBRARY---
 
@@ -41,6 +45,14 @@ export async function removeFromLibrary(profileId: string, contentId: string): P
 export async function fetchShelves(profileId: string): Promise<Bookshelf[]> {
     return http
         .get<Bookshelf[]>(`${baseUrl}/bookshelves/fetch-bookshelves?pseudId=${profileId}`)
+        .then((res) => {
+            return res.data;
+        });
+}
+
+export async function fetchPublicShelves(profileId: string): Promise<Bookshelf[]> {
+    return http
+        .get<Bookshelf[]>(`${baseUrl}/bookshelves/fetch-public-bookshelves?pseudId=${profileId}`)
         .then((res) => {
             return res.data;
         });
@@ -104,12 +116,57 @@ export async function deleteShelf(profileId: string, shelfId: string): Promise<v
 
 //#region ---SHELF ITEMS---
 
-export async function addToShelf() {}
+export async function addToShelf(
+    profileId: string,
+    shelfId: string,
+    contentId: string,
+): Promise<void> {
+    return http
+        .post<void>(
+            `${baseUrl}/bookshelves/add-item?pseudId=${profileId}&shelfId=${shelfId}&contentId=${contentId}`,
+            {},
+        )
+        .then(() => {
+            return;
+        });
+}
 
-export async function removeFromShelf() {}
+export async function removeFromShelf(
+    profileId: string,
+    shelfId: string,
+    contentId: string,
+): Promise<void> {
+    return http
+        .deleteReq<void>(
+            `${baseUrl}/bookshelves/remove-item?pseudId=${profileId}&shelfId=${shelfId}&contentId=${contentId}`,
+        )
+        .then(() => {
+            return;
+        });
+}
 
-export async function fetchShelfItems() {}
+export async function fetchShelfItems(profileId: string, shelfId: string): Promise<ShelfItem[]> {
+    return http
+        .get<ShelfItem[]>(
+            `${baseUrl}/bookshelves/fetch-items?pseudId=${profileId}&shelfId=${shelfId}`,
+        )
+        .then((res) => {
+            return res.data;
+        });
+}
 
-export async function checkShelfItem() {}
+export async function checkShelfItem(
+    profileId: string,
+    shelfId: string,
+    contentId: string,
+): Promise<boolean> {
+    return http
+        .get<{ isPresent: boolean }>(
+            `${baseUrl}/bookshelves/check-item?pseudId=${profileId}&shelfId=${shelfId}&contentId=${contentId}`,
+        )
+        .then((res) => {
+            return res.data.isPresent;
+        });
+}
 
 //#endregion

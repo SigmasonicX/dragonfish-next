@@ -121,10 +121,7 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta
-        property="og:url"
-        content="https://offprint.net/blog/{$content.content._id}/{slugify($content.content.title)}"
-    />
+    <meta property="og:url" content="https://offprint.net/blog/{$content.content._id}" />
     <meta property="og:title" content={$content.content.title} />
     <meta
         property="og:description"
@@ -134,10 +131,7 @@
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta
-        property="twitter:url"
-        content="https://offprint.net/blog/{$content.content._id}/{slugify($content.content.title)}"
-    />
+    <meta property="twitter:url" content="https://offprint.net/blog/{$content.content._id}" />
     <meta property="twitter:title" content={$content.content.title} />
     <meta
         property="twitter:description"
