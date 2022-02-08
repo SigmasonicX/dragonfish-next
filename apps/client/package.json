@@ -12,13 +12,6 @@
 		"format": "prettier --ignore-path .gitignore --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
-		"@ngneat/elf": "^1.0.2",
-		"@ngneat/elf-devtools": "^1.2.0",
-		"@ngneat/elf-entities": "^2.0.2",
-		"@ngneat/elf-pagination": "^1.0.0",
-		"@ngneat/elf-persist-state": "^1.0.0",
-		"@ngneat/elf-requests": "^1.1.1",
-		"@ngneat/elf-state-history": "^1.0.1",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/adapter-vercel": "next",
 		"@sveltejs/kit": "next",
