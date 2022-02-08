@@ -17,7 +17,8 @@
     export let showTools = false;
 
     const changeVisibility = useMutation(
-        (shelfId: string) => toggleVisibility($session.currProfile?._id, shelfId),
+        (shelfId: string) =>
+            toggleVisibility($session.currProfile ? $session.currProfile._id : '', shelfId),
         {
             onMutate: async (updatedShelf) => {
                 await queryClient.cancelQueries('shelfPage');
@@ -47,7 +48,7 @@
         </span>
     </div>
 </div>
-{#if $session.currProfile?._id === shelf.userId && showTools}
+{#if $session.currProfile && $session.currProfile?._id === shelf.userId && showTools}
     <div class="shelf-tools">
         <Button kind="primary">
             <Edit2Line class="button-icon" />

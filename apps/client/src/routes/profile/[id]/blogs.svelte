@@ -29,20 +29,14 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta
-        property="og:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="og:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="og:title" content="{$profile.screenName}'s Blogs on Offprint" />
     <meta property="og:description" content="Taking a look at {$profile.screenName}'s blogs" />
     <meta property="og:image" content={$profile.profile.avatar} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta
-        property="twitter:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="twitter:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="twitter:title" content="{$profile.screenName}'s Blogs on Offprint" />
     <meta property="twitter:description" content="Taking a look at {$profile.screenName}'s blogs" />
     <meta property="twitter:image" content={$profile.profile.avatar} />

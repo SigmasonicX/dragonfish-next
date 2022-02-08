@@ -2,13 +2,13 @@
     import { get } from 'svelte/store';
     import type { Load } from '@sveltejs/kit';
     import { fetchShelf } from '$lib/services/content-library.service';
-    import { session } from '$lib/repo/session.repo';
+    import { profile } from '$lib/repo/profile.repo';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 
     export const load: Load = async ({ params }) => {
         const shelfId: string = params.shelfId;
 
-        const bookshelf = await fetchShelf(get(session).currProfile._id, shelfId);
+        const bookshelf = await fetchShelf(get(profile)._id, shelfId);
 
         return {
             props: {
@@ -27,19 +27,15 @@
 
     export let shelf: Bookshelf;
 
-    const thisShelf = useQuery('shelfPage', () => fetchShelf($session.currProfile._id, shelf._id), {
+    const thisShelf = useQuery('shelfPage', () => fetchShelf($profile?._id, shelf._id), {
         initialData: shelf,
-        enabled: !!$session.currProfile,
+        enabled: !!$profile,
     });
 
-    const shelfItems = useQuery(
-        'shelfItems',
-        () => fetchShelfItems($session.currProfile._id, shelf._id),
-        {
-            enabled: !!$session.currProfile,
-            keepPreviousData: true,
-        },
-    );
+    const shelfItems = useQuery('shelfItems', () => fetchShelfItems($profile?._id, shelf._id), {
+        enabled: !!$profile,
+        keepPreviousData: true,
+    });
 </script>
 
 {#if $thisShelf.isLoading}

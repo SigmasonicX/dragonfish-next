@@ -3,7 +3,6 @@
     import { profile } from '$lib/repo/profile.repo';
     import { session } from '$lib/repo/session.repo';
     import { app } from '$lib/repo/app.repo';
-    import { slugify } from '$lib/util';
     import { CheckLine, DraftLine, Loader5Line, TimeLine, CloseLine } from 'svelte-remixicon';
     import { fetchAllByKind, fetchUserContent } from '$lib/services/content.service';
     import { ContentKind } from '$lib/models/content';
@@ -30,20 +29,14 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta
-        property="og:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="og:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="og:title" content="{$profile.screenName}'s Works on Offprint" />
     <meta property="og:description" content="Taking a look at {$profile.screenName}'s works" />
     <meta property="og:image" content={$profile.profile.avatar} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta
-        property="twitter:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="twitter:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="twitter:title" content="{$profile.screenName}'s Works on Offprint" />
     <meta property="twitter:description" content="Taking a look at {$profile.screenName}'s works" />
     <meta property="twitter:image" content={$profile.profile.avatar} />

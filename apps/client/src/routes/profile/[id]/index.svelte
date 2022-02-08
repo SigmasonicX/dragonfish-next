@@ -1,10 +1,12 @@
 <script lang="ts">
     import { app } from '$lib/repo/app.repo';
     import { profile } from '$lib/repo/profile.repo';
-    import { localeDate, slugify } from '$lib/util';
+    import { localeDate } from '$lib/util';
     import { Gift2Line } from 'svelte-remixicon';
     import { getProfileContent } from '$lib/services/profile.service';
     import type { Content } from '$lib/models/content';
+    import BlogCard from '$lib/components/ui/content/BlogCard.svelte';
+    import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 
     let works: Content[] = [];
     let blogs: Content[] = [];
@@ -23,20 +25,14 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta
-        property="og:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="og:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="og:title" content="{$profile.screenName}'s Profile on Offprint" />
     <meta property="og:description" content="Taking a look at {$profile.screenName}'s stuff" />
     <meta property="og:image" content={$profile.profile.avatar} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta
-        property="twitter:url"
-        content="https://offprint.net/profile/{$profile._id}/{slugify($profile.userTag)}"
-    />
+    <meta property="twitter:url" content="https://offprint.net/profile/{$profile._id}" />
     <meta property="twitter:title" content="{$profile.screenName}'s Profile on Offprint" />
     <meta property="twitter:description" content="Taking a look at {$profile.screenName}'s stuff" />
     <meta property="twitter:image" content={$profile.profile.avatar} />
@@ -72,7 +68,11 @@
                         <p>Check back when this user has posted something!</p>
                     </div>
                 {:else}
-                    there's some blogs here!
+                    {#each blogs as blog}
+                        <div class="my-3">
+                            <BlogCard {blog} />
+                        </div>
+                    {/each}
                 {/if}
             </div>
             <div class="w-full lg:w-[22rem]">
@@ -85,7 +85,11 @@
                         <p>Check back when this user has posted something!</p>
                     </div>
                 {:else}
-                    there's some works here!
+                    {#each works as work}
+                        <div class="my-3">
+                            <WorkCard content={work} />
+                        </div>
+                    {/each}
                 {/if}
             </div>
         </div>

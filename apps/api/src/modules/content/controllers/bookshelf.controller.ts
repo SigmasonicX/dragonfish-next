@@ -10,7 +10,7 @@ import {
     UploadedFile,
 } from '@nestjs/common';
 import { IdentityGuard } from '$shared/guards';
-import { Identity } from '$shared/auth';
+import { Identity, Optional } from '$shared/auth';
 import { Roles } from '$shared/models/accounts';
 import { BookshelfForm } from '$shared/models/content-library';
 import { ContentLibraryService } from '../services';
@@ -35,6 +35,7 @@ export class BookshelfController {
 
     @UseGuards(IdentityGuard)
     @Identity(Roles.User)
+    @Optional(true)
     @Get('fetch-one-bookshelf')
     public async fetchOneBookshelf(
         @Query('pseudId') pseudId: string,
