@@ -1,5 +1,33 @@
+<script context="module" lang="ts">
+    import { isLoggedIn, session } from '$lib/repo/session.repo';
+    import { setError } from '$lib/repo/app.repo';
+    import type { Load } from '@sveltejs/kit';
+    import { isAllowed } from '$lib/services/auth.service';
+    import { get } from 'svelte/store';
+    import { Roles } from '$lib/models/accounts';
+
+    export const load: Load = async () => {
+        if (
+            isLoggedIn() &&
+            isAllowed(get(session).account.roles, [
+                Roles.Admin,
+                Roles.Moderator,
+                Roles.WorkApprover,
+            ])
+        ) {
+            return {
+                status: 200,
+            };
+        } else {
+            setError('401 Forbidden', 'You do not have permission to view this page.');
+            return {
+                status: 401,
+            };
+        }
+    };
+</script>
+
 <script lang="ts">
-    import { session } from '$lib/repo/session.repo';
     import { page } from '$app/stores';
     import {
         Dashboard2Line,
@@ -12,8 +40,6 @@
         Group2Line,
     } from 'svelte-remixicon';
     import PageNav from '$lib/components/nav/PageNav.svelte';
-    import { isAllowed } from '$lib/services/auth.service';
-    import { Roles } from '$lib/models/accounts';
 </script>
 
 <div class="flex w-full h-screen">
