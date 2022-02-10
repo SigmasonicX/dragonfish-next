@@ -65,12 +65,12 @@
             console.log("Genre match is " + values.genreSearchMatch.value)
             fetchData(
                 values.query,
-                values.kind,
+                parseKind(values.searchKind),
                 values.author,
-                values.category,
-                values.genreSearchMatch,
-                values.genres,
-                values.tagSearchMatch,
+                parseCategoryKey(values.category),
+                parseMatch(values.genreSearchMatch),
+                parseGenreKeys(values.genres),
+                parseMatch(values.tagSearchMatch),
                 values.tags,
                 true,
                 1
@@ -90,6 +90,45 @@
             return errors;
         },
     });
+
+    function parseKind(kindString: string): SearchKind {
+        const kind: SearchKind = SearchKind[kindString];
+        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.ProseAndPoetry;
+    }
+
+    /**
+     * Categories are stored for works via their keys, so we want to return the key instead of the value
+     * @param categoryString
+     * @returns
+     */
+    function parseCategoryKey(categoryString: string): string {
+        const category: WorkKind = WorkKind[categoryString];
+        return Object.values(WorkKind).indexOf(category) >= 0 ? categoryString : null;
+    }
+
+    /**
+     * Genres are stored for works via their keys, so we want to return the keys instead of the values
+     * (i.e. ScienceFiction instead of Science Fiction)
+     * @param genreStrings
+     * @returns
+     */
+    function parseGenreKeys(genreStrings: string[]): string[] {
+        const genreList: string[] = [];
+        if (genreStrings) {
+            for (const genreString of genreStrings) {
+                if (Object.values(Genres).indexOf(Genres[genreString]) >= 0) {
+                    genreList.push(genreString);
+                }
+            }
+        }
+
+        return genreList;
+    }
+
+    function parseMatch(matchString: string): SearchMatch {
+        const match: SearchMatch = SearchMatch[matchString];
+        return Object.values(SearchMatch).indexOf(match) >= 0 ? match : SearchMatch.All;
+    }
 
     function fetchData(
         query: string,
@@ -196,7 +235,7 @@
                     items={searchKinds}
                     label="Search Kind"
                     on:select={(selected) => {
-                        $data.kind = selected.detail;
+                        $data.searchKind = selected.detail;
                     }}
                 />
                 {#if showAdvancedOptions}
