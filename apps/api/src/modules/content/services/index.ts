@@ -5,3 +5,4 @@ export { ReadingHistoryService } from './reading-history.service';
 export { TagsService } from './tags.service';
 export { ContentLibraryService } from './content-library.service';
 export { ContentLibraryConsumer } from './content-library.consumer';
+export { SearchService } from './search.service';

@@ -5,7 +5,7 @@ import { SearchKind, SearchMatch } from '$shared/models/search';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PaginateResult } from 'mongoose';
 import sanitizeHtml from 'sanitize-html';
-import { ContentGroupStore } from '..';
+import { ContentGroupStore } from '../db/stores';
 
 @Injectable()
 export class SearchService {

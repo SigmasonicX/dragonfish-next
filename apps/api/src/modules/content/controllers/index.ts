@@ -6,3 +6,4 @@ export { RatingsController } from './ratings.controller';
 export { ReadingHistoryController } from './reading-history.controller';
 export { SectionsController } from './sections.controller';
 export { TagsController } from './tags.controller';
+export { SearchController } from './search.controller';

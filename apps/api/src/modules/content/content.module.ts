@@ -75,6 +75,7 @@ import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
         Controllers.RatingsController,
         Controllers.SectionsController,
         Controllers.TagsController,
+        Controllers.SearchController,
     ],
     providers: [
         Stores.ContentStore,
@@ -95,6 +96,7 @@ import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
         Services.TagsService,
         Services.ContentLibraryService,
         Services.ContentLibraryConsumer,
+        Services.SearchService,
     ],
 })
 export class ContentModule {}
