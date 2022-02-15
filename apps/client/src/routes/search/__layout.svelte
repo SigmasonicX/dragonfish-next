@@ -8,12 +8,14 @@
     import { Content, SearchKind, SearchMatch } from '$lib/models/content';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
-    import { Query } from '@sveltestack/svelte-query';
     import { fetchTagsTrees } from '$lib/services/tags.service';
     import { findRelatedContent, searchUsers } from '$lib/services/search.service';
     import { app } from '$lib/repo/app.repo';
     import type { PaginateResult } from '$lib/models/util';
     import type { Profile } from '$lib/models/accounts';
+    import BlogCard from '$lib/components/ui/content/BlogCard.svelte';
+    import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
+    import Paginator from '$lib/components/ui/misc/Paginator.svelte';
 
     const searchKinds = Object.entries(SearchKind).map(([key, value]) => ({
         value: key,
@@ -52,9 +54,13 @@
 
     var showAdvancedOptions = false;
 
+    let currPage = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
+    function setNewPage(pageNum: number) {
+        currPage = pageNum;
+    }
+
     let searchResultWorks: PaginateResult<Content>;
     let searchResultBlogs: PaginateResult<Content>;
-    let searchResultNews: PaginateResult<Content>;
     let searchResultUsers: PaginateResult<Profile>;
 
     var loading = false;
@@ -62,16 +68,15 @@
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
             console.log("Pressed enter: " + values.query)
-            console.log("Genre match is " + values.genreSearchMatch.value)
             fetchData(
-                values.query,
+                values.query ?? null,
                 parseKind(values.searchKind),
-                values.author,
+                values.author ?? null,
                 parseCategoryKey(values.category),
                 parseMatch(values.genreSearchMatch),
                 parseGenreKeys(values.genres),
                 parseMatch(values.tagSearchMatch),
-                values.tags,
+                values.tags ?? null,
                 true,
                 1
             )
@@ -93,7 +98,7 @@
 
     function parseKind(kindString: string): SearchKind {
         const kind: SearchKind = SearchKind[kindString];
-        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.ProseAndPoetry;
+        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.Prose;
     }
 
     /**
@@ -162,24 +167,6 @@
                     searchResultBlogs = results;
                     loading = false;
                 })
-                break;
-            case SearchKind.News:
-                findRelatedContent(
-                    query,
-                    searchKind,
-                    author,
-                    searchCategory,
-                    genreSearchMatch,
-                    genres,
-                    tagSearchMatch,
-                    tagIds,
-                    includeChildTags,
-                    pageNum,
-                    $app.filter,
-                ).subscribe((results) => {
-                    searchResultNews = results;
-                    loading = false;
-                });
                 break;
             case SearchKind.User:
                 searchUsers(query, pageNum).subscribe((results) => {
@@ -295,7 +282,78 @@
             </form>
         </svelte:fragment>
     </PageNav>
-    <div class="flex-1 h-screen overflow-y-auto">
-        <slot />
+</div>
+<div class="search-header">
+    <div class="w-11/12 mx-auto pb-2 pt-4 flex flex-row justify-center">
+        <rmx-icon name="search-line" class="mr-4 header"></rmx-icon>
+        <h3 class="text-2xl italic text-white">Search Results</h3>
     </div>
 </div>
+
+{#if loading}
+    <div class="flex flex-row items-center justify-center h-full">
+        <mat-spinner></mat-spinner>
+    </div>
+{:else}
+    <div class="w-full overflow-y-auto">
+        <div class="w-11/12 mx-auto my-6 max-w-7xl">
+            {#if searchResultWorks}
+                <div class="flex flex-row py-4 items-center">
+                    <!-- <rmx-icon name="book-open-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                    <h3 class="text-4xl font-medium">Works</h3>
+                </div>
+                <div
+                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                >
+                    <!--Works-->
+                    {#each searchResultWorks.docs as work}
+                        <WorkCard content={work} />
+                    {/each}
+                </div>
+                <Paginator
+                    {currPage}
+                    totalPages={searchResultWorks.totalPages}
+                    on:change={(e) => setNewPage(e.detail)}
+                />
+            {/if}
+            {#if searchResultBlogs}
+                <div class="flex flex-row py-4 items-center">
+                    <!-- <rmx-icon name="cup-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                    <h3 class="text-4xl font-medium">Blogs</h3>
+                </div>
+                <div
+                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                >
+                    <!--Blogs-->
+                    {#each searchResultBlogs.docs as blog}
+                        <BlogCard blog={blog} />
+                    {/each}
+                </div>
+                <Paginator
+                    {currPage}
+                    totalPages={searchResultBlogs.totalPages}
+                    on:change={(e) => setNewPage(e.detail)}
+                />
+            {/if}
+            {#if searchResultUsers}
+                <div class="flex flex-row py-4 items-center">
+                    <!-- <rmx-icon name="group-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                    <h3 class="text-4xl font-medium">Users</h3>
+                </div>
+                <div
+                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                >
+                    <!--Users-->
+                    {#each searchResultUsers.docs as user}
+                        <!-- <BlogCard blog={blog} /> -->
+                    {/each}
+                </div>
+                <Paginator
+                    {currPage}
+                    totalPages={searchResultUsers.totalPages}
+                    on:change={(e) => setNewPage(e.detail)}
+                />
+            {/if}
+        </div>
+    </div>
+{/if}
