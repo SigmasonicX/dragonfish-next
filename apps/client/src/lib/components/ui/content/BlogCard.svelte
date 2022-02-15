@@ -3,8 +3,9 @@
     import { abbreviate, localeDate } from '$lib/util';
     import Avatar from '$lib/components/ui/user/Avatar.svelte';
     import { DiscussLine, BarChartBoxLine } from 'svelte-remixicon';
+    import type { Content } from '$lib/models/content';
 
-    export let blog: Blog;
+    export let blog: Blog | Content;
 </script>
 
 <a
