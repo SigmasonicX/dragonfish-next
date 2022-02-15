@@ -34,9 +34,6 @@ export class SearchService {
             case SearchKind.Blog:
                 kinds.push(ContentKind.BlogContent);
                 break;
-            case SearchKind.News:
-                kinds.push(ContentKind.NewsContent);
-                break;
             case SearchKind.Poetry:
                 kinds.push(ContentKind.PoetryContent);
                 break;

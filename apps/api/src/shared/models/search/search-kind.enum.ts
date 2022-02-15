@@ -3,6 +3,5 @@ export enum SearchKind {
     Prose = "Prose",
     Poetry = "Poetry",
     Blog = "Blog",
-    News = "News",
     User = "User",
 }
