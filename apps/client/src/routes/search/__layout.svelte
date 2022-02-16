@@ -67,10 +67,9 @@
 
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
-            console.log("Pressed enter: " + values.query)
             fetchData(
                 values.query ?? null,
-                parseKind(values.searchKind),
+                values.searchKind ? parseKind(values.searchKind.value) : null,
                 values.author ?? null,
                 parseCategoryKey(values.category),
                 parseMatch(values.genreSearchMatch),
@@ -81,23 +80,17 @@
                 1
             )
         },
-        validate: (values) => {
-            const errors = {
-                title: '',
-                category: '',
-                genres: '',
-                shortDesc: '',
-                longDesc: '',
-                rating: '',
-                status: '',
-            };
-
-            return errors;
-        },
     });
 
     function parseKind(kindString: string): SearchKind {
+        console.log("Search kind is " + kindString);
         const kind: SearchKind = SearchKind[kindString];
+        console.log("Parsed kind as " + kind);
+        if (Object.values(SearchKind).indexOf(kind) >= 0) {
+            console.log("Found kind in SearchKind");
+        } else {
+            console.log("Invalid kind");
+        }
         return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.Prose;
     }
 
@@ -198,7 +191,7 @@
     }
 </script>
 
-<div class="flex w-full h-screen">
+<!-- <div class="flex w-full h-screen"> -->
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Search</h3>
@@ -221,8 +214,8 @@
                 <SelectMenu
                     items={searchKinds}
                     label="Search Kind"
-                    on:select={(selected) => {
-                        $data.searchKind = selected.detail;
+                    on:select={(e) => {
+                        $data.searchKind = e.detail;
                     }}
                 />
                 {#if showAdvancedOptions}
@@ -240,40 +233,40 @@
                     <SelectMenu
                         items={categoryOptions}
                         label="Category"
-                        on:select={(selected) => {
-                            $data.category = selected.detail;
+                        on:select={(e) => {
+                            $data.category = e.detail;
                         }}
                     />
                     <div>Genre(s)</div>
                     <SelectMenu
                         items={genreMatchOptions}
                         label="Genre Search Match"
-                        on:select={(selected) => {
-                            $data.genreSearchMatch = selected.detail;
+                        on:select={(e) => {
+                            $data.genreSearchMatch = e.detail;
                         }}
                     />
                     <SelectMenu
                         items={genreOptions}
                         label="Genre Search"
                         isMulti={true}
-                        on:select={(selected) => {
-                            $data.genres = selected.detail;
+                        on:select={(e) => {
+                            $data.genres = e.detail;
                         }}
                     />
                     <div>Fandom Tag(s)</div>
                     <SelectMenu
                         items={tagMatchOptions}
                         label="Tag Search Match"
-                        on:select={(selected) => {
-                            $data.tagSearchMatch = selected.detail;
+                        on:select={(e) => {
+                            $data.tagSearchMatch = e.detail;
                         }}
                     />
                     <SelectMenu
                         items={tagOptions}
                         label="Tag Search"
                         isMulti={true}
-                        on:select={(selected) => {
-                            $data.tags = selected.detail;
+                        on:select={(e) => {
+                            $data.tags = e.detail;
                         }}
                     />
                 {:else}
@@ -282,13 +275,7 @@
             </form>
         </svelte:fragment>
     </PageNav>
-</div>
-<div class="search-header">
-    <div class="w-11/12 mx-auto pb-2 pt-4 flex flex-row justify-center">
-        <rmx-icon name="search-line" class="mr-4 header"></rmx-icon>
-        <h3 class="text-2xl italic text-white">Search Results</h3>
-    </div>
-</div>
+<!-- </div> -->
 
 {#if loading}
     <div class="flex flex-row items-center justify-center h-full">
