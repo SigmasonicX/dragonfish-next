@@ -1,7 +1,7 @@
 <script lang="ts">
     import '../app.scss';
     import { QueryClientProvider, broadcastQueryClient } from '@sveltestack/svelte-query';
-    import { SvelteToast, SvelteToastOptions } from '@zerodevx/svelte-toast';
+    import { SvelteToast } from '@zerodevx/svelte-toast';
     import Nav from '$lib/components/nav/Nav.svelte';
     import { app } from '$lib/repo/app.repo';
     import { onMount } from 'svelte';
@@ -10,7 +10,7 @@
     onMount(async () => {
         await broadcastQueryClient({
             queryClient,
-            broadcastChannel: 'explore',
+            broadcastChannel: 'offprint',
         });
     });
 </script>

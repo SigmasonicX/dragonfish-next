@@ -4,3 +4,4 @@ export * as content from './content.service';
 export * as comments from './comments.service';
 export * as admin from './admin.service';
 export * as alerts from './alerts.service';
+export * as activity from './activity.service';
