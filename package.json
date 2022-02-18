@@ -17,7 +17,8 @@
     "dev": "turbo run dev --parallel",
     "dev:client": "yarn workspace @dragonfish/client run dev",
     "start": "turbo run start",
-    "start:api": "yarn workspace @dragonfish/api run start"
+    "start:api": "yarn workspace @dragonfish/api run start",
+    "build:api": "CI=true turbo run build @dragonfish/api"
   },
   "devDependencies": {
     "prettier": "^2.5.1",
