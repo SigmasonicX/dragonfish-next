@@ -17,7 +17,7 @@ dist
 
 # misc
 .DS_Store
-apps/api/.env
+.env
 *.pem
 .idea
 

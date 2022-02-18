@@ -27,7 +27,7 @@ You must have the following tools installed on your system or in a docker contai
 
 Once you've installed and verified that these dependencies are working as expected...
 
-- Create a file named `.env` at the root of the `apps/api` folder
+- Create a file named `.env` at the root of the project
 - Copy the contents of `sample.env` to your new `.env`
 - Edit `.env` to set `MONGO_URL=mongodb://localhost:27017`
 - Edit `.env` to set your `REDIS_*` values
