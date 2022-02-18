@@ -67,31 +67,40 @@
 
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
+            const query = values.query ?? null
+            const searchKind = values.searchKind ? parseKind(values.searchKind.value) : null
+            const author = values.author ?? null
+            const category = values.category ? parseCategoryKey(values.category.value) : null
+            const genreSearchMatch = values.genreSearchMatch ? parseMatch(values.genreSearchMatch.value) : null
+            const genres = values.genres ? parseGenreKeys(values.genres.map((val) => {
+                return val.value;
+            })) : null
+            const tagSearchMatch = values.tagSearchMatch ? parseMatch(values.tagSearchMatch.value) : null
+            const tags = values.tags ? values.tags.map((val) => {
+                return val.value;
+            }) : null
+            // TODO
+            const includeChildTags = true
+            const pageNum = 1
+
             fetchData(
-                values.query ?? null,
-                values.searchKind ? parseKind(values.searchKind.value) : null,
-                values.author ?? null,
-                parseCategoryKey(values.category),
-                parseMatch(values.genreSearchMatch),
-                parseGenreKeys(values.genres),
-                parseMatch(values.tagSearchMatch),
-                values.tags ?? null,
-                true,
+                query,
+                searchKind,
+                author,
+                category,
+                genreSearchMatch,
+                genres,
+                tagSearchMatch,
+                tags,
+                includeChildTags,
                 1
             )
         },
     });
 
     function parseKind(kindString: string): SearchKind {
-        console.log("Search kind is " + kindString);
         const kind: SearchKind = SearchKind[kindString];
-        console.log("Parsed kind as " + kind);
-        if (Object.values(SearchKind).indexOf(kind) >= 0) {
-            console.log("Found kind in SearchKind");
-        } else {
-            console.log("Invalid kind");
-        }
-        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.Prose;
+        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.ProseAndPoetry;
     }
 
     /**
@@ -128,6 +137,12 @@
         return Object.values(SearchMatch).indexOf(match) >= 0 ? match : SearchMatch.All;
     }
 
+    function clearResults() {
+        searchResultWorks = null;
+        searchResultBlogs = null;
+        searchResultUsers = null;
+    }
+
     function fetchData(
         query: string,
         searchKind: SearchKind,
@@ -141,7 +156,7 @@
         pageNum: number
     ) {
         loading = true;
-        // this.clearResults();
+        clearResults();
         switch(searchKind) {
             case SearchKind.Blog:
                 findRelatedContent(
