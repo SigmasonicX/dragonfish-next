@@ -1,7 +1,7 @@
 import { http } from './http';
 import { baseUrl } from '$lib/util';
-import type { QueueItem } from '$lib/models/admin/approval-queue';
-import type { Decision } from '$lib/models/admin/approval-queue';
+import type { QueueItem, Decision } from '$lib/models/admin/approval-queue';
+import type { InviteCode } from '$lib/models/accounts';
 
 //#region ---APPROVAL QUEUE---
 
@@ -38,6 +38,22 @@ export async function rejectContent(profileId: string, decision: Decision): Prom
         .then(() => {
             return;
         });
+}
+
+//#endregion
+
+//#region ---USER MANAGEMENT---
+
+export async function generateInviteCode(): Promise<InviteCode> {
+    return http.get<InviteCode>(`${baseUrl}/user/generate-code`).then((res) => {
+        return res.data;
+    });
+}
+
+export async function sendInviteEmail(email: string): Promise<void> {
+    return http.post<void>(`${baseUrl}/user/send-invite-code`, { emailAddress: email }).then(() => {
+        return;
+    });
 }
 
 //#endregion

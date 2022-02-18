@@ -40,6 +40,6 @@ import { AccountsModule } from '$modules/accounts';
         Services.ApprovalQueueService,
         Services.ApprovalQueueConsumer,
     ],
-    controllers: [Controllers.ApprovalQueueController],
+    controllers: [Controllers.ApprovalQueueController, Controllers.UserController],
 })
 export class AdminModule {}

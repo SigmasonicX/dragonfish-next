@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { PseudonymsStore } from '../db/stores';
+import { AccountsStore, PseudonymsStore } from '../db/stores';
 import {
     ChangeBio,
     ChangeScreenName,
@@ -13,7 +13,10 @@ import { isAllowed, JwtPayload } from '$shared/auth';
 export class UserService {
     private readonly logger: Logger = new Logger(UserService.name);
 
-    constructor(private readonly pseudStore: PseudonymsStore) {}
+    constructor(
+        private readonly pseudStore: PseudonymsStore,
+        private readonly accounts: AccountsStore,
+    ) {}
 
     async getOneUser(userId: string): Promise<Pseudonym> {
         return await this.pseudStore.fetchPseud(userId);
@@ -68,5 +71,9 @@ export class UserService {
     async updateCounts(userId: string, blogNum: number, workNum: number) {
         await this.pseudStore.updateBlogCount(userId, blogNum);
         await this.pseudStore.updateWorkCount(userId, workNum);
+    }
+
+    async createInviteCode() {
+        return await this.accounts.createInviteCode();
     }
 }
