@@ -16,6 +16,7 @@
     import BlogCard from '$lib/components/ui/content/BlogCard.svelte';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
     import Paginator from '$lib/components/ui/misc/Paginator.svelte';
+    import Toggle from '$lib/components/forms/Toggle.svelte';
 
     const searchKinds = Object.entries(SearchKind).map(([key, value]) => ({
         value: key,
@@ -45,14 +46,16 @@
     let tagOptions = [];
     fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
         for (const tree of tagTrees) {
-            tagOptions.push({ value: tree._id, label: tree.name })
+            tagOptions.push({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })
             for (const child of tree.children) {
-                tagOptions.push({ value: child._id, label: tree.name + "  —  " + child.name})
+                tagOptions.push({ value: child._id, label: tree.name + "  —  " + child.name, isParent: false})
             }
         }
     })
 
     var showAdvancedOptions = false;
+    var tagSearchMatch = null;
+    var showIncludeChildTags = false;
 
     let currPage = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
     function setNewPage(pageNum: number) {
@@ -79,8 +82,8 @@
             const tags = values.tags ? values.tags.map((val) => {
                 return val.value;
             }) : null
+            const includeChildTags = values.includeChildTags && showIncludeChildTags;
             // TODO
-            const includeChildTags = true
             const pageNum = 1
 
             fetchData(
@@ -135,6 +138,25 @@
     function parseMatch(matchString: string): SearchMatch {
         const match: SearchMatch = SearchMatch[matchString];
         return Object.values(SearchMatch).indexOf(match) >= 0 ? match : SearchMatch.All;
+    }
+
+    function onTagMatchSelected(match: SearchMatch) {
+        tagSearchMatch = match;
+        if (tagSearchMatch === SearchMatch.Exactly) {
+            showIncludeChildTags = false;
+        }
+    }
+
+    function onTagSelected(tagValues: any[]) {
+        if (tagValues && tagSearchMatch !== SearchMatch.Exactly) {
+            for (const tag of tagValues) {
+                if (tag.isParent) {
+                    showIncludeChildTags = true;
+                    return;
+                }
+            }
+        }
+        showIncludeChildTags = false;
     }
 
     function clearResults() {
@@ -274,6 +296,7 @@
                         label="Tag Search Match"
                         on:select={(e) => {
                             $data.tagSearchMatch = e.detail;
+                            onTagMatchSelected(e.detail.value);
                         }}
                     />
                     <SelectMenu
@@ -282,8 +305,12 @@
                         isMulti={true}
                         on:select={(e) => {
                             $data.tags = e.detail;
+                            onTagSelected(e.detail)
                         }}
                     />
+                    {#if showIncludeChildTags}
+                        <Toggle bind:value={$data.includeChildTags}>Include child tags</Toggle>
+                    {/if}
                 {:else}
                     <div on:click={() => showAdvancedOptions = true}>Show Advanced</div>
                 {/if}
