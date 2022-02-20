@@ -1,7 +1,10 @@
 <script lang="ts">
+    import { alerts } from '$lib/services';
     import { slogans } from '$lib/models/site';
     import Jumbotron from '$lib/components/ui/misc/Jumbotron.svelte';
     import { session } from '$lib/repo/session.repo';
+    import Button from '$lib/components/ui/misc/Button.svelte';
+    import { HeartsLine } from 'svelte-remixicon';
 
     const currSlogan = slogans[Math.floor(Math.random() * slogans.length)];
 </script>
@@ -125,6 +128,48 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="flex items-center justify-center">
+        <a
+            href="https://offprint.notion.site/Terms-of-Service-131ffadce0eb4e8a947144ddc70ef89b"
+            target="_blank"
+        >
+            Terms of Service
+        </a>
+        <span class="mx-1">•</span>
+        <a
+            href="https://offprint.notion.site/Privacy-Policy-f22e8ccb9e9043dca23a29a7089c72f4"
+            target="_blank"
+        >
+            Privacy Policy
+        </a>
+        <span class="mx-1">•</span>
+        <a
+            href="https://offprint.notion.site/The-Offprint-Constitution-ae58c23db7264280a319d1cdfa10bc41"
+            target="_blank"
+        >
+            Offprint Constitution
+        </a>
+        <span class="mx-1">•</span>
+        <a
+            href="https://offprint.notion.site/Offprint-Omnibus-23ef302b8f7f4dd0bda13ba6e2471007"
+            target="_blank"
+        >
+            Offprint Omnibus
+        </a>
+        <span class="mx-1">•</span>
+        <a
+            href="https://offprint.notion.site/What-is-Offprint-ac292f99beb1463c9cdaeb7f53557c74"
+            target="_blank"
+        >
+            About Offprint
+        </a>
+    </div>
+    <div class="mb-6 flex flex-col items-center justify-center">
+        <span class="flex items-center">
+            Made with <HeartsLine class="text-white mx-1" /> by Offprint Studios
+        </span>
+        <span>&copy; 2022 Alyx Mote</span>
     </div>
 </div>
 

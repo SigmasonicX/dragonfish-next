@@ -17,12 +17,14 @@
     "dev": "turbo run dev --parallel",
     "dev:client": "yarn workspace @dragonfish/client run dev",
     "start": "turbo run start",
-    "start:api": "yarn workspace @dragonfish/api run start"
+    "start:api": "yarn workspace @dragonfish/api run start",
+    "build:api": "CI=true turbo run build --scope=@dragonfish/api"
   },
   "devDependencies": {
     "prettier": "^2.5.1",
     "prettier-plugin-svelte": "^2.4.0",
     "turbo": "^1.0.24",
     "typescript": "^4.5.4"
-  }
+  },
+  "packageManager": "yarn@1.22.17"
 }

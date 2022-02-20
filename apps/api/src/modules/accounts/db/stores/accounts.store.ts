@@ -169,7 +169,7 @@ export class AccountsStore {
      * @param codeId The ID of the invite code to look for.
      */
     async findOneInviteCode(codeId: string): Promise<InviteCodes> {
-        return this.inviteCodesModel.findById(await sanitizeHtml(codeId));
+        return this.inviteCodesModel.findById(sanitizeHtml(codeId));
     }
 
     /**
@@ -182,6 +182,15 @@ export class AccountsStore {
             { _id: codeId },
             { byWho: usedById, used: true },
         );
+    }
+
+    async createInviteCode(): Promise<InviteCodes> {
+        const newCode = new this.inviteCodesModel({
+            _id: nanoid(),
+            byWho: null,
+            used: false,
+        });
+        return newCode.save();
     }
 
     //#endregion

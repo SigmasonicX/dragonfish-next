@@ -19,6 +19,10 @@
     import ContentMenu from '../ui/user/ContentMenu.svelte';
     import { isAllowed } from '$lib/services/auth.service';
     import { Roles } from '$lib/models/accounts';
+    import { useQuery } from '@sveltestack/svelte-query';
+    import { fetchAllUnread } from '$lib/services/activity.service';
+    import Badge from '$lib/components/ui/misc/Badge.svelte';
+    import { abbreviate } from '$lib/util';
 
     enum MenuOptions {
         NoMenu,
@@ -37,6 +41,11 @@
         if (val !== null) {
             currentMenu = MenuOptions.NoMenu;
         }
+    });
+
+    const activity = useQuery('unreadActivity', () => fetchAllUnread($session.currProfile._id), {
+        enabled: !!$session.currProfile,
+        cacheTime: 1000 * 60 * 0.25,
     });
 </script>
 
@@ -101,6 +110,11 @@
                     on:click={() => toggleMenu(MenuOptions.InboxMenu)}
                     class:active={currentMenu === MenuOptions.InboxMenu}
                 >
+                    {#if $activity.data && $activity.data.length > 0}
+                        <Badge positioning="top-right">
+                            {abbreviate($activity.data.length)}
+                        </Badge>
+                    {/if}
                     <span class="link-icon"><InboxLine size="24px" /></span>
                     <span class="link-name">Inbox</span>
                 </div>
@@ -190,7 +204,7 @@
 
     a.link,
     div.link {
-        @apply p-2 mx-2 mb-1 border-2 border-transparent rounded-lg transition transform text-white flex flex-col items-center justify-center w-[61px] h-[61px];
+        @apply p-2 mx-2 mb-1 border-2 border-transparent rounded-lg transition transform text-white flex flex-col items-center justify-center w-[61px] h-[61px] relative;
         &:hover {
             @apply no-underline scale-105;
             box-shadow: var(--dropshadow);

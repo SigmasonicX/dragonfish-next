@@ -1,10 +1,44 @@
 <script lang="ts">
+    import { useMutation, useQuery } from '@sveltestack/svelte-query';
+    import { fetchAllUnread, markAsRead } from '$lib/services/activity.service';
+    import { session } from '$lib/repo/session.repo';
+    import { abbreviate, queryClient } from '$lib/util';
+    import { CheckLine, CloseLine, Loader5Line } from 'svelte-remixicon';
+    import type { Notification as NotificationModel } from '$lib/models/activity';
+    import Notification from '$lib/components/ui/user/Notification.svelte';
+
     enum InboxTabs {
         Messages,
         Activity,
     }
 
     let selectedTab = InboxTabs.Activity;
+
+    const activity = useQuery('unreadActivity', () => fetchAllUnread($session.currProfile._id), {
+        enabled: !!$session.currProfile,
+        cacheTime: 1000 * 60 * 0.25,
+    });
+
+    const markItemAsRead = useMutation(
+        (id: string) => markAsRead($session.currProfile._id, { ids: [id] }),
+        {
+            onMutate: async (id: string) => {
+                await queryClient.cancelQueries('unreadActivity');
+                const previousNotifications =
+                    queryClient.getQueryData<NotificationModel[]>('unreadActivity');
+                queryClient.setQueryData<NotificationModel[]>('unreadActivity', (oldData) =>
+                    oldData.filter((item) => item._id !== id),
+                );
+                return { previousNotifications };
+            },
+            onError: (err, id, context) => {
+                queryClient.setQueryData('unreadActivity', context.previousNotifications);
+            },
+            onSettled: () => {
+                queryClient.invalidateQueries('unreadActivity');
+            },
+        },
+    );
 </script>
 
 <div class="flex flex-col w-full h-screen">
@@ -16,7 +50,7 @@
                 class:active={selectedTab === InboxTabs.Activity}
             >
                 <span class="button-icon">
-                    <span class="notification-badge">0</span>
+                    <span class="notification-badge">{abbreviate($activity.data.length)}</span>
                 </span>
                 <span class="button-text">Activity</span>
             </button>
@@ -39,10 +73,39 @@
                 <p>Check back later!</p>
             </div>
         {:else if selectedTab === InboxTabs.Activity}
-            <div class="empty">
-                <h3>Pardon our dust—</h3>
-                <p>Check back later!</p>
-            </div>
+            {#if $activity.isLoading}
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="flex items-center">
+                        <Loader5Line class="animate-spin mr-2" size="24px" />
+                        <span class="uppercase font-bold tracking-widest text-sm">Loading...</span>
+                    </div>
+                </div>
+            {:else if $activity.error}
+                <div class="w-full h-96 flex flex-col items-center justify-center">
+                    <div class="flex items-center">
+                        <CloseLine class="mr-2" size="24px" />
+                        <span class="uppercase font-bold tracking-widest text-sm"
+                            >An Error Has Occurred</span
+                        >
+                    </div>
+                </div>
+            {:else}
+                {#each $activity.data as notification}
+                    <Notification
+                        {notification}
+                        on:markAsRead={(e) => $markItemAsRead.mutate(e.detail.itemId)}
+                    />
+                {:else}
+                    <div class="w-full h-96 flex flex-col items-center justify-center">
+                        <div class="flex items-center">
+                            <CheckLine class="mr-2" size="24px" />
+                            <span class="uppercase font-bold tracking-widest text-sm"
+                                >You're all caught up</span
+                            >
+                        </div>
+                    </div>
+                {/each}
+            {/if}
         {/if}
     </div>
 </div>
