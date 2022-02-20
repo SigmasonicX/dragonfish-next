@@ -8,8 +8,7 @@
     import { Content, SearchKind, SearchMatch } from '$lib/models/content';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
-    import { fetchTagsTrees } from '$lib/services/tags.service';
-    import { findRelatedContent, searchUsers } from '$lib/services/search.service';
+    import { search, tags } from '$lib/services';
     import { app } from '$lib/repo/app.repo';
     import type { PaginateResult } from '$lib/models/util';
     import type { Profile } from '$lib/models/accounts';
@@ -55,7 +54,7 @@
     ];
 
     const tagOptions = [];
-    fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
+    tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
         for (const tree of tagTrees) {
             tagOptions.push({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })
             for (const child of tree.children) {
@@ -197,7 +196,7 @@
         clearResults();
         switch(searchKind) {
             case SearchKind.Blog:
-                findRelatedContent(
+                search.findRelatedContent(
                     query,
                     searchKind,
                     author,
@@ -215,7 +214,7 @@
                 })
                 break;
             case SearchKind.User:
-                searchUsers(query, pageNum).subscribe((results) => {
+                search.searchUsers(query, pageNum).subscribe((results) => {
                     searchResultUsers = results;
                     loading = false;
                 });
@@ -224,7 +223,7 @@
             case SearchKind.ProseAndPoetry:
             case SearchKind.Prose:
             default:
-                findRelatedContent(
+                search.findRelatedContent(
                     query,
                     searchKind,
                     author,

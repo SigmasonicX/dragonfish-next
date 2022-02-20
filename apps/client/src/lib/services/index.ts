@@ -6,3 +6,4 @@ export * as admin from './admin.service';
 export * as tags from './tags.service';
 export * as alerts from './alerts.service';
 export * as activity from './activity.service';
+export * as search from './search.service';
