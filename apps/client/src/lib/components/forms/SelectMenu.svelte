@@ -9,7 +9,7 @@
     export let isClearable = false;
     export let label = '';
     export let isMulti = false;
-    export let errorMessage;
+    export let errorMessage = '';
 </script>
 
 <label
