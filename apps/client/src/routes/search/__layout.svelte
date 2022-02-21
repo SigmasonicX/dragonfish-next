@@ -65,10 +65,10 @@
 
     var showAdvancedOptions = false
 
-    var initialQuery: string = null
+    var initialQuery: string = $page.url.searchParams.has('query') ? $page.url.searchParams.get('query') : null
     var selectedSearchKind: SearchKind = SearchKind.ProseAndPoetry
     var initialAuthor: string = null
-    var selectedCategory: WorkKind | string = anyOption
+    var selectedCategoryKey: string = anyOption
     var selectedGenreSearchMatch: any = matchAllOption
     var selectedGenreEntries: any[] = null
 
@@ -93,16 +93,49 @@
             const query = values.query ?? null
             const searchKind = selectedSearchKind
             const author = values.author ?? null
-            const category = selectedCategory
+            const category = selectedCategoryKey
             const genreSearchMatch = parseMatch(values.genreSearchMatch)
             const genres = parseGenreKeys(values.genres)
             const tagSearchMatch = parseMatch(values.tagSearchMatch)
-            const tags = values.tags ? values.tags.map((val) => {
-                return val.value;
+            const tags: string[] = values.tags ? values.tags.map((val) => {
+                return val.value as string
             }) : null
-            const includeChildTags = selectedIncludeChildTags && showIncludeChildTags;
+            const includeChildTags = selectedIncludeChildTags
             // TODO
             const pageNum = 1
+
+            if (query) {
+                $page.url.searchParams.append('query', query)
+            }
+            if (searchKind && searchKind !== SearchKind.ProseAndPoetry) {
+                $page.url.searchParams.append('kind', searchKind)
+            }
+            if (searchKind !== SearchKind.User) {
+                if (author) {
+                    $page.url.searchParams.append('author', author)
+                }
+                if (category) {
+                    $page.url.searchParams.append('category', category)
+                }
+                if (genres && genres.length > 0) {
+                    if (genreSearchMatch && genreSearchMatch !== SearchMatch.All) {
+                        $page.url.searchParams.append('genreSearchMatch', genreSearchMatch)
+                    }
+                    $page.url.searchParams.append('genres', genres.toString())
+                }
+                if (tags && tags.length > 0) {
+                    if (tagSearchMatch && tagSearchMatch !== SearchMatch.All) {
+                        $page.url.searchParams.append('tagSearchMatch', tagSearchMatch)
+                    }
+                    $page.url.searchParams.append('tags', tags.toString())
+                    if (showIncludeChildTags) {
+                        $page.url.searchParams.append('includeChildTags', includeChildTags.toString())
+                    }
+                }
+            }
+            if (pageNum && pageNum != 1) {
+                $page.url.searchParams.append('page', pageNum)
+            }
 
             fetchData(
                 query,
@@ -287,10 +320,10 @@
                         <SelectMenu
                             items={categoryOptions}
                             label="Category"
-                            value={selectedCategory}
+                            value={selectedCategoryKey}
                             on:select={(e) => {
                                 $data.category = e.detail
-                                selectedCategory = parseCategoryKey(e.detail)
+                                selectedCategoryKey = parseCategoryKey(e.detail)
                             }}
                         />
                         <div>Genre(s)</div>
