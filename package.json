@@ -18,6 +18,7 @@
     "dev:client": "yarn workspace @dragonfish/client run dev",
     "start": "turbo run start",
     "start:api": "yarn workspace @dragonfish/api run start",
+    "start:api:prod": "yarn workspace @dragonfish/api run start:prod",
     "build:api": "CI=true turbo run build --scope=@dragonfish/api"
   },
   "devDependencies": {
