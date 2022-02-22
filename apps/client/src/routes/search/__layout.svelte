@@ -4,7 +4,7 @@
     import TextField from '$lib/components/forms/TextField.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import PageNav from '$lib/components/nav/PageNav.svelte';
-    import { TeamLine, Group2Line, RssFill, Save2Line } from 'svelte-remixicon';
+    import { TeamLine } from 'svelte-remixicon';
     import { Content, SearchKind, SearchMatch } from '$lib/models/content';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
@@ -16,42 +16,39 @@
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
     import Paginator from '$lib/components/ui/misc/Paginator.svelte';
     import Toggle from '$lib/components/forms/Toggle.svelte';
+    import { goto } from '$app/navigation';
+    import { searchKindDefaultKey } from '$lib/models/content/search-kind.enum';
+    import { searchMatchDefaultKey } from '$lib/models/content/search-match.enum';
 
     const searchKinds = Object.entries(SearchKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
+    }))
 
     const anyOption = "Any"
 
     const categoryOptions: Array<any> = Object.entries(WorkKind).map(([key, value]) => ({
         value: key,
         label: value,
-    })).sort((a, b) => (a.value < b.value ? -1 : 1));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1))
     categoryOptions.push({
         value: anyOption,
         label: anyOption,
-    });
+    })
 
-    const matchAllOption = { value: SearchMatch.All, label: "Match All" }
-
-    const genreMatchOptions = [
-        matchAllOption,
-        { value: SearchMatch.OneOrMore, label: "Match One or More" },
-        { value: SearchMatch.NoOthers, label: "Match No Other Genres" },
-        { value: SearchMatch.Exactly, label: "Match Exactly"}
-    ];
+    const genreMatchOptions = Object.entries(SearchMatch).map(([key, value]) => ({
+        value: key,
+        label: value,
+    }))
     const genreOptions = Object.entries(Genres).map(([key, value]) => ({
         value: key,
         label: value,
-    })).sort((a, b) => (a.value < b.value ? -1 : 1));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1))
 
-    const tagMatchOptions = [
-        matchAllOption,
-        { value: SearchMatch.OneOrMore, label: "Match One or More" },
-        { value: SearchMatch.NoOthers, label: "Match No Other Tags" },
-        { value: SearchMatch.Exactly, label: "Match Exactly"}
-    ];
+    const tagMatchOptions = Object.entries(SearchMatch).map(([key, value]) => ({
+        value: key,
+        label: value,
+    }))
 
     const tagOptions = [];
     tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
@@ -65,14 +62,28 @@
 
     var showAdvancedOptions = false
 
-    var initialQuery: string = $page.url.searchParams.has('query') ? $page.url.searchParams.get('query') : null
-    var selectedSearchKind: SearchKind = SearchKind.ProseAndPoetry
-    var initialAuthor: string = null
-    var selectedCategoryKey: string = anyOption
-    var selectedGenreSearchMatch: any = matchAllOption
-    var selectedGenreEntries: any[] = null
+    var initialQuery: string = $page.url.searchParams.has('query') ?
+        $page.url.searchParams.get('query') :
+        null
+    var selectedSearchKindKey: string = $page.url.searchParams.has('kind') ?
+        parseSearchKindKey($page.url.searchParams.get('kind')) :
+        searchKindDefaultKey
+    var initialAuthor: string = $page.url.searchParams.has('author') ?
+        $page.url.searchParams.get('author') :
+        null
+    var selectedCategoryKey: string = $page.url.searchParams.has('category') ?
+        parseCategoryKey($page.url.searchParams.get('category')) :
+        anyOption
+    var selectedGenreSearchMatchKey: string = $page.url.searchParams.has('genreSearchMatch') ?
+        parseMatchKey($page.url.searchParams.get('genreSearchMatch')) :
+        searchMatchDefaultKey
+    var selectedGenreKeys: string[] = $page.url.searchParams.has('genres') ?
+        parseGenreKeys($page.url.searchParams.get('genres').split(',')) :
+        null
 
-    var selectedTagSearchMatch: any = matchAllOption
+    var selectedTagSearchMatchKey: string = $page.url.searchParams.has('tagSearchMatch') ?
+        parseMatchKey($page.url.searchParams.get('tagSearchMatch')) :
+        searchMatchDefaultKey
     var selectedTagEntries: any[] = null
     var showIncludeChildTags = false
     var selectedIncludeChildTags = true
@@ -88,15 +99,44 @@
 
     var loading = false;
 
+    // Fetch results for URL params
+    // if ($page.url.searchParams.entries.length > 0) {
+    //     const query = initialQuery
+    //     const searchKind = selectedSearchKind
+    //     const author = initialAuthor
+    //     const category = selectedCategoryKey
+    //     const genreSearchMatch = parseMatch(values.genreSearchMatch)
+    //     const genres = parseGenreKeys(values.genres)
+    //     const tagSearchMatch = parseMatch(values.tagSearchMatch)
+    //     const tags: string[] = values.tags ? values.tags.map((val) => {
+    //         return val.value as string
+    //     }) : null
+    //     const includeChildTags = selectedIncludeChildTags
+    //     // TODO
+    //     const pageNum = 1
+    //     fetchData(
+    //         query,
+    //         searchKind,
+    //         author,
+    //         category,
+    //         genreSearchMatch,
+    //         genres,
+    //         tagSearchMatch,
+    //         tags,
+    //         includeChildTags,
+    //         1
+    //     )
+    // }
+
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
             const query = values.query ?? null
-            const searchKind = selectedSearchKind
+            const searchKind = selectedSearchKindKey
             const author = values.author ?? null
             const category = selectedCategoryKey
-            const genreSearchMatch = parseMatch(values.genreSearchMatch)
+            const genreSearchMatch = selectedGenreSearchMatchKey
             const genres = parseGenreKeys(values.genres)
-            const tagSearchMatch = parseMatch(values.tagSearchMatch)
+            const tagSearchMatch = selectedTagSearchMatchKey
             const tags: string[] = values.tags ? values.tags.map((val) => {
                 return val.value as string
             }) : null
@@ -104,38 +144,42 @@
             // TODO
             const pageNum = 1
 
+            $page.url.searchParams.forEach((_value, key, parent) => (
+                parent.delete(key)
+            ))
             if (query) {
-                $page.url.searchParams.append('query', query)
+                $page.url.searchParams.set('query', query)
             }
-            if (searchKind && searchKind !== SearchKind.ProseAndPoetry) {
-                $page.url.searchParams.append('kind', searchKind)
+            if (searchKind && SearchKind[searchKind] !== SearchKind.ProseAndPoetry) {
+                $page.url.searchParams.set('kind', searchKind)
             }
             if (searchKind !== SearchKind.User) {
                 if (author) {
-                    $page.url.searchParams.append('author', author)
+                    $page.url.searchParams.set('author', author)
                 }
-                if (category) {
-                    $page.url.searchParams.append('category', category)
+                if (category && category !== anyOption) {
+                    $page.url.searchParams.set('category', category)
                 }
                 if (genres && genres.length > 0) {
-                    if (genreSearchMatch && genreSearchMatch !== SearchMatch.All) {
-                        $page.url.searchParams.append('genreSearchMatch', genreSearchMatch)
+                    if (genreSearchMatch && SearchMatch[genreSearchMatch] !== SearchMatch.All) {
+                        $page.url.searchParams.set('genreSearchMatch', genreSearchMatch)
                     }
-                    $page.url.searchParams.append('genres', genres.toString())
+                    $page.url.searchParams.set('genres', genres.toString())
                 }
                 if (tags && tags.length > 0) {
-                    if (tagSearchMatch && tagSearchMatch !== SearchMatch.All) {
-                        $page.url.searchParams.append('tagSearchMatch', tagSearchMatch)
+                    if (tagSearchMatch && SearchMatch[tagSearchMatch] !== SearchMatch.All) {
+                        $page.url.searchParams.set('tagSearchMatch', tagSearchMatch)
                     }
-                    $page.url.searchParams.append('tags', tags.toString())
+                    $page.url.searchParams.set('tags', tags.toString())
                     if (showIncludeChildTags) {
-                        $page.url.searchParams.append('includeChildTags', includeChildTags.toString())
+                        $page.url.searchParams.set('includeChildTags', includeChildTags.toString())
                     }
                 }
             }
-            if (pageNum && pageNum != 1) {
-                $page.url.searchParams.append('page', pageNum)
+            if (pageNum && pageNum > 0) {
+                $page.url.searchParams.set('page', pageNum.toString())
             }
+            goto($page.url.toString())
 
             fetchData(
                 query,
@@ -152,40 +196,101 @@
         },
     });
 
-    function parseKind(kindValue: any): SearchKind {
-        const kindString: string = kindValue ? kindValue.value : null;
-        const kind: SearchKind = SearchKind[kindString];
-        return Object.values(SearchKind).indexOf(kind) >= 0 ? kind : SearchKind.ProseAndPoetry;
-    }
-
     /**
-     * Categories are stored for works via their keys, so we want to return the key instead of the value
-     * @param categoryValue
-     * @returns
+     * Takes either a string key or an object of format (value, label) where value is a string key
+     * @param kindKey
+     * @returns The provided key as a string if it's valid, or "ProseAndPoetry" if it isn't
      */
-    function parseCategoryKey(categoryValue: any): string {
-        const categoryString: string = categoryValue ? categoryValue.value : anyOption;
-        const category: WorkKind = WorkKind[categoryString];
-        return Object.values(WorkKind).indexOf(category) >= 0 ? categoryString : anyOption;
-    }
-
-    function parseMatch(matchValue: any): SearchMatch {
-        const matchString: string = matchValue ? matchValue.value : null;
-        const match: SearchMatch = SearchMatch[matchString];
-        return Object.values(SearchMatch).indexOf(match) >= 0 ? match : SearchMatch.All;
+    function parseSearchKindKey(kindKey: any): string {
+        var kindString: string
+        if (typeof kindKey === 'string') {
+            kindString = kindKey
+        } else {
+            kindString = kindKey ? kindKey.value : null
+        }
+        const kind: SearchKind = SearchKind[kindString]
+        return Object.values(SearchKind).indexOf(kind) >= 0 ? kindString : searchKindDefaultKey
     }
 
     /**
+     * For use in the form menu
+     * @param kindKey
+     * @returns The provided key and its SearchKind value as an object of the form {value, label}
+     */
+    function createSearchKindMenuItem(kindKey: string) {
+        return {value: kindKey, label: SearchKind[kindKey]}
+    }
+
+    /**
+     * Takes either a string key or an object of format (value, label) where value is a string key
+     * Categories are stored for works via their keys, so we want to return the key instead of the value
+     * @param categoryKey
+     * @returns The provided key as a string if it's valid, or "Any" if it isn't
+     */
+    function parseCategoryKey(categoryKey: any): string {
+        var categoryString: string
+        if (typeof categoryKey === 'string') {
+            categoryString = categoryKey
+        } else {
+            categoryString = categoryKey ? categoryKey.value : anyOption
+        }
+        const category: WorkKind = WorkKind[categoryString]
+        return Object.values(WorkKind).indexOf(category) >= 0 ? categoryString : anyOption
+    }
+
+    /**
+     * For use in the form menu
+     * @param categoryKey
+     * @returns The provided key and its WorkKind value as an object of the form {value, label}
+     */
+    function createCategoryMenuItem(categoryKey: string) {
+        return {value: categoryKey, label: WorkKind[categoryKey]}
+    }
+
+    /**
+     * Takes either a string key or an object of format (value, label) where value is a string key
+     * Matches are made using the key, so we want to return the key instead of the value
+     * @param matchKey
+     * @returns The provided key as a string if it's valid, or "All" if it isn't
+     */
+    function parseMatchKey(matchKey: any): string {
+        var matchString: string
+        if (typeof matchKey === 'string') {
+            matchString = matchKey
+        } else {
+            matchString = matchKey ? matchKey.value : null
+        }
+        const match: SearchMatch = SearchMatch[matchString]
+        return Object.values(SearchMatch).indexOf(match) >= 0 ? matchString : searchMatchDefaultKey
+    }
+
+    /**
+     * For use in the form menu
+     * @param matchKey
+     * @returns The provided key and its SearchMatch value as an object of the form {value, label}
+     */
+    function createMatchMenuItem(matchKey: string) {
+        return {value: matchKey, label: SearchMatch[matchKey]}
+    }
+
+    /**
+     * Takes either an array of string keys
+     * or an array of objects of format (value, label) where value is a string key
      * Genres are stored for works via their keys, so we want to return the key values instead of the labels
      * (i.e. ScienceFiction instead of Science Fiction)
-     * @param genreValues
-     * @returns
+     * @param genreKeys
+     * @returns Array of all the valid keys provided, as a string array
      */
-    function parseGenreKeys(genreValues: any[]): string[] {
+    function parseGenreKeys(genreKeys: any[]): string[] {
         const genreList: string[] = [];
-        if (genreValues) {
-            for (const genreValue of genreValues) {
-                const genreString = genreValue.value;
+        if (genreKeys) {
+            for (const genreKey of genreKeys) {
+                var genreString: string
+                if (typeof genreKey === 'string') {
+                    genreString = genreKey
+                } else {
+                    genreString = genreKey.value
+                }
                 if (Object.values(Genres).indexOf(Genres[genreString]) >= 0) {
                     genreList.push(genreString);
                 }
@@ -195,8 +300,20 @@
         return genreList;
     }
 
+    /**
+     * For use in the form menu
+     * @param genreKeys
+     * @returns The provided key and its Genre value as an object of the form {value, label}
+     */
+    function createGenreMenuItems(genreKeys: string[]) {
+        if (genreKeys) {
+            return genreKeys.map((value) => ({value: value, label: Genres[value]}))
+        }
+        return null
+    }
+
     function setShowIncludeChildTags() {
-        if (selectedTagEntries && selectedTagSearchMatch !== SearchMatch.Exactly) {
+        if (selectedTagEntries && selectedTagSearchMatchKey !== SearchMatch.Exactly) {
             for (const tag of selectedTagEntries) {
                 if (tag.isParent) {
                     showIncludeChildTags = true;
@@ -215,19 +332,19 @@
 
     function fetchData(
         query: string,
-        searchKind: SearchKind,
+        searchKind: string,
         author: string | null,
         searchCategory: string | null,
-        genreSearchMatch: SearchMatch,
+        genreSearchMatch: string,
         genres: string[] | null,
-        tagSearchMatch: SearchMatch,
+        tagSearchMatch: string,
         tagIds: string[] | null,
         includeChildTags: boolean,
         pageNum: number
     ) {
         loading = true;
         clearResults();
-        switch(searchKind) {
+        switch(SearchKind[searchKind]) {
             case SearchKind.Blog:
                 search.findRelatedContent(
                     query,
@@ -300,15 +417,15 @@
                 <SelectMenu
                     items={searchKinds}
                     label="Search Kind"
-                    value={selectedSearchKind}
+                    value={createSearchKindMenuItem(selectedSearchKindKey)}
                     on:select={(e) => {
                         $data.searchKind = e.detail
-                        selectedSearchKind = parseKind(e.detail)
+                        selectedSearchKindKey = parseSearchKindKey(e.detail)
                     }}
                 />
                 {#if showAdvancedOptions}
                     <div on:click={() => showAdvancedOptions = false}>Hide Advanced</div>
-                    {#if selectedSearchKind !== SearchKind.User}
+                    {#if SearchKind[selectedSearchKindKey] !== SearchKind.User}
                         <TextField
                             name="author"
                             type="text"
@@ -320,7 +437,7 @@
                         <SelectMenu
                             items={categoryOptions}
                             label="Category"
-                            value={selectedCategoryKey}
+                            value={createCategoryMenuItem(selectedCategoryKey)}
                             on:select={(e) => {
                                 $data.category = e.detail
                                 selectedCategoryKey = parseCategoryKey(e.detail)
@@ -330,30 +447,30 @@
                         <SelectMenu
                             items={genreMatchOptions}
                             label="Genre Search Match"
-                            value={selectedGenreSearchMatch}
+                            value={createMatchMenuItem(selectedGenreSearchMatchKey)}
                             on:select={(e) => {
                                 $data.genreSearchMatch = e.detail;
-                                selectedGenreSearchMatch = parseMatch(e.detail);
+                                selectedGenreSearchMatchKey = parseMatchKey(e.detail);
                             }}
                         />
                         <SelectMenu
                             items={genreOptions}
                             label="Genre Search"
                             isMulti={true}
-                            value={selectedGenreEntries}
+                            value={createGenreMenuItems(selectedGenreKeys)}
                             on:select={(e) => {
                                 $data.genres = e.detail;
-                                selectedGenreEntries = e.detail;
+                                selectedGenreKeys = parseGenreKeys(e.detail);
                             }}
                         />
                         <div>Fandom Tag(s)</div>
                         <SelectMenu
                             items={tagMatchOptions}
                             label="Tag Search Match"
-                            value={selectedTagSearchMatch}
+                            value={createMatchMenuItem(selectedTagSearchMatchKey)}
                             on:select={(e) => {
                                 $data.tagSearchMatch = e.detail;
-                                selectedTagSearchMatch = parseMatch(e.detail)
+                                selectedTagSearchMatchKey = parseMatchKey(e.detail)
                                 setShowIncludeChildTags();
                             }}
                         />
