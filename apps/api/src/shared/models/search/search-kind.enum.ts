@@ -5,3 +5,4 @@ export enum SearchKind {
     Blog = "Blog",
     User = "User",
 }
+export const searchKindDefaultKey = "ProseAndPoetry"
