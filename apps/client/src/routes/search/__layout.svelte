@@ -84,6 +84,10 @@
     var selectedTagSearchMatchKey: string = $page.url.searchParams.has('tagSearchMatch') ?
         parseMatchKey($page.url.searchParams.get('tagSearchMatch')) :
         searchMatchDefaultKey
+    // Tags don't use an enum, so they need to be handled differently
+    var initialTagKeys: string[] = $page.url.searchParams.has('tags') ?
+        $page.url.searchParams.get('tags').split(',') :
+        null
     var selectedTagEntries: any[] = null
     var showIncludeChildTags = false
     var selectedIncludeChildTags = true
@@ -303,11 +307,33 @@
     /**
      * For use in the form menu
      * @param genreKeys
-     * @returns The provided key and its Genre value as an object of the form {value, label}
+     * @returns The provided keys and their Genre values as objects of the form {value, label}
      */
     function createGenreMenuItems(genreKeys: string[]) {
         if (genreKeys) {
             return genreKeys.map((value) => ({value: value, label: Genres[value]}))
+        }
+        return null
+    }
+
+    /**
+     * For use in the form menu
+     * @param tagKeys
+     * @returns The tags for the provided keys as objects of the form {value, label, isParent}
+     */
+    function createTagMenuItems(tagKeys: string[]) {
+        if (tagKeys) {
+            const tagMenuItems: any[] = []
+            for (const tag of tagKeys) {
+                for (const tagOption of tagOptions) {
+                    if (tag === tagOption.value) {
+                        tagMenuItems.push(tagOption)
+                    }
+                }
+            }
+            if (tagMenuItems.length > 0) {
+                return tagMenuItems
+            }
         }
         return null
     }
@@ -478,7 +504,7 @@
                             items={tagOptions}
                             label="Tag Search"
                             isMulti={true}
-                            value={selectedTagEntries}
+                            value={createTagMenuItems(initialTagKeys)}
                             on:select={(e) => {
                                 $data.tags = e.detail;
                                 selectedTagEntries = e.detail;
