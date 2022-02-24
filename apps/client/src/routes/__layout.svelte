@@ -6,7 +6,7 @@
     import { app } from '$lib/repo/app.repo';
     import { onMount } from 'svelte';
     import { queryClient } from '$lib/util';
-    import Sidenav from '$lib/components/nav/sidenav/Sidenav.svelte';
+    import { Sidenav } from '$lib/components/nav/sidenav';
 
     onMount(async () => {
         await broadcastQueryClient({
