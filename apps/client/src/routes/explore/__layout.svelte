@@ -8,7 +8,6 @@
         Compass3Line,
         SunLine,
         NewspaperLine,
-        MistFill,
         CalendarLine,
         CalendarEventLine,
         BookOpenLine,
@@ -90,8 +89,9 @@
         </svelte:fragment>
         <svete:fragment slot="pages">
             <a href="/explore" class:active={$page.url.pathname === '/explore'}>
-                <span class="link-icon"><MistFill /></span>
-                <span class="text">Overview</span>
+                <!--<span class="link-icon"><MistFill /></span>-->
+                <span class="link-icon"><NewspaperLine /></span>
+                <span class="text">New Works</span>
             </a>
             {#if $session.currProfile}
                 <a
@@ -116,10 +116,10 @@
                 <span class="link-icon"><CalendarEventLine /></span>
                 <span class="text">Popular Today</span>
             </a>
-            <a href="/explore/new-works" class:active={$page.url.pathname === '/explore/new-works'}>
+            <!--<a href="/explore/new-works" class:active={$page.url.pathname === '/explore/new-works'}>
                 <span class="link-icon"><NewspaperLine /></span>
                 <span class="text">New Works</span>
-            </a>
+            </a>-->
             <a href="/explore/tags" class:active={$page.url.pathname === '/explore/tags'}>
                 <span class="link-icon"><Hashtag /></span>
                 <span class="text">Fandom Tags</span>

@@ -6,6 +6,7 @@
     import { app } from '$lib/repo/app.repo';
     import { onMount } from 'svelte';
     import { queryClient } from '$lib/util';
+    import Sidenav from '$lib/components/nav/sidenav/Sidenav.svelte';
 
     onMount(async () => {
         await broadcastQueryClient({
@@ -17,12 +18,14 @@
 
 <QueryClientProvider client={queryClient}>
     <main
-        class="flex h-screen {$app.theme}"
+        class="flex flex-col md:flex-row h-screen {$app.theme}"
         class:dark={$app.darkMode === true}
         class:light={$app.darkMode === false}
     >
         <Nav />
-        <slot />
+        <Sidenav>
+            <slot />
+        </Sidenav>
     </main>
     <SvelteToast />
 </QueryClientProvider>

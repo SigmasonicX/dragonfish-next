@@ -1,116 +1,62 @@
 <script lang="ts">
-    import { useQuery } from '@sveltestack/svelte-query';
+    import { Query } from '@sveltestack/svelte-query';
+    import { page } from '$app/stores';
+    import { fetchAllNew } from '$lib/services/content.service';
+    import { ContentKind } from '$lib/models/content';
     import { app } from '$lib/repo/app.repo';
     import { Loader5Line } from 'svelte-remixicon';
-    import { fetchFirstNew } from '$lib/services/content.service';
+    import Paginator from '$lib/components/ui/misc/Paginator.svelte';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 
-    const newWorks = useQuery('newWorks', () => fetchFirstNew($app.filter));
+    let currPage = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
+    function setNewPage(pageNum: number) {
+        currPage = pageNum;
+    }
+
+    const fetchCurrPage = (page = currPage) =>
+        fetchAllNew(page, [ContentKind.PoetryContent, ContentKind.ProseContent], $app.filter);
 </script>
 
-<div class="w-full overflow-y-auto">
-    <div class="w-11/12 mx-auto my-6">
-        <!--{#if $session.currProfile && $session.token}
-            <div class="section">
-                <div class="section-header border-zinc-600 dark:border-white">
-                    <h3>Recommendations</h3>
-                    <a href="/explore/recommendations">See more >></a>
+<Query
+    options={{
+        queryKey: ['newWorks', currPage],
+        queryFn: () => fetchCurrPage(currPage),
+        keepPreviousData: true,
+    }}
+>
+    <svelte:fragment slot="query" let:queryResult>
+        {#if queryResult.status === 'loading'}
+            <div class="w-full h-screen flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <Loader5Line class="animate-spin mr-2" size="2rem" />
+                    <span class="uppercase font-bold tracking-widest">Loading...</span>
                 </div>
-                <div class="section-loading">
-                    <div class="inner-loader">
-                        <span>Select a profile to view recommendations</span>
+            </div>
+        {:else if queryResult.status === 'error'}
+            <div class="w-full h-screen flex flex-col items-center justify-center">
+                <div class="flex items-center">
+                    <span class="uppercase font-bold tracking-widest"
+                        >ERROR: Could not fetch content</span
+                    >
+                </div>
+            </div>
+        {:else}
+            <div class="w-full overflow-y-auto">
+                <div class="w-11/12 mx-auto my-6 max-w-7xl">
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                    >
+                        {#each queryResult.data.docs as work}
+                            <WorkCard content={work} />
+                        {/each}
                     </div>
+                    <Paginator
+                        {currPage}
+                        totalPages={queryResult.data.totalPages}
+                        on:change={(e) => setNewPage(e.detail)}
+                    />
                 </div>
             </div>
         {/if}
-        <div class="section">
-            <div class="section-header border-zinc-600 dark:border-white">
-                <h3>Popular this week</h3>
-                <a href="/explore/popular-this-week">See more >></a>
-            </div>
-            <div class="section-loading">
-                <div class="inner-loader">
-                    <Loader5Line class="animate-spin mr-2" size="32px" />
-                    <span>Loading...</span>
-                </div>
-            </div>
-        </div>
-        <div class="section">
-            <div class="section-header border-zinc-600 dark:border-white">
-                <h3>Popular today</h3>
-                <a href="/explore/popular-today">See more >></a>
-            </div>
-            <div class="section-loading">
-                <div class="inner-loader">
-                    <Loader5Line class="animate-spin mr-2" size="32px" />
-                    <span>Loading...</span>
-                </div>
-            </div>
-        </div>-->
-        <div class="section">
-            <div class="section-header border-zinc-600 dark:border-white">
-                <h3>New works</h3>
-                <a href="/explore/new-works">See more >></a>
-            </div>
-            {#if $newWorks.isLoading}
-                <div class="section-loading">
-                    <div class="inner-loader">
-                        <Loader5Line class="animate-spin mr-2" size="32px" />
-                        <span>Loading...</span>
-                    </div>
-                </div>
-            {:else if $newWorks.isError}
-                <div class="section-loading">
-                    <div class="inner-loader">
-                        <span>ERROR: Could not fetch content</span>
-                    </div>
-                </div>
-            {:else}
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4"
-                >
-                    {#each $newWorks.data as work}
-                        <WorkCard content={work} />
-                    {/each}
-                </div>
-            {/if}
-        </div>
-        <!--<div class="section">
-            <div class="section-header border-zinc-600 dark:border-white">
-                <h3>Special events</h3>
-                <a href="/explore/special-events">See more >></a>
-            </div>
-            <div class="section-loading">
-                <div class="inner-loader">
-                    <span>No Events Currently Running</span>
-                </div>
-            </div>
-        </div>-->
-    </div>
-</div>
-
-<style lang="scss">
-    div.section {
-        @apply mb-6;
-        div.section-header {
-            @apply flex items-center p-2 mb-4 border-b;
-            h3 {
-                @apply text-3xl font-medium flex-1;
-            }
-
-            a {
-                @apply text-sm;
-            }
-        }
-
-        div.section-loading {
-            @apply w-full h-96 flex flex-col items-center justify-center;
-            div.inner-loader {
-                @apply flex items-center;
-                span {
-                    @apply uppercase font-bold tracking-widest;
-                }
-            }
-        }
-    }
-</style>
+    </svelte:fragment>
+</Query>

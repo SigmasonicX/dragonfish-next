@@ -11,8 +11,9 @@
         AddBoxLine,
         Dashboard2Line,
         SearchEyeLine,
+        MenuLine,
     } from 'svelte-remixicon';
-    import Sidenav from '$lib/components/nav/Sidenav.svelte';
+    import { open, close, sidenav } from '$lib/components/nav/sidenav/sidenav.state';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
     import { session } from '$lib/repo/session.repo';
     import InboxMenu from '$lib/components/ui/user/InboxMenu.svelte';
@@ -32,9 +33,28 @@
     }
 
     let currentMenu = MenuOptions.NoMenu;
+    $: {
+        if (!$sidenav.isOpen) {
+            currentMenu = MenuOptions.NoMenu;
+        }
+    }
 
     function toggleMenu(menuOption: MenuOptions) {
         currentMenu = menuOption;
+        switch (currentMenu) {
+            case MenuOptions.UserMenu:
+                open(UserMenu);
+                break;
+            case MenuOptions.CreateMenu:
+                open(ContentMenu);
+                break;
+            case MenuOptions.InboxMenu:
+                open(InboxMenu);
+                break;
+            default:
+                close();
+                break;
+        }
     }
 
     navigating.subscribe((val) => {
@@ -50,7 +70,7 @@
 </script>
 
 <div class="navbar">
-    <div class="py-2 flex flex-col items-center h-full">
+    <div class="py-2 flex flex-col items-center h-full hidden md:block">
         {#if $session.currProfile}
             {#if currentMenu === MenuOptions.UserMenu}
                 <div
@@ -179,25 +199,27 @@
             <span class="link-name">Settings</span>
         </a>
     </div>
+    <div class="p-1 flex items-center block md:hidden">
+        <div class="link-mobile select-none cursor-pointer group">
+            <span class="link-icon"><MenuLine size="24px" /></span>
+        </div>
+        <a href="/" class="flex-1">
+            <img
+                src="/images/logo.png"
+                alt="logo"
+                style="max-width: 8rem; margin: 0 auto;"
+                class="relative z-30"
+            />
+        </a>
+        <a href="/search" class="link-mobile select-none cursor-pointer group">
+            <span class="link-icon"><SearchEyeLine size="24px" /></span>
+        </a>
+    </div>
 </div>
-
-{#if currentMenu === MenuOptions.UserMenu}
-    <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
-        <UserMenu on:logout={() => (currentMenu = MenuOptions.NoMenu)} />
-    </Sidenav>
-{:else if currentMenu === MenuOptions.CreateMenu}
-    <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
-        <ContentMenu />
-    </Sidenav>
-{:else if currentMenu === MenuOptions.InboxMenu}
-    <Sidenav on:click={() => (currentMenu = MenuOptions.NoMenu)}>
-        <InboxMenu />
-    </Sidenav>
-{/if}
 
 <style lang="scss">
     div.navbar {
-        @apply h-screen w-[75px] z-50 relative;
+        @apply w-full md:h-screen md:w-[75px] z-50 relative;
         background: var(--accent);
         box-shadow: var(--dropshadow);
     }
@@ -235,5 +257,10 @@
             width: 57px;
             height: 57px;
         }
+    }
+
+    a.link-mobile,
+    div.link-mobile {
+        @apply block p-2 rounded-lg text-white transition transform flex flex-col items-center justify-center w-[50px] h-[50px] relative;
     }
 </style>
