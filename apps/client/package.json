@@ -14,6 +14,7 @@
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/adapter-vercel": "next",
+		"@sveltejs/adapter-netlify": "^1.0.0-next.47",
 		"@sveltejs/kit": "next",
 		"@sveltestack/svelte-query": "^1.6.0",
 		"@tailwindcss/aspect-ratio": "^0.4.0",
