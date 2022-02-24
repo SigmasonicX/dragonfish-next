@@ -1,12 +1,14 @@
 <script lang="ts">
-    import { alerts } from '$lib/services';
     import { slogans } from '$lib/models/site';
     import Jumbotron from '$lib/components/ui/misc/Jumbotron.svelte';
-    import { session } from '$lib/repo/session.repo';
-    import Button from '$lib/components/ui/misc/Button.svelte';
-    import { HeartsLine } from 'svelte-remixicon';
+    import { HeartsLine, Loader5Line } from 'svelte-remixicon';
+    import { useQuery } from '@sveltestack/svelte-query';
+    import { fetchFirstNew } from '$lib/services/content.service';
+    import { app } from '$lib/repo/app.repo';
+    import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
 
     const currSlogan = slogans[Math.floor(Math.random() * slogans.length)];
+    const newWorks = useQuery('newWorks', () => fetchFirstNew($app.filter));
 </script>
 
 <svelte:head>
@@ -38,7 +40,7 @@
 
 <div class="w-full h-screen overflow-y-auto">
     <div class="w-full mb-6">
-        <div class="home-header">
+        <div class="home-header hidden md:block">
             <img
                 src="/images/logo.png"
                 alt="logo"
@@ -51,33 +53,90 @@
             <Jumbotron />
         </div>
     </div>
-    {#if $session.currProfile}
-        <div class="w-9/12 mx-auto my-6">
-            <div class="w-full border border-gray-600 rounded-md p-4 flex items-center">
-                <img
-                    src="/images/democover.jpg"
-                    alt="demo cover"
-                    style="max-width: 4rem;"
-                    class="object-contain rounded-md"
-                />
-                <div class="flex-1 w-full px-4">
-                    <h3 class="text-xl font-medium">A Lost Little Sponge</h3>
-                    <h4 class="text-base mb-2.5">by UndertalesWriteMan</h4>
-                    <div class="w-full h-2 rounded-md bg-gray-300">
-                        <div class="w-8/12 h-full rounded-md" style="background: var(--accent)" />
+    <div class="w-11/12 mx-auto max-w-7xl my-6 flex flex-col md:flex-row">
+        <div class="flex-1">
+            <!--{#if $session.currProfile && $session.token}
+            <div class="section">
+                <div class="section-header border-zinc-600 dark:border-white">
+                    <h3>Recommendations</h3>
+                    <a href="/explore/recommendations">See more >></a>
+                </div>
+                <div class="section-loading">
+                    <div class="inner-loader">
+                        <span>Select a profile to view recommendations</span>
                     </div>
                 </div>
-                <a href="/">Continue Reading >></a>
+            </div>
+        {/if}
+        <div class="section">
+            <div class="section-header border-zinc-600 dark:border-white">
+                <h3>Popular this week</h3>
+                <a href="/explore/popular-this-week">See more >></a>
+            </div>
+            <div class="section-loading">
+                <div class="inner-loader">
+                    <Loader5Line class="animate-spin mr-2" size="32px" />
+                    <span>Loading...</span>
+                </div>
             </div>
         </div>
-    {/if}
-    <div class="w-9/12 mx-auto my-6 flex">
-        <div class="flex-1">here be dragons</div>
-        <div class="w-72 ml-4">
-            <h3 class="text-2xl font-medium w-full border-b border-gray-600 mb-4">
+        <div class="section">
+            <div class="section-header border-zinc-600 dark:border-white">
+                <h3>Popular today</h3>
+                <a href="/explore/popular-today">See more >></a>
+            </div>
+            <div class="section-loading">
+                <div class="inner-loader">
+                    <Loader5Line class="animate-spin mr-2" size="32px" />
+                    <span>Loading...</span>
+                </div>
+            </div>
+        </div>-->
+            <div class="section">
+                <div class="section-header border-zinc-600 dark:border-white">
+                    <h3>New works</h3>
+                    <a href="/explore/new-works">See more >></a>
+                </div>
+                {#if $newWorks.isLoading}
+                    <div class="section-loading">
+                        <div class="inner-loader">
+                            <Loader5Line class="animate-spin mr-2" size="32px" />
+                            <span>Loading...</span>
+                        </div>
+                    </div>
+                {:else if $newWorks.isError}
+                    <div class="section-loading">
+                        <div class="inner-loader">
+                            <span>ERROR: Could not fetch content</span>
+                        </div>
+                    </div>
+                {:else}
+                    <div class="grid md:grid-cols-2 sm:grid-cols-1 gap-4">
+                        {#each $newWorks.data as work}
+                            <WorkCard content={work} />
+                        {/each}
+                    </div>
+                {/if}
+            </div>
+            <!--<div class="section">
+            <div class="section-header border-zinc-600 dark:border-white">
+                <h3>Special events</h3>
+                <a href="/explore/special-events">See more >></a>
+            </div>
+            <div class="section-loading">
+                <div class="inner-loader">
+                    <span>No Events Currently Running</span>
+                </div>
+            </div>
+        </div>-->
+        </div>
+        <div class="w-11/12 mx-auto md:w-72 ml-4">
+            <h3 class="text-2xl font-medium w-full border-b border-zinc-600 dark:border-white mb-4">
                 News & Updates
             </h3>
-            <div class="w-full border border-gray-600 rounded-md p-2 flex items-center">
+            <div
+                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
+            >
                 <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
                 <div class="truncate flex-1 w-full ml-2">
                     <h4 class="text-lg font-medium top-1">Last Week on Offprint</h4>
@@ -89,7 +148,9 @@
                 </div>
             </div>
             <div class="my-2" />
-            <div class="w-full border border-gray-600 rounded-md p-2 flex items-center">
+            <div
+                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
+            >
                 <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
                 <div class="truncate flex-1 w-full ml-2">
                     <h4 class="text-lg font-medium top-1 truncate">Animorphs Writing Contest!</h4>
@@ -101,7 +162,9 @@
                 </div>
             </div>
             <div class="my-2" />
-            <div class="w-full border border-gray-600 rounded-md p-2 flex items-center">
+            <div
+                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
+            >
                 <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
                 <div class="truncate flex-1 w-full ml-2">
                     <h4 class="text-lg font-medium top-1 truncate">DevBlog #2: Pain Is Process</h4>
@@ -113,7 +176,9 @@
                 </div>
             </div>
             <div class="my-2" />
-            <div class="w-full border border-gray-600 rounded-md p-2 flex items-center">
+            <div
+                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
+            >
                 <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
                 <div class="truncate flex-1 w-full ml-2">
                     <h4 class="text-lg font-medium top-1 truncate">
@@ -129,7 +194,7 @@
             </div>
         </div>
     </div>
-    <div class="flex items-center justify-center">
+    <div class="flex items-center justify-center flex-col md:flex-row">
         <a
             href="https://offprint.notion.site/Terms-of-Service-131ffadce0eb4e8a947144ddc70ef89b"
             target="_blank"
@@ -165,7 +230,7 @@
             About Offprint
         </a>
     </div>
-    <div class="mb-6 flex flex-col items-center justify-center">
+    <div class="mt-6 md:mt-0 mb-6 flex flex-col items-center justify-center">
         <span class="flex items-center">
             Made with <HeartsLine class="text-white mx-1" /> by Offprint Studios
         </span>
@@ -180,11 +245,34 @@
     }
 
     div.jumbo-carousel {
-        @apply shadow-2xl mb-8;
-        height: 32rem;
+        @apply shadow-2xl mb-8 md:h-[32rem];
     }
 
     :global(.swipe-indicator .is-active) {
         background-color: white !important;
+    }
+
+    div.section {
+        @apply mb-6;
+        div.section-header {
+            @apply flex items-center p-2 mb-4 border-b;
+            h3 {
+                @apply text-3xl font-medium flex-1;
+            }
+
+            a {
+                @apply text-sm;
+            }
+        }
+
+        div.section-loading {
+            @apply w-full h-96 flex flex-col items-center justify-center;
+            div.inner-loader {
+                @apply flex items-center;
+                span {
+                    @apply uppercase font-bold tracking-widest;
+                }
+            }
+        }
     }
 </style>
