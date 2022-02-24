@@ -19,8 +19,9 @@
     import { goto } from '$app/navigation';
     import { searchKindDefaultKey } from '$lib/models/content/search-kind.enum';
     import { searchMatchDefaultKey } from '$lib/models/content/search-match.enum';
+    import { onMount } from 'svelte';
 
-    const searchKinds = Object.entries(SearchKind).map(([key, value]) => ({
+    const searchKindOptions = Object.entries(SearchKind).map(([key, value]) => ({
         value: key,
         label: value,
     }))
@@ -50,140 +51,168 @@
         label: value,
     }))
 
-    const tagOptions = [];
-    tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
-        for (const tree of tagTrees) {
-            tagOptions.push({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })
-            for (const child of tree.children) {
-                tagOptions.push({ value: child._id, label: tree.name + "  —  " + child.name, isParent: false})
-            }
-        }
-    })
-
-    var showAdvancedOptions = false
-
-    var initialQuery: string = $page.url.searchParams.has('query') ?
-        $page.url.searchParams.get('query') :
-        null
-    var selectedSearchKindKey: string = $page.url.searchParams.has('kind') ?
-        parseSearchKindKey($page.url.searchParams.get('kind')) :
-        searchKindDefaultKey
-    var initialAuthor: string = $page.url.searchParams.has('author') ?
-        $page.url.searchParams.get('author') :
-        null
-    var selectedCategoryKey: string = $page.url.searchParams.has('category') ?
-        parseCategoryKey($page.url.searchParams.get('category')) :
-        anyOption
-    var selectedGenreSearchMatchKey: string = $page.url.searchParams.has('genreSearchMatch') ?
-        parseMatchKey($page.url.searchParams.get('genreSearchMatch')) :
-        searchMatchDefaultKey
-    var selectedGenreKeys: string[] = $page.url.searchParams.has('genres') ?
-        parseGenreKeys($page.url.searchParams.get('genres').split(',')) :
-        null
-
-    var selectedTagSearchMatchKey: string = $page.url.searchParams.has('tagSearchMatch') ?
-        parseMatchKey($page.url.searchParams.get('tagSearchMatch')) :
-        searchMatchDefaultKey
-    // Tags don't use an enum, so they need to be handled differently
-    var initialTagKeys: string[] = $page.url.searchParams.has('tags') ?
-        $page.url.searchParams.get('tags').split(',') :
-        null
-    var selectedTagEntries: any[] = null
-    var showIncludeChildTags = false
-    var selectedIncludeChildTags = true
-
-    let currPage = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
-    function setNewPage(pageNum: number) {
-        currPage = pageNum;
-    }
-
     let searchResultWorks: PaginateResult<Content>;
     let searchResultBlogs: PaginateResult<Content>;
     let searchResultUsers: PaginateResult<Profile>;
 
     var loading = false;
 
-    // Fetch results for URL params
-    // if ($page.url.searchParams.entries.length > 0) {
-    //     const query = initialQuery
-    //     const searchKind = selectedSearchKind
-    //     const author = initialAuthor
-    //     const category = selectedCategoryKey
-    //     const genreSearchMatch = parseMatch(values.genreSearchMatch)
-    //     const genres = parseGenreKeys(values.genres)
-    //     const tagSearchMatch = parseMatch(values.tagSearchMatch)
-    //     const tags: string[] = values.tags ? values.tags.map((val) => {
-    //         return val.value as string
-    //     }) : null
-    //     const includeChildTags = selectedIncludeChildTags
-    //     // TODO
-    //     const pageNum = 1
-    //     fetchData(
-    //         query,
-    //         searchKind,
-    //         author,
-    //         category,
-    //         genreSearchMatch,
-    //         genres,
-    //         tagSearchMatch,
-    //         tags,
-    //         includeChildTags,
-    //         1
-    //     )
-    // }
+    const tagOptions = [];
+
+    var queryValue: string = null
+    var searchKindValue: any
+    var showAdvancedOptions: boolean
+    var authorValue: string
+    var categoryValue: any
+    var genreSearchMatchValue: any
+    var genreValues: any[]
+    var tagSearchMatchValue: any
+    var tagValues: any[]
+    var includeChildTagsValue: boolean
+    var showIncludeChildTags: boolean
+    var currPage: number = 1
+
+    onMount(() => {
+        tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
+            for (const tree of tagTrees) {
+                tagOptions.push({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })
+                for (const child of tree.children) {
+                    tagOptions.push({ value: child._id, label: tree.name + "  —  " + child.name, isParent: false})
+                }
+            }
+
+            // This has to be after tag options or else tag options aren't placed in the form
+            processQueryParams()
+        })
+    })
+
+    function processQueryParams() {
+        const searchParams = $page.url.searchParams
+        var shouldSearch = false
+
+        if (searchParams.has('query')) {
+            queryValue = searchParams.get('query')
+            shouldSearch = true
+        }
+
+        if (searchParams.has('author') || searchParams.has('category')
+            || searchParams.has('genres') || searchParams.has('tags')) {
+            showAdvancedOptions = true
+            shouldSearch = true
+        }
+
+        const initialSearchKindKey: string = searchParams.has('kind') ?
+            parseSearchKindKey(searchParams.get('kind')) :
+            searchKindDefaultKey
+        searchKindValue = createSearchKindMenuItem(initialSearchKindKey)
+
+        authorValue = searchParams.has('author') ?
+            searchParams.get('author') :
+            null
+
+        const initialCategoryKey: string = searchParams.has('category') ?
+            parseCategoryKey(searchParams.get('category')) :
+            anyOption
+        categoryValue = createCategoryMenuItem(initialCategoryKey)
+
+        const initialGenreSearchMatchKey: string = searchParams.has('genreSearchMatch') ?
+            parseMatchKey(searchParams.get('genreSearchMatch')) :
+            searchMatchDefaultKey
+        genreSearchMatchValue = createMatchMenuItem(initialGenreSearchMatchKey)
+
+        const initialGenreKeys: string[] = searchParams.has('genres') ?
+            parseGenreKeys(searchParams.get('genres').split(',')) :
+            null
+        genreValues = createGenreMenuItems(initialGenreKeys)
+
+        const initialTagSearchMatchKey: string = searchParams.has('tagSearchMatch') ?
+            parseMatchKey(searchParams.get('tagSearchMatch')) :
+            searchMatchDefaultKey
+        tagSearchMatchValue = createMatchMenuItem(initialTagSearchMatchKey)
+
+        const initialTagKeys: string[] = searchParams.has('tags') ?
+            searchParams.get('tags').split(',') :
+            null
+        tagValues = createTagMenuItems(initialTagKeys)
+
+        includeChildTagsValue = searchParams.get('includeChildTags') !== 'false'
+
+        showIncludeChildTags = searchParams.has('includeChildTags')
+
+        if (searchParams.has('page')) {
+            currPage = +searchParams.get('page')
+            shouldSearch = true
+        }
+
+        if (shouldSearch) {
+            fetchData(
+                queryValue,
+                initialSearchKindKey,
+                authorValue,
+                initialCategoryKey,
+                initialGenreSearchMatchKey,
+                initialGenreKeys,
+                initialTagSearchMatchKey,
+                initialTagKeys,
+                includeChildTagsValue,
+                currPage
+            )
+        }
+    }
+
+    function setNewPage(pageNum: number) {
+        currPage = pageNum;
+    }
 
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
             const query = values.query ?? null
-            const searchKind = selectedSearchKindKey
+            const searchKind = parseSearchKindKey(searchKindValue)
             const author = values.author ?? null
-            const category = selectedCategoryKey
-            const genreSearchMatch = selectedGenreSearchMatchKey
-            const genres = parseGenreKeys(values.genres)
-            const tagSearchMatch = selectedTagSearchMatchKey
-            const tags: string[] = values.tags ? values.tags.map((val) => {
+            const category = parseCategoryKey(categoryValue)
+            const genreSearchMatch = parseMatchKey(genreSearchMatchValue)
+            const genres = parseGenreKeys(genreValues)
+            const tagSearchMatch = parseMatchKey(tagSearchMatchValue)
+            const tags: string[] = tagValues ? tagValues.map((val) => {
                 return val.value as string
             }) : null
-            const includeChildTags = selectedIncludeChildTags
-            // TODO
-            const pageNum = 1
+            const includeChildTags = includeChildTagsValue
+            const pageNum = currPage
 
-            $page.url.searchParams.forEach((_value, key, parent) => (
-                parent.delete(key)
-            ))
+            const newSearchParams = new URLSearchParams()
             if (query) {
-                $page.url.searchParams.set('query', query)
+                newSearchParams.set('query', query)
             }
             if (searchKind && SearchKind[searchKind] !== SearchKind.ProseAndPoetry) {
-                $page.url.searchParams.set('kind', searchKind)
+                newSearchParams.set('kind', searchKind)
             }
             if (searchKind !== SearchKind.User) {
                 if (author) {
-                    $page.url.searchParams.set('author', author)
+                    newSearchParams.set('author', author)
                 }
                 if (category && category !== anyOption) {
-                    $page.url.searchParams.set('category', category)
+                    newSearchParams.set('category', category)
                 }
                 if (genres && genres.length > 0) {
                     if (genreSearchMatch && SearchMatch[genreSearchMatch] !== SearchMatch.All) {
-                        $page.url.searchParams.set('genreSearchMatch', genreSearchMatch)
+                        newSearchParams.set('genreSearchMatch', genreSearchMatch)
                     }
-                    $page.url.searchParams.set('genres', genres.toString())
+                    newSearchParams.set('genres', genres.toString())
                 }
                 if (tags && tags.length > 0) {
                     if (tagSearchMatch && SearchMatch[tagSearchMatch] !== SearchMatch.All) {
-                        $page.url.searchParams.set('tagSearchMatch', tagSearchMatch)
+                        newSearchParams.set('tagSearchMatch', tagSearchMatch)
                     }
-                    $page.url.searchParams.set('tags', tags.toString())
+                    newSearchParams.set('tags', tags.toString())
                     if (showIncludeChildTags) {
-                        $page.url.searchParams.set('includeChildTags', includeChildTags.toString())
+                        newSearchParams.set('includeChildTags', includeChildTags.toString())
                     }
                 }
             }
             if (pageNum && pageNum > 0) {
-                $page.url.searchParams.set('page', pageNum.toString())
+                newSearchParams.set('page', pageNum.toString())
             }
-            goto($page.url.toString())
+            goto("/search?" + newSearchParams.toString())
 
             fetchData(
                 query,
@@ -195,7 +224,7 @@
                 tagSearchMatch,
                 tags,
                 includeChildTags,
-                1
+                pageNum
             )
         },
     });
@@ -339,8 +368,8 @@
     }
 
     function setShowIncludeChildTags() {
-        if (selectedTagEntries && selectedTagSearchMatchKey !== SearchMatch.Exactly) {
-            for (const tag of selectedTagEntries) {
+        if (tagValues && tagSearchMatchValue.label !== SearchMatch.Exactly) {
+            for (const tag of tagValues) {
                 if (tag.isParent) {
                     showIncludeChildTags = true;
                     return;
@@ -433,7 +462,7 @@
                     type="text"
                     title="Query"
                     placeholder="Search..."
-                    value={initialQuery}
+                    value={queryValue}
                     errorMessage={$errors.query}
                 />
                 <Button type="submit">
@@ -441,79 +470,79 @@
                 </Button>
 
                 <SelectMenu
-                    items={searchKinds}
+                    items={searchKindOptions}
                     label="Search Kind"
-                    value={createSearchKindMenuItem(selectedSearchKindKey)}
+                    value={searchKindValue}
                     on:select={(e) => {
                         $data.searchKind = e.detail
-                        selectedSearchKindKey = parseSearchKindKey(e.detail)
+                        searchKindValue = e.detail
                     }}
                 />
                 {#if showAdvancedOptions}
                     <div on:click={() => showAdvancedOptions = false}>Hide Advanced</div>
-                    {#if SearchKind[selectedSearchKindKey] !== SearchKind.User}
+                    {#if (searchKindValue && searchKindValue.label !== SearchKind.User)}
                         <TextField
                             name="author"
                             type="text"
                             title="Author"
                             placeholder="Search..."
-                            value={initialAuthor}
+                            value={authorValue}
                             errorMessage={$errors.author}
                         />
                         <SelectMenu
                             items={categoryOptions}
                             label="Category"
-                            value={createCategoryMenuItem(selectedCategoryKey)}
+                            value={categoryValue}
                             on:select={(e) => {
                                 $data.category = e.detail
-                                selectedCategoryKey = parseCategoryKey(e.detail)
+                                categoryValue = e.detail
                             }}
                         />
                         <div>Genre(s)</div>
                         <SelectMenu
                             items={genreMatchOptions}
                             label="Genre Search Match"
-                            value={createMatchMenuItem(selectedGenreSearchMatchKey)}
+                            value={genreSearchMatchValue}
                             on:select={(e) => {
-                                $data.genreSearchMatch = e.detail;
-                                selectedGenreSearchMatchKey = parseMatchKey(e.detail);
+                                $data.genreSearchMatch = e.detail
+                                genreSearchMatchValue = e.detail
                             }}
                         />
                         <SelectMenu
                             items={genreOptions}
                             label="Genre Search"
                             isMulti={true}
-                            value={createGenreMenuItems(selectedGenreKeys)}
+                            value={genreValues}
                             on:select={(e) => {
-                                $data.genres = e.detail;
-                                selectedGenreKeys = parseGenreKeys(e.detail);
+                                $data.genres = e.detail
+                                genreValues = e.detail
                             }}
                         />
                         <div>Fandom Tag(s)</div>
                         <SelectMenu
                             items={tagMatchOptions}
                             label="Tag Search Match"
-                            value={createMatchMenuItem(selectedTagSearchMatchKey)}
+                            value={tagSearchMatchValue}
                             on:select={(e) => {
-                                $data.tagSearchMatch = e.detail;
-                                selectedTagSearchMatchKey = parseMatchKey(e.detail)
-                                setShowIncludeChildTags();
+                                $data.tagSearchMatch = e.detail
+                                tagSearchMatchValue = e.detail
+                                setShowIncludeChildTags()
                             }}
                         />
                         <SelectMenu
                             items={tagOptions}
                             label="Tag Search"
                             isMulti={true}
-                            value={createTagMenuItems(initialTagKeys)}
+                            value={tagValues}
                             on:select={(e) => {
-                                $data.tags = e.detail;
-                                selectedTagEntries = e.detail;
-                                setShowIncludeChildTags();
+                                $data.tags = e.detail
+                                tagValues = e.detail
+                                setShowIncludeChildTags()
                             }}
                         />
                         {#if showIncludeChildTags}
                             <Toggle
-                                bind:value={selectedIncludeChildTags}
+                                bind:value={includeChildTagsValue}
                             >
                                 Include child tags
                             </Toggle>
