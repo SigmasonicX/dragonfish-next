@@ -22,7 +22,7 @@
 
 <style lang="scss">
     div.menu {
-        @apply h-screen z-40 relative min-w-[24rem] max-w-[24rem];
+        @apply h-screen z-40 relative min-w-full max-w-full md:min-w-[24rem] md:max-w-[24rem];
         background: var(--background);
     }
 </style>

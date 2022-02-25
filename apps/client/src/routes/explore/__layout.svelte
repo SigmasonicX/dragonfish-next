@@ -81,13 +81,13 @@
     <title>Explore &mdash; Offprint</title>
 </svelte:head>
 
-<div class="flex w-full h-screen">
+<div class="flex flex-col md:flex-row w-full h-screen">
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Explore</h3>
             <Compass3Line />
         </svelte:fragment>
-        <svete:fragment slot="pages">
+        <svelte:fragment slot="pages">
             <a href="/explore" class:active={$page.url.pathname === '/explore'}>
                 <!--<span class="link-icon"><MistFill /></span>-->
                 <span class="link-icon"><NewspaperLine /></span>
@@ -133,16 +133,21 @@
             </a>
             {#if $session.currProfile}
                 <h5
-                    class="flex items-center text-lg font-medium mb-1 mt-2"
+                    class="flex items-center text-lg font-medium mb-1 mt-2 hidden md:block"
                     style="color: var(--text-color);"
                 >
                     <span class="relative top-1">Library</span>
                 </h5>
-                <a href="/explore/library" class:active={$page.url.pathname === '/explore/library'}>
+                <a
+                    class="hide"
+                    href="/explore/library"
+                    class:active={$page.url.pathname === '/explore/library'}
+                >
                     <span class="link-icon"><BookOpenLine /></span>
                     <span class="text">Prose & Poetry</span>
                 </a>
                 <a
+                    class="hide"
                     href="/explore/library/favorite-blogs"
                     class:active={$page.url.pathname === '/explore/library/favorite-blogs'}
                 >
@@ -150,6 +155,7 @@
                     <span class="text">Blogs</span>
                 </a>
                 <a
+                    class="hide"
                     href="/explore/library/read-it-later"
                     class:active={$page.url.pathname === '/explore/library/read-it-later'}
                 >
@@ -157,6 +163,7 @@
                     <span class="text">Read It Later</span>
                 </a>
                 <a
+                    class="hide"
                     href="/explore/library/finished-reading"
                     class:active={$page.url.pathname === '/explore/library/finished-reading'}
                 >
@@ -164,6 +171,7 @@
                     <span class="text">Finished Reading</span>
                 </a>
                 <a
+                    class="hide"
                     href="/explore/library/reading-history"
                     class:active={$page.url.pathname === '/explore/library/reading-history'}
                 >
@@ -171,7 +179,7 @@
                     <span class="text">Reading History</span>
                 </a>
                 <h5
-                    class="flex items-center text-lg font-medium mb-1 mt-2"
+                    class="flex items-center text-lg font-medium mb-1 mt-2 hidden md:block"
                     style="color: var(--text-color);"
                 >
                     <span class="relative top-1">Bookshelves</span>
@@ -208,7 +216,7 @@
                     </div>
                 {:else}
                     {#each $shelfList.data as shelf}
-                        <a href="/explore/library/shelf/{shelf._id}">
+                        <a class="hide" href="/explore/library/shelf/{shelf._id}">
                             <span class="link-icon"><BarChart2Fill /></span>
                             <span class="text">{shelf.name}</span>
                         </a>
@@ -244,7 +252,7 @@
                     </form>
                 {:else}
                     <button
-                        class="wide-button"
+                        class="wide-button hide"
                         in:fade={{ delay: 0, duration: 150 }}
                         on:click={() => (showNewShelfForm = !showNewShelfForm)}
                     >
@@ -253,7 +261,7 @@
                     </button>
                 {/if}
             {/if}
-        </svete:fragment>
+        </svelte:fragment>
     </PageNav>
     <slot />
 </div>

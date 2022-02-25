@@ -4,7 +4,9 @@
     import { TeamLine, Group2Line, RssFill } from 'svelte-remixicon';
 </script>
 
-<div class="flex w-full h-screen">
+<div
+    class="flex flex-col md:flex-row w-full h-[calc(100vh-51px)] md:h-screen overflow-y-auto md:overflow-y-hidden"
+>
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Social</h3>

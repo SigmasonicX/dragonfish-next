@@ -28,7 +28,7 @@
         {#if queryResult.status === 'loading'}
             <div class="w-full h-screen flex flex-col items-center justify-center">
                 <div class="flex items-center">
-                    <Loader5Line class="animate-spin mr-2" size="2rem" />
+                    <Loader5Line class="animate-spin mr-2" size="32px" />
                     <span class="uppercase font-bold tracking-widest">Loading...</span>
                 </div>
             </div>

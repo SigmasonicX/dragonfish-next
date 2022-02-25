@@ -16,7 +16,9 @@
     <title>Settings &mdash; Offprint</title>
 </svelte:head>
 
-<div class="flex w-full h-screen">
+<div
+    class="flex flex-col md:flex-row w-full h-[calc(100vh-51px)] md:h-screen overflow-y-auto md:overflow-y-hidden"
+>
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Settings</h3>
@@ -56,5 +58,7 @@
             {/if}
         </svelte:fragment>
     </PageNav>
-    <slot />
+    <div class="md:overflow-y-auto">
+        <slot />
+    </div>
 </div>

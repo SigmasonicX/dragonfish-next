@@ -139,7 +139,7 @@
             </Button>
         {/if}
     </div>
-    <div class="flex items-center justify-center md:flex-col">
+    <div class="flex items-center justify-center overflow-y-auto md:overflow-y-hidden md:flex-col">
         <div class="stat-box border-r-2 md:border-r-0 md:border-b-2 border-zinc-500">
             {#if content.audit.publishedOn}
                 <span class="text text-zinc-500 dark:text-zinc-400">Published</span>
