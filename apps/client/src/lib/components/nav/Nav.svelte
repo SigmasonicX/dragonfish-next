@@ -24,11 +24,13 @@
     import { fetchAllUnread } from '$lib/services/activity.service';
     import Badge from '$lib/components/ui/misc/Badge.svelte';
     import { abbreviate } from '$lib/util';
+    import MobileMenu from '$lib/components/nav/MobileMenu.svelte';
 
     enum MenuOptions {
         NoMenu,
         UserMenu,
         CreateMenu,
+        MobileMenu,
         InboxMenu,
     }
 
@@ -51,6 +53,9 @@
             case MenuOptions.InboxMenu:
                 open(InboxMenu);
                 break;
+            case MenuOptions.MobileMenu:
+                open(MobileMenu);
+                break;
             default:
                 close();
                 break;
@@ -60,6 +65,7 @@
     navigating.subscribe((val) => {
         if (val !== null) {
             currentMenu = MenuOptions.NoMenu;
+            close();
         }
     });
 
@@ -70,7 +76,7 @@
 </script>
 
 <div class="navbar">
-    <div class="py-2 flex flex-col items-center h-full hidden md:block">
+    <div class="py-2 flex-col items-center h-full hidden md:flex">
         {#if $session.currProfile}
             {#if currentMenu === MenuOptions.UserMenu}
                 <div
@@ -200,9 +206,23 @@
         </a>
     </div>
     <div class="p-1 flex items-center block md:hidden">
-        <div class="link-mobile select-none cursor-pointer group">
-            <span class="link-icon"><MenuLine size="24px" /></span>
-        </div>
+        {#if currentMenu === MenuOptions.MobileMenu}
+            <div
+                class="link-mobile select-none cursor-pointer group"
+                class:active={currentMenu === MenuOptions.MobileMenu}
+                on:click={() => toggleMenu(MenuOptions.NoMenu)}
+            >
+                <span class="link-icon"><CloseLine size="24px" /></span>
+            </div>
+        {:else}
+            <div
+                class="link-mobile select-none cursor-pointer group"
+                class:active={currentMenu === MenuOptions.MobileMenu}
+                on:click={() => toggleMenu(MenuOptions.MobileMenu)}
+            >
+                <span class="link-icon"><MenuLine size="24px" /></span>
+            </div>
+        {/if}
         <a href="/" class="flex-1">
             <img
                 src="/images/logo.png"

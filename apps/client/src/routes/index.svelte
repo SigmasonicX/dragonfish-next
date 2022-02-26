@@ -38,7 +38,7 @@
     <meta property="twitter:image" content="/images/offprint_icon.png" />
 </svelte:head>
 
-<div class="w-full h-screen overflow-y-auto">
+<div class="w-full h-[calc(100vh-51px)] md:h-screen overflow-y-auto">
     <div class="w-full mb-6">
         <div class="home-header hidden md:block">
             <img
@@ -232,7 +232,7 @@
     </div>
     <div class="mt-6 md:mt-0 mb-6 flex flex-col items-center justify-center">
         <span class="flex items-center">
-            Made with <HeartsLine class="text-white mx-1" /> by Offprint Studios
+            Made with <HeartsLine class="dark:text-white mx-1" /> by Offprint Studios
         </span>
         <span>&copy; 2022 Alyx Mote</span>
     </div>
