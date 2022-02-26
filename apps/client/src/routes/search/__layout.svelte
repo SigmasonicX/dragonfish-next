@@ -4,7 +4,7 @@
     import TextField from '$lib/components/forms/TextField.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import PageNav from '$lib/components/nav/PageNav.svelte';
-    import { TeamLine } from 'svelte-remixicon';
+    import { Loader5Line, TeamLine } from 'svelte-remixicon';
     import { Content, SearchKind, SearchMatch } from '$lib/models/content';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
@@ -448,7 +448,7 @@
     }
 </script>
 
-<!-- <div class="flex w-full h-screen"> -->
+<div class="flex flex-col md:flex-row w-full h-screen">
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Search</h3>
@@ -554,72 +554,75 @@
             </form>
         </svelte:fragment>
     </PageNav>
-<!-- </div> -->
 
-{#if loading}
-    <div class="flex flex-row items-center justify-center h-full">
-        <mat-spinner></mat-spinner>
-    </div>
-{:else}
-    <div class="w-full overflow-y-auto">
-        <div class="w-11/12 mx-auto my-6 max-w-7xl">
-            {#if searchResultWorks}
-                <div class="flex flex-row py-4 items-center">
-                    <!-- <rmx-icon name="book-open-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
-                    <h3 class="text-4xl font-medium">Works</h3>
-                </div>
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
-                >
-                    <!--Works-->
-                    {#each searchResultWorks.docs as work}
-                        <WorkCard content={work} />
-                    {/each}
-                </div>
-                <Paginator
-                    {currPage}
-                    totalPages={searchResultWorks.totalPages}
-                    on:change={(e) => setNewPage(e.detail)}
-                />
-            {/if}
-            {#if searchResultBlogs}
-                <div class="flex flex-row py-4 items-center">
-                    <!-- <rmx-icon name="cup-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
-                    <h3 class="text-4xl font-medium">Blogs</h3>
-                </div>
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
-                >
-                    <!--Blogs-->
-                    {#each searchResultBlogs.docs as blog}
-                        <BlogCard blog={blog} />
-                    {/each}
-                </div>
-                <Paginator
-                    {currPage}
-                    totalPages={searchResultBlogs.totalPages}
-                    on:change={(e) => setNewPage(e.detail)}
-                />
-            {/if}
-            {#if searchResultUsers}
-                <div class="flex flex-row py-4 items-center">
-                    <!-- <rmx-icon name="group-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
-                    <h3 class="text-4xl font-medium">Users</h3>
-                </div>
-                <div
-                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
-                >
-                    <!--Users-->
-                    {#each searchResultUsers.docs as user}
-                        <!-- <BlogCard blog={blog} /> -->
-                    {/each}
-                </div>
-                <Paginator
-                    {currPage}
-                    totalPages={searchResultUsers.totalPages}
-                    on:change={(e) => setNewPage(e.detail)}
-                />
-            {/if}
+    {#if loading}
+        <div class="w-full h-screen flex flex-col items-center justify-center">
+            <div class="flex items-center">
+                <Loader5Line class="animate-spin mr-2" size="32px" />
+                <span class="uppercase font-bold tracking-widest">Loading...</span>
+            </div>
         </div>
-    </div>
-{/if}
+    {:else}
+        <div class="w-full overflow-y-auto">
+            <div class="w-11/12 mx-auto my-6 max-w-7xl">
+                {#if searchResultWorks}
+                    <div class="flex flex-row py-4 items-center">
+                        <!-- <rmx-icon name="book-open-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                        <h3 class="text-4xl font-medium">Works</h3>
+                    </div>
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                    >
+                        <!--Works-->
+                        {#each searchResultWorks.docs as work}
+                            <WorkCard content={work} />
+                        {/each}
+                    </div>
+                    <Paginator
+                        {currPage}
+                        totalPages={searchResultWorks.totalPages}
+                        on:change={(e) => setNewPage(e.detail)}
+                    />
+                {/if}
+                {#if searchResultBlogs}
+                    <div class="flex flex-row py-4 items-center">
+                        <!-- <rmx-icon name="cup-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                        <h3 class="text-4xl font-medium">Blogs</h3>
+                    </div>
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                    >
+                        <!--Blogs-->
+                        {#each searchResultBlogs.docs as blog}
+                            <BlogCard blog={blog} />
+                        {/each}
+                    </div>
+                    <Paginator
+                        {currPage}
+                        totalPages={searchResultBlogs.totalPages}
+                        on:change={(e) => setNewPage(e.detail)}
+                    />
+                {/if}
+                {#if searchResultUsers}
+                    <div class="flex flex-row py-4 items-center">
+                        <!-- <rmx-icon name="group-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
+                        <h3 class="text-4xl font-medium">Users</h3>
+                    </div>
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
+                    >
+                        <!--Users-->
+                        {#each searchResultUsers.docs as user}
+                            <!-- <BlogCard blog={blog} /> -->
+                        {/each}
+                    </div>
+                    <Paginator
+                        {currPage}
+                        totalPages={searchResultUsers.totalPages}
+                        on:change={(e) => setNewPage(e.detail)}
+                    />
+                {/if}
+            </div>
+        </div>
+    {/if}
+</div>
