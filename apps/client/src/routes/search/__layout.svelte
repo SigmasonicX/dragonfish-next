@@ -59,18 +59,38 @@
 
     const tagOptions = [];
 
-    var queryValue: string = null
+    var currentQuery: string
+    var queryValue: string
+
+    var currentSearchKindKey: string
     var searchKindValue: any
+
     var showAdvancedOptions: boolean
+
+    var currentAuthor: string
     var authorValue: string
+
+    var currentCategoryKey: string
     var categoryValue: any
+
+    var currentGenreSearchMatchKey: string
     var genreSearchMatchValue: any
+
+    var currentGenreKeys: string[]
     var genreValues: any[]
+
+    var currentTagSearchMatchKey: string
     var tagSearchMatchValue: any
+
+    var currentTagKeys: string[]
     var tagValues: any[]
+
+    var currentIncludeChildTags: boolean
     var includeChildTagsValue: boolean
+
     var showIncludeChildTags: boolean
-    var currPage: number = 1
+
+    var currentPage: number = 1
 
     onMount(() => {
         tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
@@ -90,8 +110,12 @@
         const searchParams = $page.url.searchParams
         var shouldSearch = false
 
-        if (searchParams.has('query')) {
-            queryValue = searchParams.get('query')
+        currentQuery = searchParams.has('query') ?
+            searchParams.get('query') :
+            null
+        queryValue = currentQuery
+
+        if (currentQuery) {
             shouldSearch = true
         }
 
@@ -101,131 +125,185 @@
             shouldSearch = true
         }
 
-        const initialSearchKindKey: string = searchParams.has('kind') ?
+        currentSearchKindKey = searchParams.has('kind') ?
             parseSearchKindKey(searchParams.get('kind')) :
             searchKindDefaultKey
-        searchKindValue = createSearchKindMenuItem(initialSearchKindKey)
+        searchKindValue = createSearchKindMenuItem(currentSearchKindKey)
 
-        authorValue = searchParams.has('author') ?
+        currentAuthor = searchParams.has('author') ?
             searchParams.get('author') :
             null
+        authorValue = currentAuthor
 
-        const initialCategoryKey: string = searchParams.has('category') ?
+        currentCategoryKey = searchParams.has('category') ?
             parseCategoryKey(searchParams.get('category')) :
             anyOption
-        categoryValue = createCategoryMenuItem(initialCategoryKey)
+        categoryValue = createCategoryMenuItem(currentCategoryKey)
 
-        const initialGenreSearchMatchKey: string = searchParams.has('genreSearchMatch') ?
+        currentGenreSearchMatchKey = searchParams.has('genreSearchMatch') ?
             parseMatchKey(searchParams.get('genreSearchMatch')) :
             searchMatchDefaultKey
-        genreSearchMatchValue = createMatchMenuItem(initialGenreSearchMatchKey)
+        genreSearchMatchValue = createMatchMenuItem(currentGenreSearchMatchKey)
 
-        const initialGenreKeys: string[] = searchParams.has('genres') ?
+        currentGenreKeys = searchParams.has('genres') ?
             parseGenreKeys(searchParams.get('genres').split(',')) :
             null
-        genreValues = createGenreMenuItems(initialGenreKeys)
+        genreValues = createGenreMenuItems(currentGenreKeys)
 
-        const initialTagSearchMatchKey: string = searchParams.has('tagSearchMatch') ?
+        currentTagSearchMatchKey = searchParams.has('tagSearchMatch') ?
             parseMatchKey(searchParams.get('tagSearchMatch')) :
             searchMatchDefaultKey
-        tagSearchMatchValue = createMatchMenuItem(initialTagSearchMatchKey)
+        tagSearchMatchValue = createMatchMenuItem(currentTagSearchMatchKey)
 
-        const initialTagKeys: string[] = searchParams.has('tags') ?
+        currentTagKeys = searchParams.has('tags') ?
             searchParams.get('tags').split(',') :
             null
-        tagValues = createTagMenuItems(initialTagKeys)
+        tagValues = createTagMenuItems(currentTagKeys)
 
-        includeChildTagsValue = searchParams.get('includeChildTags') !== 'false'
+        currentIncludeChildTags = searchParams.get('includeChildTags') !== 'false'
+        includeChildTagsValue = currentIncludeChildTags
 
         showIncludeChildTags = searchParams.has('includeChildTags')
 
         if (searchParams.has('page')) {
-            currPage = +searchParams.get('page')
+            currentPage = +searchParams.get('page')
             shouldSearch = true
         }
 
         if (shouldSearch) {
-            fetchData(
-                queryValue,
-                initialSearchKindKey,
-                authorValue,
-                initialCategoryKey,
-                initialGenreSearchMatchKey,
-                initialGenreKeys,
-                initialTagSearchMatchKey,
-                initialTagKeys,
-                includeChildTagsValue,
-                currPage
-            )
+            fetchData()
         }
     }
 
+    function updateUrl() {
+        const newSearchParams = new URLSearchParams()
+        if (currentQuery) {
+            newSearchParams.set('query', currentQuery)
+        }
+        if (currentSearchKindKey && SearchKind[currentSearchKindKey] !== SearchKind.ProseAndPoetry) {
+            newSearchParams.set('kind', currentSearchKindKey)
+        }
+        if (currentSearchKindKey !== SearchKind.User) {
+            if (currentAuthor) {
+                newSearchParams.set('author', currentAuthor)
+            }
+            if (currentCategoryKey && currentCategoryKey !== anyOption) {
+                newSearchParams.set('category', currentCategoryKey)
+            }
+            if (currentGenreKeys && currentGenreKeys.length > 0) {
+                if (currentGenreSearchMatchKey && SearchMatch[currentGenreSearchMatchKey] !== SearchMatch.All) {
+                    newSearchParams.set('genreSearchMatch', currentGenreSearchMatchKey)
+                }
+                newSearchParams.set('genres', currentGenreKeys.toString())
+            }
+            if (currentTagKeys && currentTagKeys.length > 0) {
+                if (currentTagSearchMatchKey && SearchMatch[currentTagSearchMatchKey] !== SearchMatch.All) {
+                    newSearchParams.set('tagSearchMatch', currentTagSearchMatchKey)
+                }
+                newSearchParams.set('tags', currentTagKeys.toString())
+                if (showIncludeChildTags) {
+                    newSearchParams.set('includeChildTags', currentIncludeChildTags.toString())
+                }
+            }
+        }
+        if (currentPage > 0) {
+            newSearchParams.set('page', currentPage.toString())
+        }
+        goto("/search?" + newSearchParams.toString())
+    }
+
     function setNewPage(pageNum: number) {
-        currPage = pageNum;
+        currentPage = pageNum;
+        updateUrl()
+        fetchData()
+    }
+
+    function setShowIncludeChildTags() {
+        if (tagValues && tagSearchMatchValue.label !== SearchMatch.Exactly) {
+            for (const tag of tagValues) {
+                if (tag.isParent) {
+                    showIncludeChildTags = true;
+                    return;
+                }
+            }
+        }
+        showIncludeChildTags = false;
+    }
+
+    function clearResults() {
+        searchResultWorks = null;
+        searchResultBlogs = null;
+        searchResultUsers = null;
+    }
+
+    function fetchData() {
+        loading = true;
+        clearResults();
+        switch(SearchKind[currentSearchKindKey]) {
+            case SearchKind.Blog:
+                search.findRelatedContent(
+                    currentQuery,
+                    currentSearchKindKey,
+                    currentAuthor,
+                    currentCategoryKey,
+                    currentGenreSearchMatchKey,
+                    currentGenreKeys,
+                    currentTagSearchMatchKey,
+                    currentTagKeys,
+                    currentIncludeChildTags,
+                    currentPage,
+                    $app.filter,
+                ).subscribe((results) => {
+                    searchResultBlogs = results;
+                    loading = false;
+                })
+                break;
+            case SearchKind.User:
+                search.searchUsers(currentQuery, currentPage).subscribe((results) => {
+                    searchResultUsers = results;
+                    loading = false;
+                });
+                break;
+            case SearchKind.Poetry:
+            case SearchKind.ProseAndPoetry:
+            case SearchKind.Prose:
+            default:
+                search.findRelatedContent(
+                    currentQuery,
+                    currentSearchKindKey,
+                    currentAuthor,
+                    currentCategoryKey,
+                    currentGenreSearchMatchKey,
+                    currentGenreKeys,
+                    currentTagSearchMatchKey,
+                    currentTagKeys,
+                    currentIncludeChildTags,
+                    currentPage,
+                    $app.filter,
+                ).subscribe((results) => {
+                    searchResultWorks = results;
+                    loading = false;
+                });
+        }
     }
 
     const { form, data, errors } = createForm({
         onSubmit: async (values) => {
-            const query = values.query ?? null
-            const searchKind = parseSearchKindKey(searchKindValue)
-            const author = values.author ?? null
-            const category = parseCategoryKey(categoryValue)
-            const genreSearchMatch = parseMatchKey(genreSearchMatchValue)
-            const genres = parseGenreKeys(genreValues)
-            const tagSearchMatch = parseMatchKey(tagSearchMatchValue)
-            const tags: string[] = tagValues ? tagValues.map((val) => {
+            currentQuery = values.query ?? null
+            currentSearchKindKey = parseSearchKindKey(searchKindValue)
+            currentAuthor = values.author ?? null
+            currentCategoryKey = parseCategoryKey(categoryValue)
+            currentGenreSearchMatchKey = parseMatchKey(genreSearchMatchValue)
+            currentGenreKeys = parseGenreKeys(genreValues)
+            currentTagSearchMatchKey = parseMatchKey(tagSearchMatchValue)
+            currentTagKeys = tagValues ? tagValues.map((val) => {
                 return val.value as string
             }) : null
-            const includeChildTags = includeChildTagsValue
-            const pageNum = currPage
+            currentIncludeChildTags = includeChildTagsValue
+            currentPage = 1
 
-            const newSearchParams = new URLSearchParams()
-            if (query) {
-                newSearchParams.set('query', query)
-            }
-            if (searchKind && SearchKind[searchKind] !== SearchKind.ProseAndPoetry) {
-                newSearchParams.set('kind', searchKind)
-            }
-            if (searchKind !== SearchKind.User) {
-                if (author) {
-                    newSearchParams.set('author', author)
-                }
-                if (category && category !== anyOption) {
-                    newSearchParams.set('category', category)
-                }
-                if (genres && genres.length > 0) {
-                    if (genreSearchMatch && SearchMatch[genreSearchMatch] !== SearchMatch.All) {
-                        newSearchParams.set('genreSearchMatch', genreSearchMatch)
-                    }
-                    newSearchParams.set('genres', genres.toString())
-                }
-                if (tags && tags.length > 0) {
-                    if (tagSearchMatch && SearchMatch[tagSearchMatch] !== SearchMatch.All) {
-                        newSearchParams.set('tagSearchMatch', tagSearchMatch)
-                    }
-                    newSearchParams.set('tags', tags.toString())
-                    if (showIncludeChildTags) {
-                        newSearchParams.set('includeChildTags', includeChildTags.toString())
-                    }
-                }
-            }
-            if (pageNum && pageNum > 0) {
-                newSearchParams.set('page', pageNum.toString())
-            }
-            goto("/search?" + newSearchParams.toString())
-
-            fetchData(
-                query,
-                searchKind,
-                author,
-                category,
-                genreSearchMatch,
-                genres,
-                tagSearchMatch,
-                tags,
-                includeChildTags,
-                pageNum
-            )
+            updateUrl()
+            fetchData()
         },
     });
 
@@ -366,86 +444,6 @@
         }
         return null
     }
-
-    function setShowIncludeChildTags() {
-        if (tagValues && tagSearchMatchValue.label !== SearchMatch.Exactly) {
-            for (const tag of tagValues) {
-                if (tag.isParent) {
-                    showIncludeChildTags = true;
-                    return;
-                }
-            }
-        }
-        showIncludeChildTags = false;
-    }
-
-    function clearResults() {
-        searchResultWorks = null;
-        searchResultBlogs = null;
-        searchResultUsers = null;
-    }
-
-    function fetchData(
-        query: string,
-        searchKind: string,
-        author: string | null,
-        searchCategory: string | null,
-        genreSearchMatch: string,
-        genres: string[] | null,
-        tagSearchMatch: string,
-        tagIds: string[] | null,
-        includeChildTags: boolean,
-        pageNum: number
-    ) {
-        loading = true;
-        clearResults();
-        switch(SearchKind[searchKind]) {
-            case SearchKind.Blog:
-                search.findRelatedContent(
-                    query,
-                    searchKind,
-                    author,
-                    searchCategory,
-                    genreSearchMatch,
-                    genres,
-                    tagSearchMatch,
-                    tagIds,
-                    includeChildTags,
-                    pageNum,
-                    $app.filter,
-                ).subscribe((results) => {
-                    searchResultBlogs = results;
-                    loading = false;
-                })
-                break;
-            case SearchKind.User:
-                search.searchUsers(query, pageNum).subscribe((results) => {
-                    searchResultUsers = results;
-                    loading = false;
-                });
-                break;
-            case SearchKind.Poetry:
-            case SearchKind.ProseAndPoetry:
-            case SearchKind.Prose:
-            default:
-                search.findRelatedContent(
-                    query,
-                    searchKind,
-                    author,
-                    searchCategory,
-                    genreSearchMatch,
-                    genres,
-                    tagSearchMatch,
-                    tagIds,
-                    includeChildTags,
-                    pageNum,
-                    $app.filter,
-                ).subscribe((results) => {
-                    searchResultWorks = results;
-                    loading = false;
-                });
-        }
-    }
 </script>
 
 <div class="flex flex-col md:flex-row w-full h-screen">
@@ -579,7 +577,7 @@
                         {/each}
                     </div>
                     <Paginator
-                        {currPage}
+                        currPage={currentPage}
                         totalPages={searchResultWorks.totalPages}
                         on:change={(e) => setNewPage(e.detail)}
                     />
@@ -598,7 +596,7 @@
                         {/each}
                     </div>
                     <Paginator
-                        {currPage}
+                        currPage={currentPage}
                         totalPages={searchResultBlogs.totalPages}
                         on:change={(e) => setNewPage(e.detail)}
                     />
@@ -617,7 +615,7 @@
                         {/each}
                     </div>
                     <Paginator
-                        {currPage}
+                        currPage={currentPage}
                         totalPages={searchResultUsers.totalPages}
                         on:change={(e) => setNewPage(e.detail)}
                     />
