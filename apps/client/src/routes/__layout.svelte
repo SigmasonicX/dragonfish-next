@@ -35,5 +35,6 @@
         color: var(--text-color);
         font-family: var(--body-text);
         background: var(--background);
+        position: relative;
     }
 </style>
