@@ -16,7 +16,6 @@ export class TagsStore {
 
     /**
      * Get all tags of the given `TagKind`, sorted into TagsTrees.
-     * NOTE: Children are not sorted alphabetically.
      * @param kind The `TagKind` of the tags to look for.
      */
     async fetchTagsTrees(kind: TagKind): Promise<TagsTree[]> {
@@ -37,6 +36,13 @@ export class TagsStore {
             .exec();
         if (results.length === 0) {
             return null;
+        }
+
+        // Sorts first level of children alphabetically
+        for (const tree of results) {
+            if (tree.children != null) {
+                tree.children.sort((a, b) => (a.name < b.name ? -1 : 1));
+            }
         }
 
         return results;
@@ -94,6 +100,11 @@ export class TagsStore {
             children: [],
         };
         const tree = await this.buildDescendantTree(root);
+
+        // Sorts first level of children alphabetically
+        if (tree.children != null) {
+            tree.children.sort((a, b) => (a.name < b.name ? -1 : 1));
+        }
 
         return tree;
     }

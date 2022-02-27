@@ -30,7 +30,7 @@ import * as Controllers from './controllers';
             }),
         }),
     ],
-    exports: [Services.AuthService, Services.UserService],
+    exports: [Services.AuthService, Services.UserService, Stores.PseudonymsStore],
     controllers: [
         Controllers.AuthController,
         Controllers.UserController,

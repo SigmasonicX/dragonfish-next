@@ -5,6 +5,7 @@
     export let type = 'text';
     export let title = 'Text Input';
     export let placeholder = 'Text Input';
+    export let value = null;
     export let errorMessage;
 </script>
 
@@ -21,6 +22,7 @@
         {name}
         {title}
         {placeholder}
+        {value}
         class="bg-zinc-300 dark:bg-zinc-700 dark:placeholder-zinc-400 dark:highlight-shadowed"
         class:error={!!errorMessage}
         on:change
