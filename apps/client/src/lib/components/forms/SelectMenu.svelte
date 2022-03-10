@@ -1,16 +1,18 @@
 <script lang="ts">
     // TODO: adjust styles for site
 
+    import { fade } from 'svelte/transition';
     import Select from 'svelte-select';
 
     export let items;
-    export let value;
+    export let value = null;
     export let placeholder = 'Select items...';
     export let isClearable = false;
     export let label = '';
     export let isMulti = false;
-    export let errorMessage = '';
+    export let errorMessage = null;
 </script>
+
 
 <label
     class="text-[0.625rem] relative z-20 top-[0.15rem] left-1 py-0.5 px-1 rounded-t-lg font-semibold tracking-wider uppercase"
@@ -25,9 +27,19 @@
     containerClasses="offprint-select"
     on:select
 />
+
 {#if !!errorMessage}
-    <span class="text-[0.625rem] text-red-500 relative -top-1 left-2">{errorMessage}</span>
+    <span
+        class="text-[0.625rem] text-red-500 relative -top-1 left-2"
+        transition:fade|local={{ delay: 0, duration: 350 }}>{errorMessage}</span
+    >
+{:else}
+    <span
+        class="text-[0.625rem] text-red-500 relative -top-1 left-2"
+        transition:fade|local={{ delay: 0, duration: 350 }}>&nbsp;</span
+    >
 {/if}
+
 
 <style lang="scss">
     :global(.offprint-select) {
