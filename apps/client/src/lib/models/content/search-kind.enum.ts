@@ -1,8 +1,8 @@
 export enum SearchKind {
-    ProseAndPoetry = "Prose and Poetry",
-    Prose = "Prose",
-    Poetry = "Poetry",
-    Blog = "Blog",
-    User = "User",
+    ProseAndPoetry = 'ProseAndPoetry',
+    Prose = 'Prose',
+    Poetry = 'Poetry',
+    Blog = 'Blog',
+    User = 'User',
 }
-export const searchKindDefaultKey = "ProseAndPoetry"
+export const searchKindDefaultKey = 'ProseAndPoetry';

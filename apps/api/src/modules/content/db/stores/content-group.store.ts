@@ -85,25 +85,6 @@ export class ContentGroupStore {
     }
 
     /**
-     * Fetches the whole news feed.
-     *
-     * @param page
-     */
-    async fetchNewsFeed(page: number): Promise<PaginateResult<BlogsContentDocument>> {
-        const query = {
-            'audit.isDeleted': false,
-            'audit.isNewsPost': true,
-            'audit.published': PubStatus.Published,
-        };
-        const paginateOptions = {
-            sort: { 'audit.publishedOn': this.NEWEST_FIRST },
-            page: page,
-            limit: 15,
-        };
-        return this.blogsModel.paginate(query, paginateOptions);
-    }
-
-    /**
      * Fetches all published documents based on kind, limited by page number.
      * @param pageNum The current page
      * @param kinds The kind of document to fetch
@@ -258,6 +239,7 @@ export class ContentGroupStore {
      * @param pageNum The page of results to retrieve.
      * @param maxPerPage The maximum number of results per page.
      * @param filter The content filter to apply to returned results.
+     * @param includeChildTags Whether or not to include child tags in the search.
      */
     public async findRelatedContent(
         query: string | null,

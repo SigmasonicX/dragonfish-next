@@ -55,10 +55,15 @@ export class SearchService {
                 authorId = users.docs[0]._id;
             }
         }
-        // Category and genre values are the keys, not the values
+        // Category, match, and genre values are the keys, not the values
         let category: WorkKind = null;
         if (Object.values(WorkKind).indexOf(WorkKind[categoryKey]) >= 0) {
             category = WorkKind[categoryKey];
+        }
+
+        let genreMatch: SearchMatch = null;
+        if (Object.values(SearchMatch).indexOf(SearchMatch[genreSearchMatch]) >= 0) {
+            genreMatch = SearchMatch[genreSearchMatch];
         }
 
         const genreList: Genres[] = [];
@@ -70,14 +75,19 @@ export class SearchService {
             }
         }
 
+        let tagMatch: SearchMatch = null;
+        if (Object.values(SearchMatch).indexOf(SearchMatch[tagSearchMatch]) >= 0) {
+            tagMatch = SearchMatch[tagSearchMatch];
+        }
+
         return await this.contentGroupStore.findRelatedContent(
             parsedQuery,
             kinds,
             authorId,
             category,
-            genreSearchMatch,
+            genreMatch,
             genreList.length > 0 ? genreList : null,
-            tagSearchMatch,
+            tagMatch,
             tagIds,
             includeChildTags,
             pageNum,

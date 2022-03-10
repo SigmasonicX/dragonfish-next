@@ -1,57 +1,73 @@
-import type { Profile } from "$lib/models/accounts";
-import type { Content, ContentFilter } from "$lib/models/content";
-import type { PaginateResult } from "$lib/models/util";
-import { baseUrl } from "$lib/util";
-import type { Observable } from "rxjs";
-import { http } from "./http";
-import { pipeData } from "./pipe-data";
+import type { Profile } from '$lib/models/accounts';
+import type { Content, ContentFilter } from '$lib/models/content';
+import type { PaginateResult } from '$lib/models/util';
+import { baseUrl } from '$lib/util';
+import { http } from './http';
+import type { SearchMatch, SearchKind } from '$lib/models/content';
+import type { WorkKind } from '$lib/models/content/works';
 
+export interface SearchOptions {
+    // A user's query
+    query: string;
+
+    // The kind of content that we're searching for
+    kind: SearchKind;
+
+    // The current page
+    page: number;
+
+    // When searching tags, if child tags should be searched too
+    includeChildTags: boolean;
+
+    // The mature/explicit/etc. content filter to apply
+    filter: ContentFilter;
+
+    // When searching genre, how the genres should match; key of match type
+    matchGenres: SearchMatch;
+
+    // When searching tags, how the tags should match; key of match type
+    matchTags: SearchMatch;
+
+    // (Optional) The author of content that searching for
+    author: string;
+
+    // (Optional) The category key of content that searching for
+    category: WorkKind;
+
+    // (Optional) The genres of content that searching for
+    genres: string[];
+
+    // (Optional) The fandom tags that you're searching for
+    tagIds: string[];
+}
 
 /**
  * Fetches search results given query for the specified kids
  *
- * @param query The user's query
- * @param kindKey The kind of content that searching for; key of kind type
- * @param author (Optional) The author of content that searching for
- * @param categoryKey (Optional) The category key of content that searching for
- * @param genreSearchMatchKey When searching genre, how the genres should match; key of match type
- * @param genreKeys (Optional) The genre keys of content that searching for
- * @param tagSearchMatchKey When searching tags, how the tags should match; key of match type
- * @param tagIds (Optional) The fandom tags that searching for in content
- * @param includeChildTags When searching tags, if child tags should be searched too
- * @param pageNum The current results page
- * @param contentFilter The mature/explicit/etc. content filter to apply
+ * @param options An object with various toggleable parameters
  */
-export function findRelatedContent(
-    query: string,
-    kindKey: string,
-    author: string | null,
-    categoryKey: string | null,
-    genreSearchMatchKey: string,
-    genreKeys: string[] | null,
-    tagSearchMatchKey: string,
-    tagIds: string[] | null,
-    includeChildTags: boolean,
-    pageNum: number,
-    contentFilter: ContentFilter,
-): Observable<PaginateResult<Content>> {
-    return pipeData(
-        http.get<PaginateResult<Content>>(
-            `${baseUrl}/search/find-related-content?` +
-                `query=${query}&kind=${kindKey}&author=${author}&categoryKey=${categoryKey}` +
-                `&genreSearchMatch=${genreSearchMatchKey}&genreKeys=${genreKeys}` +
-                `&tagSearchMatch=${tagSearchMatchKey}&tagIds=${tagIds}&includeChildTags=${includeChildTags}` +
-                `&pageNum=${pageNum}&filter=${contentFilter}`,
-            { observe: 'response', withCredentials: true },
-        ),
-    );
+export async function findRelatedContent(options: SearchOptions): Promise<PaginateResult<Content>> {
+    const url =
+        `${baseUrl}/search/find-related-content?` +
+        `query=${options.query}&kind=${options.kind}&author=${options.author}&categoryKey=${options.category}` +
+        `&genreSearchMatch=${options.matchGenres}&genreKeys=${
+            options.genres ? options.genres.join(',') : null
+        }` +
+        `&tagSearchMatch=${options.matchTags}&tagIds=${
+            options.tagIds ? options.tagIds.join(',') : null
+        }&includeChildTags=${options.includeChildTags}` +
+        `&pageNum=${options.page}&filter=${options.filter}`;
+    return http.get<PaginateResult<Content>>(url).then((res) => {
+        return res.data;
+    });
 }
 
-export function searchUsers(query: string, pageNum: number): Observable<PaginateResult<Profile>> {
-    return pipeData(
-        http.get<PaginateResult<Profile>>(
+export async function findUser(query: string, pageNum: number): Promise<PaginateResult<Profile>> {
+    return http
+        .get<PaginateResult<Profile>>(
             `${baseUrl}/search/get-user-results?query=${query}&pageNum=${pageNum}`,
-            { observe: 'response', withCredentials: true },
-        ),
-    );
+        )
+        .then((res) => {
+            return res.data;
+        });
 }

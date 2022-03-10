@@ -1,21 +1,12 @@
 <script lang="ts">
     import { createForm } from 'felte';
     import { page } from '$app/stores';
-    import TextField from '$lib/components/forms/TextField.svelte';
-    import Button from '$lib/components/ui/misc/Button.svelte';
-    import PageNav from '$lib/components/nav/PageNav.svelte';
-    import { Loader5Line, TeamLine } from 'svelte-remixicon';
     import { Content, SearchKind, SearchMatch } from '$lib/models/content';
-    import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
     import { search, tags } from '$lib/services';
     import { app } from '$lib/repo/app.repo';
     import type { PaginateResult } from '$lib/models/util';
     import type { Profile } from '$lib/models/accounts';
-    import BlogCard from '$lib/components/ui/content/BlogCard.svelte';
-    import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
-    import Paginator from '$lib/components/ui/misc/Paginator.svelte';
-    import Toggle from '$lib/components/forms/Toggle.svelte';
     import { goto } from '$app/navigation';
     import { searchKindDefaultKey } from '$lib/models/content/search-kind.enum';
     import { searchMatchDefaultKey } from '$lib/models/content/search-match.enum';
@@ -55,60 +46,59 @@
     let searchResultBlogs: PaginateResult<Content>;
     let searchResultUsers: PaginateResult<Profile>;
 
-    var loading = false;
+    let loading = false;
 
-    const tagOptions = [];
+    let tagOptions = [];
 
-    var currentQuery: string
-    var queryValue: string
+    let currentQuery: string
+    let queryValue: string
 
-    var currentSearchKindKey: string
-    var searchKindValue: any
+    let currentSearchKindKey: string
+    let searchKindValue: any
 
-    var showAdvancedOptions: boolean
+    let showAdvancedOptions: boolean
 
-    var currentAuthor: string
-    var authorValue: string
+    let currentAuthor: string
+    let authorValue: string
 
-    var currentCategoryKey: string
-    var categoryValue: any
+    let currentCategoryKey: string
+    let categoryValue: any
 
-    var currentGenreSearchMatchKey: string
-    var genreSearchMatchValue: any
+    let currentGenreSearchMatchKey: string
+    let genreSearchMatchValue: any
 
-    var currentGenreKeys: string[]
-    var genreValues: any[]
+    let currentGenreKeys: string[]
+    let genreValues: any[]
 
-    var currentTagSearchMatchKey: string
-    var tagSearchMatchValue: any
+    let currentTagSearchMatchKey: string
+    let tagSearchMatchValue: any
 
-    var currentTagKeys: string[]
-    var tagValues: any[]
+    let currentTagKeys: string[]
+    let tagValues: any[]
 
-    var currentIncludeChildTags: boolean
-    var includeChildTagsValue: boolean
+    let currentIncludeChildTags: boolean
+    let includeChildTagsValue: boolean
 
-    var showIncludeChildTags: boolean
+    let showIncludeChildTags: boolean
 
-    var currentPage: number = 1
+    let currentPage = 1
 
-    onMount(() => {
+    /*onMount(() => {
         tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
             for (const tree of tagTrees) {
-                tagOptions.push({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })
+                tagOptions = [...tagOptions, ({ value: tree._id, label: tree.name, isParent: (tree.children.length > 0) })]
                 for (const child of tree.children) {
-                    tagOptions.push({ value: child._id, label: tree.name + "  —  " + child.name, isParent: false})
+                    tagOptions = [...tagOptions, ({ value: child._id, label: tree.name + "  —  " + child.name, isParent: false })]
                 }
             }
-
-            // This has to be after tag options or else tag options aren't placed in the form
-            processQueryParams()
         })
-    })
+        // This has to be after tag options or else tag options aren't placed in the form
+        //processQueryParams()
+    })*/
 
     function processQueryParams() {
         const searchParams = $page.url.searchParams
-        var shouldSearch = false
+        let shouldSearch = false
 
         currentQuery = searchParams.has('query') ?
             searchParams.get('query') :
@@ -313,7 +303,7 @@
      * @returns The provided key as a string if it's valid, or "ProseAndPoetry" if it isn't
      */
     function parseSearchKindKey(kindKey: any): string {
-        var kindString: string
+        let kindString: string
         if (typeof kindKey === 'string') {
             kindString = kindKey
         } else {
@@ -339,7 +329,7 @@
      * @returns The provided key as a string if it's valid, or "Any" if it isn't
      */
     function parseCategoryKey(categoryKey: any): string {
-        var categoryString: string
+        let categoryString: string
         if (typeof categoryKey === 'string') {
             categoryString = categoryKey
         } else {
@@ -365,7 +355,7 @@
      * @returns The provided key as a string if it's valid, or "All" if it isn't
      */
     function parseMatchKey(matchKey: any): string {
-        var matchString: string
+        let matchString: string
         if (typeof matchKey === 'string') {
             matchString = matchKey
         } else {
@@ -396,7 +386,7 @@
         const genreList: string[] = [];
         if (genreKeys) {
             for (const genreKey of genreKeys) {
-                var genreString: string
+                let genreString: string
                 if (typeof genreKey === 'string') {
                     genreString = genreKey
                 } else {
@@ -446,7 +436,7 @@
     }
 </script>
 
-<div class="flex flex-col md:flex-row w-full h-screen">
+<!--<div class="flex flex-col md:flex-row w-full h-screen">
     <PageNav>
         <svelte:fragment slot="header">
             <h3>Search</h3>
@@ -565,13 +555,11 @@
             <div class="w-11/12 mx-auto my-6 max-w-7xl">
                 {#if searchResultWorks}
                     <div class="flex flex-row py-4 items-center">
-                        <!-- <rmx-icon name="book-open-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
                         <h3 class="text-4xl font-medium">Works</h3>
                     </div>
                     <div
                         class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
                     >
-                        <!--Works-->
                         {#each searchResultWorks.docs as work}
                             <WorkCard content={work} />
                         {/each}
@@ -584,13 +572,11 @@
                 {/if}
                 {#if searchResultBlogs}
                     <div class="flex flex-row py-4 items-center">
-                        <!-- <rmx-icon name="cup-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
                         <h3 class="text-4xl font-medium">Blogs</h3>
                     </div>
                     <div
                         class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
                     >
-                        <!--Blogs-->
                         {#each searchResultBlogs.docs as blog}
                             <BlogCard blog={blog} />
                         {/each}
@@ -603,15 +589,13 @@
                 {/if}
                 {#if searchResultUsers}
                     <div class="flex flex-row py-4 items-center">
-                        <!-- <rmx-icon name="group-line" class="relative -top-0.5 mr-2"></rmx-icon> -->
                         <h3 class="text-4xl font-medium">Users</h3>
                     </div>
                     <div
                         class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-3 mb-6"
                     >
-                        <!--Users-->
                         {#each searchResultUsers.docs as user}
-                            <!-- <BlogCard blog={blog} /> -->
+                            <BlogCard blog={blog} />
                         {/each}
                     </div>
                     <Paginator
@@ -623,4 +607,6 @@
             </div>
         </div>
     {/if}
-</div>
+</div>-->
+
+<slot />

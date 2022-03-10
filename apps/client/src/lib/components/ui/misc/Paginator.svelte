@@ -28,7 +28,7 @@
             </button>
         </li>
         {#each range(totalPages, 1) as page}
-            <li class:active={page === currPage}>
+            <li class:active={page === currPage} class="hidden md:block">
                 <button on:click={() => changePage(page)}>
                     {page}
                 </button>
