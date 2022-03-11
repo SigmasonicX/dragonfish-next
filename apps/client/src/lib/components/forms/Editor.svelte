@@ -59,7 +59,7 @@
     let linkText;
     export let label;
     export let value;
-    export let errorMessage;
+    export let errorMessage = null;
     export let hasHeader = false;
 
     onMount(() => {
