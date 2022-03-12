@@ -32,13 +32,13 @@
             };
 
             if (
-                values.title &&
-                (values.title.length < MIN_TITLE_LENGTH || values.title.length > MAX_TITLE_LENGTH)
+                !values.title ||
+                values.title.length < MIN_TITLE_LENGTH || values.title.length > MAX_TITLE_LENGTH
             ) {
                 errors.title = `Titles must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`;
             }
 
-            if (values.body && values.body.length < MIN_LONG_DESC_LENGTH) {
+            if (!values.body || values.body.length < MIN_LONG_DESC_LENGTH) {
                 errors.body = `Long descriptions must be more than ${MIN_LONG_DESC_LENGTH} long`;
             }
 
@@ -51,7 +51,7 @@
     <title>Create Blog &mdash; Offprint</title>
 </svelte:head>
 
-<div class="w-full overflow-y-auto">
+<div class="w-full h-screen overflow-y-auto">
     <div class="max-w-4xl w-11/12 md:w-7/12 mx-auto my-10 mb-6">
         <h1 class="text-center text-4xl font-medium">Create New Blog</h1>
         <form use:form>
