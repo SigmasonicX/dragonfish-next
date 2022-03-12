@@ -58,7 +58,7 @@
             {/if}
         </svelte:fragment>
     </PageNav>
-    <div class="md:overflow-y-auto">
+    <div class="w-full md:overflow-y-auto">
         <slot />
     </div>
 </div>

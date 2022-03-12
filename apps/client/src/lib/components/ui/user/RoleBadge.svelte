@@ -13,7 +13,7 @@
     } from 'svelte-remixicon';
 
     export let roles: Roles[] = [];
-    export let size: 'small' | 'normal' = 'normal';
+    export let size: 'small' | 'normal' | 'large' = 'normal';
 
     function determineProminentRole() {
         // this will totally need retooling to figure out a much better way to verify what the top-level
@@ -51,41 +51,81 @@
 
 {#if determineProminentRole() === Roles.Admin}
     <div class="role admin" class:small={size === 'small'} title="Admin">
-        <AuctionLine class="badge-icon" />
+        <AuctionLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Admin
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.Moderator}
     <div class="role moderator" class:small={size === 'small'} title="Moderator">
-        <Scales3Line class="badge-icon" />
+        <Scales3Line class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Moderator
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.ChatModerator}
     <div class="role chat-moderator" class:small={size === 'small'} title="Chat Moderator">
-        <ChatPrivateLine class="badge-icon" />
+        <ChatPrivateLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Chat Moderator
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.Maintainer}
     <div class="role maintainer" class:small={size === 'small'} title="Maintainer">
-        <BugLine class="badge-icon" />
+        <BugLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Maintainer
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.Contributor}
     <div class="role contributor" class:small={size === 'small'} title="Contributor">
         <ServiceLine class="badge-icon" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Contributor
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.WorkApprover}
     <div class="role work-approver" class:small={size === 'small'} title="Work Approver">
-        <BookReadLine class="badge-icon" />
+        <BookReadLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Work Approver
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.VIP}
     <div class="role vip" class:small={size === 'small'} title="VIP">
-        <VipDiamondLine class="badge-icon" />
+        <VipDiamondLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                VIP
+            </span>
+        {/if}
     </div>
 {:else if determineProminentRole() === Roles.Supporter}
     <div class="role supporter" class:small={size === 'small'} title="Supporter">
-        <CopperCoinLine class="badge-icon" />
+        <CopperCoinLine class="badge-icon {size === 'large' ? 'mr-1.5' : ''}" />
+        {#if size === 'large'}
+            <span class="text-white font-bold tracking-wider uppercase text-[0.625rem] mr-1">
+                Supporter
+            </span>
+        {/if}
     </div>
 {/if}
 
 <style lang="scss">
     div.role {
-        @apply text-white rounded-md p-1 m-0.5;
+        @apply text-white rounded-md p-1 m-0.5 flex items-center w-fit;
         &.admin {
             @apply bg-red-700;
         }

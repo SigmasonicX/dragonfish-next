@@ -71,6 +71,7 @@
 		"slug": "^5.1.1",
 		"svelte": "^3.46.2",
 		"svelte-check": "^2.3.0",
+		"svelte-easy-crop": "^1.0.7",
 		"svelte-preprocess": "^4.10.1",
 		"svelte-remixicon": "^1.0.1",
 		"svelte-select": "^4.4.7",
