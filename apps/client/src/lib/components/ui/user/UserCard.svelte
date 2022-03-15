@@ -106,7 +106,7 @@
             background: var(--accent);
         }
         div.stat-box {
-            @apply flex flex-col items-center select-none cursor-default p-4 w-1/3 h-[72px];
+            @apply flex flex-col items-center select-none cursor-default p-4 w-1/3;
             div.stat {
                 @apply flex items-center;
             }
