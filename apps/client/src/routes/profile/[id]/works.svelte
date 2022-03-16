@@ -94,13 +94,13 @@
                         <p>Head over to the Drafts tab to submit a work to the queue!</p>
                     </div>
                 {:else}
-                    {#each works.docs.filter((item) => item.audit.published === 'Published') as work}
-                        <div
-                            class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                        >
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+                    >
+                        {#each works.docs.filter((item) => item.audit.published === 'Published') as work}
                             <WorkCard content={work} />
-                        </div>
-                    {/each}
+                        {/each}
+                    </div>
                 {/if}
             {:catch error}
                 <div class="empty">
@@ -123,13 +123,13 @@
                         <p>Head over to the Drafts tab to submit a work to the queue!</p>
                     </div>
                 {:else}
-                    {#each works.docs.filter((item) => item.audit.published === 'Unpublished') as work}
-                        <div
-                            class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                        >
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+                    >
+                        {#each works.docs.filter((item) => item.audit.published === 'Unpublished') as work}
                             <WorkCard content={work} />
-                        </div>
-                    {/each}
+                        {/each}
+                    </div>
                 {/if}
             {:catch error}
                 <div class="empty">
@@ -152,13 +152,13 @@
                         <p>Head over to the Drafts tab to submit a work to the queue!</p>
                     </div>
                 {:else}
-                    {#each works.docs.filter((item) => item.audit.published === 'Pending') as work}
-                        <div
-                            class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                        >
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+                    >
+                        {#each works.docs.filter((item) => item.audit.published === 'Pending') as work}
                             <WorkCard content={work} />
-                        </div>
-                    {/each}
+                        {/each}
+                    </div>
                 {/if}
             {:catch error}
                 <div class="empty">
@@ -181,13 +181,13 @@
                         <p>Keep up the good work!</p>
                     </div>
                 {:else}
-                    {#each works.docs.filter((item) => item.audit.published === 'Rejected') as work}
-                        <div
-                            class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                        >
+                    <div
+                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+                    >
+                        {#each works.docs.filter((item) => item.audit.published === 'Rejected') as work}
                             <WorkCard content={work} />
-                        </div>
-                    {/each}
+                        {/each}
+                    </div>
                 {/if}
             {:catch error}
                 <div class="empty">
@@ -213,13 +213,13 @@
                     <p>Check back when this user has published a work!</p>
                 </div>
             {:else}
-                {#each works.docs as work}
-                    <div
-                        class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
-                    >
+                <div
+                    class="grid 2xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 w-11/12 mx-auto my-8"
+                >
+                    {#each works.docs as work}
                         <WorkCard content={work} />
-                    </div>
-                {/each}
+                    {/each}
+                </div>
             {/if}
         {:catch error}
             <div class="empty">
