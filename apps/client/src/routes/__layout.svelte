@@ -7,6 +7,7 @@
     import { onMount } from 'svelte';
     import { queryClient } from '$lib/util';
     import { Sidenav } from '$lib/components/nav/sidenav';
+    import { Popup } from '$lib/components/nav/popup';
 
     onMount(async () => {
         await broadcastQueryClient({
@@ -17,6 +18,7 @@
 </script>
 
 <QueryClientProvider client={queryClient}>
+    <Popup />
     <main
         class="flex flex-col md:flex-row h-screen {$app.theme}"
         class:dark={$app.darkMode === true}

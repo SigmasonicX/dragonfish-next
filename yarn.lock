@@ -409,17 +409,17 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
-"@felte/common@0.6.0":
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/@felte/common/-/common-0.6.0.tgz#64cb3438be91b2d553641bc7ec523284806186f5"
-  integrity sha512-dLh+heGTGKQzIeUbLcJMEvDks3YTy99FFdUHg8/fxeIFSprUM/b4olK+tIMBrTE30AV2BFYeQHxB8hFpzUafAQ==
+"@felte/common@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@felte/common/-/common-1.0.2.tgz#23af5b9efff6efe8465da11909982c2932daa05e"
+  integrity sha512-eWOFBitxN+WmwOfm6/I3DJgs9N1SlpCz7Lja2dAlla0ZJSCzdNRPo4Njcim/Ut4yNPf4fyvvv3os7rJKce2AzQ==
 
-"@felte/core@0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@felte/core/-/core-0.3.0.tgz#d95fb20b4bb5d3ffd66149528f85cd937e627794"
-  integrity sha512-v3rOg8wdchnQoMYJCPLelaJmgyG3doibYFqKmoOj7iQlnI738fczEEjDToJfa9UUbYBRDdgfYHXrEtEK7kYIGg==
+"@felte/core@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@felte/core/-/core-1.2.1.tgz#14596a7daa5c969a0ac5d9421804748139918ef2"
+  integrity sha512-aIGEtu7ra/qxxZyb1Htgbze6fhvceEegtCChi9q76hpVtnzEWcA0Mo4UtoXiQWkDHZ53MxgvXem2bHMkict1jQ==
   dependencies:
-    "@felte/common" "0.6.0"
+    "@felte/common" "1.0.2"
 
 "@graphql-tools/merge@8.2.1":
   version "8.2.1"
@@ -3736,12 +3736,12 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "2.1.1"
 
-felte@^0.9.0:
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/felte/-/felte-0.9.1.tgz#17fab2e056204d96249d64a2c6739b090fae872b"
-  integrity sha512-Oe5iA0t6CsP9Hqg8nBhvoVsBD4TilPFh8JlnK3h0yED+1CDGxC34iVw9V1ewuWnQf3t6P+YINqawfKvU0ePCKg==
+felte@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/felte/-/felte-1.1.3.tgz#4a09093c7b013dee3ae5545bf6359550cda7497d"
+  integrity sha512-KRc1xP2KvPHfWGSLJ8nkIuFCm//bI6VEkw3lEgBBuqn0GdEB6EjccMCHL6hxbuXbvBwrrZLFzfadsadjtPT8Ow==
   dependencies:
-    "@felte/core" "0.3.0"
+    "@felte/core" "1.2.1"
 
 figures@^3.0.0:
   version "3.2.0"

@@ -1,19 +1,15 @@
 <script lang="ts">
-    import { writable } from 'svelte/store';
     import { session } from '$lib/repo/session.repo';
-    import type { Profile } from '$lib/models/accounts';
     import UserCard from '$lib/components/ui/user/UserCard.svelte';
     import Checkbox from '$lib/components/forms/Checkbox.svelte';
     import { ChangeAvatar, ChangeDisplayName, UpdateBio } from './_profile-forms';
+    import {
+        profileSettings,
+        setProfileSettings,
+        setCurrProfile,
+    } from './_profile-forms/form-state';
 
-    interface ProfileSettings {
-        profiles: Profile[];
-        currProfile: Profile;
-    }
-    const profileSettings = writable<ProfileSettings>({
-        profiles: $session.profiles,
-        currProfile: null,
-    });
+    setProfileSettings($session.profiles);
 </script>
 
 <div class="w-full py-10">
@@ -26,7 +22,7 @@
                         value={$profileSettings.currProfile
                             ? $profileSettings.currProfile._id === profile._id
                             : false}
-                        on:check={() => ($profileSettings.currProfile = profile)}
+                        on:check={() => setCurrProfile(profile._id)}
                     />
                 </div>
             </div>
@@ -38,9 +34,9 @@
     <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mx-auto my-6 w-11/12 max-w-7xl"
     >
-        <ChangeAvatar bind:user={$profileSettings.currProfile} />
-        <ChangeDisplayName bind:user={$profileSettings.currProfile} />
-        <UpdateBio bind:user={$profileSettings.currProfile} />
+        <ChangeAvatar />
+        <ChangeDisplayName />
+        <UpdateBio />
     </div>
 {:else}
     <div class="w-full h-56 md:h-96 flex flex-col items-center justify-center">
