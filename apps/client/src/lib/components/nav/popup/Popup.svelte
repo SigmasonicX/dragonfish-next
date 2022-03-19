@@ -10,6 +10,7 @@
         class:dark={$app.darkMode === true}
         class:light={$app.darkMode === false}
         transition:scale={{ delay: 0, duration: 200 }}
+        on:dragover|preventDefault
     >
         <div class="click-to-close" on:click={closePopup}><!--backdrop--></div>
         <div class="popup-container">

@@ -23,6 +23,7 @@
         class="flex flex-col md:flex-row h-screen {$app.theme}"
         class:dark={$app.darkMode === true}
         class:light={$app.darkMode === false}
+        on:dragover|preventDefault
     >
         <Nav />
         <Sidenav>
