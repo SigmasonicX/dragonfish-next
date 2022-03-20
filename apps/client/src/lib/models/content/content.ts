@@ -2,7 +2,7 @@ import type { Profile } from '$lib/models/accounts';
 import type { ContentRating } from './content-rating';
 import type { ContentKind } from './content-kind';
 import type { PubStatus } from './pub-status';
-import type { Section } from '$lib/models/content/works';
+import type { Section, TagsModel } from '$lib/models/content/works';
 
 export interface Content {
     readonly _id: string;
@@ -29,6 +29,7 @@ export interface Content {
         isDeleted: boolean;
     };
     readonly kind: ContentKind;
+    tags?: TagsModel[];
     readonly createdAt: Date;
     readonly updatedAt: Date;
 }
