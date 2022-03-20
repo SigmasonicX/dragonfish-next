@@ -6,15 +6,19 @@
     import { CardSize } from '$lib/models/site';
     import TagBadge from './TagBadge.svelte';
     import {
+        ArrowDownSLine,
+        ArrowUpSLine,
         Calendar2Line,
         DiscussLine,
         HeartLine,
+        MoreLine,
         PenNibLine,
         RhythmFill,
     } from 'svelte-remixicon';
 
     export let content: Content;
     export let size: CardSize = CardSize.Medium;
+    export let showAllTags = false;
 
     let contentUrl = `/prose`;
 
@@ -36,25 +40,32 @@
                 contentUrl = `/poetry/${content._id}`;
         }
     }
+
+    function toggle() {
+        showAllTags = !showAllTags;
+    }
 </script>
 
-<a
+<span
     class="card border border-gray-600 dark:border-white group hover:bg-gray-100 hover:dark:bg-zinc-700"
-    href={contentUrl}
 >
     <div class="flex flex-wrap items-center">
-        <h3 class="title">
-            {content.title}
+        <h3 class="title" title={content.title}>
+            <a href={contentUrl}>
+                {content.title}
+            </a>
         </h3>
         <TagBadge kind={TagKind.Rating} rating={content.meta.rating} hasIcon={false} />
     </div>
     <div
         class="flex flex-wrap items-center pb-0.5 pt-0.5 text-xs border-b border-gray-600 dark:border-white group-active:border-white"
     >
-        <div class="flex-1">
-            by {content.author.screenName}
+        <div class="author flex-1" title="by {content.author.screenName}">
+            <a href="/profile/{content.author._id}">
+                by {content.author.screenName}
+            </a>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" title="Approval rating">
             <HeartLine size="16px" />
             <span>{calculateApprovalRating(content.stats.likes, content.stats.dislikes)}%</span>
         </div>
@@ -66,40 +77,28 @@
             <TagBadge kind={TagKind.Genre} {genre} size={'medium'} />
         {/each}
     </div>
-    <!--<ng-container *ngIf="content.tags !== null && content.tags.length > 0">
-      <div class="card-tags flex flex-wrap items-center">
-          <ng-container *ngIf="content.tags.length === 1; else multipleTags">
-                  <a
-          class="tags"
-          [routerLink]="['/tag', content.tags[0]._id, content.tags[0].name | slugify]"
-          [innerHtml]="content.tags[0] | displayTags | safeHtml"
-        ></a>
-          </ng-container>
-          <ng-template #multipleTags>
-              <ng-container *ngIf="showAllTags; else showOneTag">
-                      <ng-container *ngFor="let tag of content.tags; let i = index">
-                          <a
-              class="tags"
-              [routerLink]="['/tag', tag._id, tag.name | slugify]"
-              [innerHtml]="tag | displayTags | safeHtml"
-            ></a>
-                          <ng-container *ngIf="i < content.tags.length - 1">
-                              ,&nbsp;
-                          </ng-container>
-                      </ng-container>
-                  <rmx-icon name="arrow-up-s-line" (click)="toggleShowAllTags()"></rmx-icon>
-              </ng-container>
-              <ng-template #showOneTag>
-                      <a
-            class="tags"
-            [routerLink]="['/tag', content.tags[0]._id, content.tags[0].name | slugify]"
-            [innerHtml]="content.tags[0] | displayTags | safeHtml"
-          ></a>
-                  <rmx-icon name="arrow-down-s-line" (click)="toggleShowAllTags()"></rmx-icon>
-              </ng-template>
-          </ng-template>
-      </div>
-  </ng-container>-->
+    <div class="flex items-center flex-wrap mb-2">
+        {#if showAllTags}
+            {#each content.tags as tag}
+                <TagBadge kind={TagKind.Fandom} {tag} size={'medium'} />
+            {/each}
+            {#if content.tags.length > 1}
+                <div class="flex mx-0.5 mt-1" on:click={toggle} title="Less">
+                    <ArrowUpSLine/>
+                </div>
+            {/if}
+        {:else}
+            {#if content.tags.length > 0}
+                <TagBadge kind={TagKind.Fandom} tag={content.tags[0]} size={'medium'} />
+            {/if}
+            {#if content.tags.length > 1}
+                <div class="flex mx-0.5 mt-1" on:click={toggle} title="More">
+                    <MoreLine/>
+                    <ArrowDownSLine/>
+                </div>
+            {/if}
+        {/if}
+    </div>
     <div class="work-body">
         {#if content.meta.coverArt}
             <div class="cover">
@@ -111,17 +110,17 @@
         </div>
     </div>
     <div class="work-meta bg-gray-200 dark:bg-gray-600">
-        <div class="flex items-center">
+        <div class="flex items-center" title="{content.stats.views} views">
             <RhythmFill size="16px" />
             <span>{abbreviate(content.stats.views)}</span>
         </div>
         <div class="text-sm mx-0.5 relative -top-0.5">•</div>
-        <div class="flex items-center">
+        <div class="flex items-center" title="{content.stats.words} words">
             <PenNibLine size="16px" />
             <span>{abbreviate(content.stats.words)}</span>
         </div>
         <div class="text-sm mx-0.5 relative -top-0.5">•</div>
-        <div class="flex items-center">
+        <div class="flex items-center" title="{content.stats.comments} comments">
             <DiscussLine size="16px" />
             <span>{abbreviate(content.stats.comments)}</span>
         </div>
@@ -130,7 +129,7 @@
             {content.meta.status}
         </div>
         <div class="flex-1" />
-        <div class="flex items-center">
+        <div class="flex items-center" title="Published on">
             <Calendar2Line size="16px" />
             <span>
                 {#if content.audit.publishedOn}
@@ -141,10 +140,10 @@
             </span>
         </div>
     </div>
-</a>
+</span>
 
 <style lang="scss">
-    a.card {
+    span.card {
         @apply block flex flex-col p-2 transition transform select-none cursor-pointer h-full rounded-md;
         color: var(--text-color);
         h3.title {
@@ -155,6 +154,11 @@
             box-shadow: var(--dropshadow);
             div.work-meta {
                 @apply bg-gray-300;
+            }
+        }
+        div.author {
+            a {
+                color: var(--text-color);
             }
         }
         div.work-body {
