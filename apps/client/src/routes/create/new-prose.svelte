@@ -37,7 +37,7 @@
             for (const tree of tagTrees) {
                 tagOptions = [...tagOptions, { value: tree._id, label: tree.name }]
                 for (const child of tree.children) {
-                    tagOptions = [...tagOptions, { value: child._id, label: tree.name + "  —  " + child.name }]
+                    tagOptions = [...tagOptions, { value: child._id, label: tree.name + " — " + child.name }]
                 }
             }
         })

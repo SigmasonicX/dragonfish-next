@@ -21,6 +21,7 @@
         SwordLine,
     } from 'svelte-remixicon';
     import { slugify } from '$lib/util';
+    import { formatTagName } from '$lib/util/format-tag-name';
 
     export let size: 'small' | 'medium' | 'large' = 'medium';
     export let hasIcon = true;
@@ -124,7 +125,7 @@
             <a
                 href="/tag/{tag._id}/{slugify(tag.name)}"
             >
-                {tag.name}
+                {formatTagName(tag)}
             </a>
         </span>
     {/if}
