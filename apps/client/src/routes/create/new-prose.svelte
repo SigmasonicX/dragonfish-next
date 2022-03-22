@@ -138,8 +138,11 @@
     const categories = Object.entries(WorkKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
-    const genres = Object.entries(Genres).map(([key, value]) => ({ value: key, label: value }));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
+    const genres = Object.entries(Genres).map(([key, value]) => ({
+        value: key,
+        label: value
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
     const ratings = Object.entries(ContentRating).map(([key, value]) => ({
         value: key,
         label: value,

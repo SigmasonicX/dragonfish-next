@@ -11,6 +11,7 @@
         MIN_SHORT_DESC_LENGTH,
         MAX_SHORT_DESC_LENGTH,
         MIN_LONG_DESC_LENGTH,
+        MAX_FANDOM_TAGS,
     } from '$lib/util';
     import { content, updateContent } from '$lib/repo/content.repo';
     import Button from '$lib/components/ui/misc/Button.svelte';
@@ -20,22 +21,35 @@
     import TextField from '$lib/components/forms/TextField.svelte';
     import SelectMenu from '$lib/components/forms/SelectMenu.svelte';
     import Editor from '$lib/components/forms/Editor.svelte';
-    import { Genres, Prose, WorkKind, WorkStatus } from '$lib/models/content/works';
+    import { Genres, Prose, TagKind, TagsModel, WorkKind, WorkStatus } from '$lib/models/content/works';
     import { ContentKind, ContentRating } from '$lib/models/content';
     import type { CreateProse } from '$lib/models/content/works/forms';
     import { saveChanges } from '$lib/services/content.service';
     import Comments from '$lib/components/comments/Comments.svelte';
     import ApprovalOptions from '$lib/components/ui/content/ApprovalOptions.svelte';
     import WorkStats from '$lib/components/ui/content/WorkStats.svelte';
+    import { onMount } from 'svelte';
+    import { tags } from '$lib/services';
 
     let showDesc = true;
     let editMode = false;
 
+    var tagOptions = [];
+
+    var categoryErrorMessage = '';
+    var genresErrorMessage = '';
+    var tagsErrorMessage = '';
+    var ratingErrorMessage = '';
+    var statusErrorMessage = '';
+
     const categories = Object.entries(WorkKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
-    const genres = Object.entries(Genres).map(([key, value]) => ({ value: key, label: value }));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
+    const genres = Object.entries(Genres).map(([key, value]) => ({
+        value: key,
+        label: value
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
     const ratings = Object.entries(ContentRating).map(([key, value]) => ({
         value: key,
         label: value,
@@ -44,6 +58,21 @@
         value: key,
         label: value,
     }));
+
+    let tagValues: any[];
+
+    onMount(() => {
+        tags.fetchTagsTrees(TagKind.Fandom).subscribe((tagTrees) => {
+            for (const tree of tagTrees) {
+                tagOptions = [...tagOptions, { value: tree._id, label: tree.name }]
+                for (const child of tree.children) {
+                    tagOptions = [...tagOptions, { value: child._id, label: tree.name + " — " + child.name }]
+                }
+            }
+            tagValues = mapTags(($content.content as Prose).tags);
+            $data.tags = tagValues;
+        })
+    })
 
     function mapGenres(theseGenres: Genres[]) {
         const genresList = [];
@@ -55,6 +84,19 @@
             genresList.push(thisGenre);
         }
         return genresList;
+    }
+
+    function mapTags(theseTags: TagsModel[]) {
+        const tagsList = [];
+        for (let i = 0; i < theseTags.length; i++) {
+            const thisTag = tagOptions.find((item) => {
+                return item.value === theseTags[i]._id;
+            })
+            if (thisTag) {
+                tagsList.push(thisTag);
+            }
+        }
+        return tagsList;
     }
 
     const { form, data, createSubmitHandler, errors } = createForm({
@@ -72,6 +114,7 @@
                 (item) => item.value === ContentRating[($content.content as Prose).meta.rating],
             ),
             genres: mapGenres(($content.content as Prose).meta.genres),
+            tags: [], // tags are loaded after this code is run
             status: statuses.find(
                 (item) => item.value === WorkStatus[($content.content as Prose).meta.status],
             ),
@@ -88,7 +131,9 @@
                 genres: values.genres.map((val) => {
                     return val.value;
                 }),
-                tags: [],
+                tags: tagValues ? tagValues.map((val) => {
+                    return val.value;
+                }) : null,
                 rating: values.rating.value,
                 status: values.status.value,
             };
@@ -108,6 +153,7 @@
                 title: '',
                 category: '',
                 genres: '',
+                tags: '',
                 shortDesc: '',
                 longDesc: '',
                 rating: '',
@@ -115,41 +161,50 @@
             };
 
             if (
-                values.title &&
-                (values.title.length < MIN_TITLE_LENGTH || values.title.length > MAX_TITLE_LENGTH)
+                !values.title ||
+                values.title.length < MIN_TITLE_LENGTH || values.title.length > MAX_TITLE_LENGTH
             ) {
                 errors.title = `Titles must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`;
             }
 
             if (!values.category) {
-                errors.category = 'You must select a category';
+                categoryErrorMessage = 'You must select a category';
+                errors.category = categoryErrorMessage;
             }
 
             if (
-                values.genres &&
-                (values.genres.length < MIN_GENRE || values.genres.length > MAX_GENRES)
+                !values.genres ||
+                values.genres.length < MIN_GENRE || values.genres.length > MAX_GENRES
             ) {
-                errors.genres = `You must select at least ${MIN_GENRE} but no more than ${MAX_GENRES}`;
+                genresErrorMessage = `You must select at least ${MIN_GENRE} but no more than ${MAX_GENRES}`;
+                errors.genres = genresErrorMessage;
+            }
+
+            if (values.tags && values.tags.length > MAX_FANDOM_TAGS) {
+                tagsErrorMessage = `You can select no more than ${MAX_FANDOM_TAGS} tags`;
+                errors.tags = tagsErrorMessage;
             }
 
             if (
-                values.shortDesc &&
-                (values.shortDesc.length < MIN_SHORT_DESC_LENGTH ||
-                    values.shortDesc.length > MAX_SHORT_DESC_LENGTH)
+                !values.shortDesc ||
+                values.shortDesc.length < MIN_SHORT_DESC_LENGTH ||
+                values.shortDesc.length > MAX_SHORT_DESC_LENGTH
             ) {
                 errors.shortDesc = `Short descriptions must be between ${MIN_SHORT_DESC_LENGTH} and ${MAX_SHORT_DESC_LENGTH} characters`;
             }
 
-            if (values.longDesc && values.longDesc.length < MIN_LONG_DESC_LENGTH) {
+            if (!values.longDesc || values.longDesc.length < MIN_LONG_DESC_LENGTH) {
                 errors.longDesc = `Long descriptions must be more than ${MIN_LONG_DESC_LENGTH} long`;
             }
 
             if (!values.rating) {
-                errors.rating = `You must select a rating`;
+                ratingErrorMessage = `You must select a rating`;
+                errors.rating = ratingErrorMessage;
             }
 
             if (!values.status) {
-                errors.status = `You must select a status`;
+                statusErrorMessage = `You must select a status`;
+                errors.status = statusErrorMessage;
             }
 
             return errors;
@@ -229,6 +284,7 @@
                                 on:select={(e) => {
                                     $data.category = e.detail;
                                 }}
+                                errorMessage={categoryErrorMessage}
                             />
                         </div>
                         <div class="hidden md:block md:mx-2"><!--separator--></div>
@@ -241,9 +297,23 @@
                                 on:select={(e) => {
                                     $data.genres = e.detail;
                                 }}
+                                errorMessage={genresErrorMessage}
                             />
                         </div>
                     </div>
+                    {#if $data.category && $data.category.value === WorkKind.Fanwork}
+                        <SelectMenu
+                            items={tagOptions}
+                            label="Fandom Tag(s)"
+                            isMulti={true}
+                            bind:value={tagValues}
+                            on:select={(e) => {
+                                tagValues = e.detail;
+                                $data.tags = e.detail;
+                            }}
+                            errorMessage={tagsErrorMessage}
+                        />
+                    {/if}
                     <TextField
                         name="shortDesc"
                         type="text"
@@ -262,6 +332,7 @@
                                 on:select={(e) => {
                                     $data.rating = e.detail;
                                 }}
+                                errorMessage={ratingErrorMessage}
                             />
                         </div>
                         <div class="hidden md:block md:mx-2"><!--separator--></div>
@@ -273,6 +344,7 @@
                                 on:select={(e) => {
                                     $data.status = e.detail;
                                 }}
+                                errorMessage={statusErrorMessage}
                             />
                         </div>
                     </div>

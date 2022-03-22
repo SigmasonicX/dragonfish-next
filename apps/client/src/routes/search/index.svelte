@@ -48,11 +48,14 @@
     });
 
     let filtersMenuOpen = false;
-    const genres = Object.entries(Genres).map(([key, value]) => ({ value: key, label: value }));
+    const genres = Object.entries(Genres).map(([key, value]) => ({
+        value: key,
+        label: value
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
     const categories = Object.entries(WorkKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
     let contentResults: PaginateResult<Content> = null;
     let userResults: PaginateResult<Profile> = null;
     let loading = false;
