@@ -38,7 +38,7 @@
                         ...tagOptions,
                         {
                             value: child._id,
-                            label: `${parent.name}  —  ${child.name}`,
+                            label: `${parent.name} — ${child.name}`,
                             isParent: false,
                         },
                     ];
