@@ -19,22 +19,21 @@
     import { ArrowDownSLine, ArrowUpSLine } from "svelte-remixicon";
     import { fly, fade } from 'svelte/transition';
 
-    let tagId: string = null;
-    let page: number = 1;
-
     export const load: Load = async ({ params, url }) => {
-        tagId = params.id;
-        page =  url.searchParams.has('page') ? +url.searchParams.get('page') : 1;
+        const tagId = params.id;
+        const page =  url.searchParams.has('page') ? +url.searchParams.get('page') : 1;
         setCurrentTag(tagId, page);
 
         const contentResults = await findRelatedContent(get(search));
         const tagsTree = await fetchDescendants(tagId);
         const parent = tagsTree.parent as TagsModel;
+        const pageTitle = parent? parent.name + " — " + tagsTree.name : tagsTree.name;
         return {
             props: {
                 contentResults: contentResults,
                 tagsTree: tagsTree,
                 parent: parent,
+                pageTitle: pageTitle,
             },
         };
     }
@@ -43,6 +42,7 @@
     export let contentResults: PaginateResult<Content>;
     export let tagsTree: TagsTree;
     export let parent: TagsModel;
+    export let pageTitle: string;
 
     let showDesc = true;
 
@@ -56,6 +56,37 @@
         contentResults = await findRelatedContent($search);
     }
 </script>
+
+<svelte:head>
+    {#if tagsTree}
+        <title>{pageTitle} &mdash; Offprint</title>
+        <!-- Primary Meta Tags -->
+        <meta name="title" content={pageTitle} />
+        <meta name="description" content={tagsTree.desc} />
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta
+            property="og:url"
+            content="https://offprint.net/tag/{tagsTree._id}/{slugify(
+                tagsTree.name,
+            )}"
+        />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={tagsTree.desc} />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta
+            property="twitter:url"
+            content="https://offprint.net/tag/{tagsTree._id}/{slugify(
+                tagsTree.name,
+            )}"
+        />
+        <meta property="twitter:title" content={pageTitle} />
+        <meta property="twitter:description" content={tagsTree.desc} />
+    {/if}
+</svelte:head>
 
 <div class="w-full h-[calc(100vh-51px)] md:h-screen overflow-y-auto">
     {#if tagsTree}
