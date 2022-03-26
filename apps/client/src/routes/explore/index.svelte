@@ -19,7 +19,6 @@
 
     const fetchCurrPage = (page = currPage) =>
         fetchAllNew(page, [ContentKind.PoetryContent, ContentKind.ProseContent], $app.filter);
-
 </script>
 
 <Query
