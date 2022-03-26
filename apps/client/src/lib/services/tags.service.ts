@@ -20,25 +20,6 @@ export function fetchTagsTrees(kind: TagKind): Observable<TagsTree[]> {
     );
 }
 
-export async function fetchTagsTreesAsync(kind: TagKind): Promise<TagsTree[]> {
-    return http.get<TagsTree[]>(`${baseUrl}/tags/fetch-tags-trees?kind=${kind}`, {
-        observe: 'response',
-        withCredentials: true,
-    }).then((res) => {
-        return res.data;
-    })
-}
-
-
-// export function fetchDescendants(id: string): Observable<TagsTree> {
-//     return pipeData(
-//         http.get<TagsTree>(`${baseUrl}/tags/fetch-descendants?id=${id}`, {
-//             observe: 'response',
-//             withCredentials: true,
-//         }),
-//     );
-// }
-
 /**
  * Get all children of the tag with the given ID.
  * Returns both the parent tag's information, and a `children` array,
