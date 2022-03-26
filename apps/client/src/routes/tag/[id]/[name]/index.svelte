@@ -15,35 +15,38 @@
     import type { Load } from "@sveltejs/kit";
     import { get } from "svelte/store";
     import { slugify } from '$lib/util';
-    import { onMount } from "svelte";
+    import Button from "$lib/components/ui/misc/Button.svelte";
+    import { ArrowDownSLine, ArrowUpSLine } from "svelte-remixicon";
+    import { fly, fade } from 'svelte/transition';
 
     let tagId: string = null;
     let page: number = 1;
 
     export const load: Load = async ({ params, url }) => {
-        console.log("Calling load for tag page, id=" + params.id);
         tagId = params.id;
         page =  url.searchParams.has('page') ? +url.searchParams.get('page') : 1;
         setCurrentTag(tagId, page);
+
+        const contentResults = await findRelatedContent(get(search));
+        const tagsTree = await fetchDescendants(tagId);
+        const parent = tagsTree.parent as TagsModel;
         return {
             props: {
-                tagId: tagId,
+                contentResults: contentResults,
+                tagsTree: tagsTree,
+                parent: parent,
             },
         };
     }
 </script>
 <script lang="ts">
-    let contentResults: PaginateResult<Content> = null;
-    let tagsTree: TagsTree = null;
-    let parent: TagsModel = null;
+    export let contentResults: PaginateResult<Content>;
+    export let tagsTree: TagsTree;
+    export let parent: TagsModel;
+
+    let showDesc = true;
 
     $: setFilter($app.filter);
-
-    onMount(async () => {
-        contentResults = await findRelatedContent($search);
-        tagsTree = await fetchDescendants($search.tagIds[0]);
-        parent = tagsTree.parent as TagsModel;
-    })
 
     async function setNewPage(currPage: number) {
         $search.page = currPage;
@@ -54,30 +57,61 @@
     }
 </script>
 
-{#if tagsTree}
-    <div class="text-2xl">
-        {#if parent}
-            <a
-                href="/tag/{parent._id}/{slugify(parent.name)}"
-            >{parent.name}</a>
-            &nbsp;— 
-        {/if}
-        <span>{tagsTree.name}</span>
-    </div>
-    {#if tagsTree.children && tagsTree.children.length > 0}
-        <span>Child Tags: </span>
-        {#each tagsTree.children as child, index}
-            <a
-                href="/tag/{child._id}/{slugify(child.name)}"
-            >{child.name}</a>
-            {#if index < tagsTree.children.length - 1}
-                <span>, </span>
-            {/if}
-        {/each}
-    {/if}
-    <p>{tagsTree.desc}</p>
-{/if}
 <div class="w-full h-[calc(100vh-51px)] md:h-screen overflow-y-auto">
+    {#if tagsTree}
+        <div class="tag-header py-6">
+            <div class="w-11/12 mx-auto">
+                <div class="text-xl">
+                    {#if parent}
+                        <a
+                            href="/tag/{parent._id}/{slugify(parent.name)}"
+                            class="font-light text-white"
+                        >{parent.name}</a>
+                        &nbsp;— 
+                    {/if}
+                    <span>{tagsTree.name}</span>
+                </div>
+                {#if tagsTree.children && tagsTree.children.length > 0}
+                    <span>Child Tags: </span>
+                    {#each tagsTree.children as child, index}
+                        <a
+                            href="/tag/{child._id}/{slugify(child.name)}"
+                            class="font-light text-white"
+                        >{child.name}</a>
+                        {#if index < tagsTree.children.length - 1}
+                            <span>, </span>
+                        {/if}
+                    {/each}
+                {/if}
+            </div>
+        </div>
+        {#if tagsTree.desc}
+            <div class="w-11/12 mx-auto my-6">
+                <div in:fade={{ delay: 0, duration: 150 }}>
+                    <div
+                        class="w-11/12 border-b border-zinc-700 dark:border-white flex items-center pb-1"
+                    >
+                        <h3 class="text-xl font-medium flex-1">Description</h3>
+                        <Button on:click={() => (showDesc = !showDesc)}>
+                            {#if showDesc}
+                                <ArrowUpSLine class="button-icon no-text" />
+                            {:else}
+                                <ArrowDownSLine class="button-icon no-text" />
+                            {/if}
+                        </Button>
+                    </div>
+                    {#if showDesc}
+                        <div
+                            class="html-description"
+                            transition:fly|local={{ delay: 0, duration: 150, y: -25 }}
+                        >
+                            {@html tagsTree.desc}
+                        </div>
+                    {/if}
+                </div>
+            </div>
+        {/if}
+    {/if}
     {#if contentResults && contentResults.totalDocs > 0}
         <div
             class="w-11/12 mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 lg:gap-4"
@@ -99,3 +133,10 @@
         </div>
     {/if}
 </div>
+
+<style lang="scss">
+    div.tag-header {
+        @apply w-full text-white shadow-lg mb-6;
+        background: var(--accent);
+    }
+</style>
