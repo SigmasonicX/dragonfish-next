@@ -21,6 +21,10 @@
         fetchAllNew(page, [ContentKind.PoetryContent, ContentKind.ProseContent], $app.filter);
 </script>
 
+<svelte:head>
+    <title>New Works &mdash; Offprint</title>
+</svelte:head>
+
 <Query
     options={{
         queryKey: ['newWorks', currPage],
