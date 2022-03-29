@@ -7,15 +7,23 @@
     import { Loader5Line } from 'svelte-remixicon';
     import Paginator from '$lib/components/ui/misc/Paginator.svelte';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
+    import { updateUrlParams } from '$lib/util';
 
     let currPage = $page.url.searchParams.has('page') ? +$page.url.searchParams.get('page') : 1;
     function setNewPage(pageNum: number) {
         currPage = pageNum;
+        updateUrlParams({
+            page: currPage > 1 ? currPage.toString() : null,
+        })
     }
 
     const fetchCurrPage = (page = currPage) =>
         fetchAllNew(page, [ContentKind.PoetryContent, ContentKind.ProseContent], $app.filter);
 </script>
+
+<svelte:head>
+    <title>New Works &mdash; Offprint</title>
+</svelte:head>
 
 <Query
     options={{

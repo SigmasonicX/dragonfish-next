@@ -27,13 +27,13 @@ export function fetchTagsTrees(kind: TagKind): Observable<TagsTree[]> {
  *
  * @param id The tag whose children will be searched for.
  */
-export function fetchDescendants(id: string): Observable<TagsTree> {
-    return pipeData(
-        http.get<TagsTree>(`${baseUrl}/tags/fetch-descendants?id=${id}`, {
-            observe: 'response',
-            withCredentials: true,
-        }),
-    );
+export async function fetchDescendants(id: string): Promise<TagsTree> {
+    return http.get<TagsTree>(`${baseUrl}/tags/fetch-descendants?id=${id}`, {
+        observe: 'response',
+        withCredentials: true,
+    }).then((res) => {
+        return res.data;
+    });
 }
 
 /**

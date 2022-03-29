@@ -77,10 +77,6 @@
     });
 </script>
 
-<svelte:head>
-    <title>Explore &mdash; Offprint</title>
-</svelte:head>
-
 <div class="flex flex-col md:flex-row w-full h-screen">
     <PageNav>
         <svelte:fragment slot="header">

@@ -13,7 +13,10 @@ export class SearchService {
     readonly INITIAL_MAX_PER_PAGE = 6;
     readonly MAX_PER_PAGE = 15;
 
-    constructor(private readonly pseudStore: PseudonymsStore, private readonly contentGroupStore: ContentGroupStore) {}
+    constructor(
+        private readonly pseudStore: PseudonymsStore,
+        private readonly contentGroupStore: ContentGroupStore,
+    ) {}
 
     async findRelatedContent(
         query: string | null,

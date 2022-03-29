@@ -134,6 +134,15 @@ export function reset(): void {
     }));
 }
 
+export function setCurrentTag(tagId: string, page: number): void {
+    reset();
+    search.update((state) => ({
+        ...state,
+        tagIds: [tagId],
+        page,
+    }));
+}
+
 function showChildTags(fandoms: { label: string; value: string; isParent: boolean }[]) {
     if (fandoms !== null && get(search).matchTags !== SearchMatch.Exactly) {
         for (const tag of fandoms) {

@@ -5,3 +5,5 @@ export { slugify } from './slugify';
 export { baseUrl } from './base-url';
 export * from './constants';
 export { queryClient } from './query-client';
+export { formatTagName } from './format-tag-name';
+export { updateUrlParams } from './update-url-params';
