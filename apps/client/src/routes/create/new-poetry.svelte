@@ -38,7 +38,7 @@
             for (const tree of tagTrees) {
                 tagOptions = [...tagOptions, { value: tree._id, label: tree.name }]
                 for (const child of tree.children) {
-                    tagOptions = [...tagOptions, { value: child._id, label: tree.name + "  —  " + child.name }]
+                    tagOptions = [...tagOptions, { value: child._id, label: tree.name + " — " + child.name }]
                 }
             }
         })
@@ -147,8 +147,11 @@
     const categories = Object.entries(WorkKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
-    const genres = Object.entries(Genres).map(([key, value]) => ({ value: key, label: value }));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
+    const genres = Object.entries(Genres).map(([key, value]) => ({
+        value: key,
+        label: value
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
     const ratings = Object.entries(ContentRating).map(([key, value]) => ({
         value: key,
         label: value,
@@ -160,7 +163,7 @@
     const poetryForms = Object.entries(PoetryFormKind).map(([key, value]) => ({
         value: key,
         label: value,
-    }));
+    })).sort((a, b) => (a.value < b.value ? -1 : 1));
 </script>
 
 <svelte:head>

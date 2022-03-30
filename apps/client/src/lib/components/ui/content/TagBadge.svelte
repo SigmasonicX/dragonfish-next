@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Genres, TagKind, WorkKind } from '$lib/models/content/works';
+    import { Genres, TagKind, TagsModel, WorkKind } from '$lib/models/content/works';
     import { ContentKind, ContentRating } from '$lib/models/content';
     import {
         BookOpenLine,
@@ -20,6 +20,8 @@
         SkullLine,
         SwordLine,
     } from 'svelte-remixicon';
+    import { slugify } from '$lib/util';
+    import { formatTagName } from '$lib/util/format-tag-name';
 
     export let size: 'small' | 'medium' | 'large' = 'medium';
     export let hasIcon = true;
@@ -28,6 +30,7 @@
     export let category: WorkKind = null;
     export let genre: Genres = null;
     export let rating: ContentRating = null;
+    export let tag: TagsModel = null;
 </script>
 
 <div
@@ -117,6 +120,14 @@
             <span class="tag-label">Explicit</span>
             <span class="rating-label-small">X</span>
         {/if}
+    {:else if kind === TagKind.Fandom && tag !== null}
+        <span class="tag-label">
+            <a
+                href="/tag/{tag._id}/{slugify(tag.name)}"
+            >
+                {formatTagName(tag)}
+            </a>
+        </span>
     {/if}
 </div>
 
@@ -129,6 +140,9 @@
 
         span.tag-label {
             @apply text-sm;
+            a {
+                @apply font-light text-white
+            }
         }
 
         span.rating-label-small {
@@ -172,6 +186,7 @@
         }
 
         &.fandom {
+            @apply bg-gray-500 hover:bg-gray-600;
         }
 
         &.warning {
