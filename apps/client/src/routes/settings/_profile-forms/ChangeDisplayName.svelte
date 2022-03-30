@@ -1,8 +1,14 @@
 <script lang="ts">
     import { createForm } from 'felte';
     import { Save2Line } from 'svelte-remixicon';
+    import { changeScreenName } from '$lib/services/profile.service';
+    import { updateDisplayNameForm } from './form-state';
     import { profileSettings } from './form-state';
     import Button from '$lib/components/ui/misc/Button.svelte';
+    import type { ChangeScreenName } from '$lib/models/accounts/forms';
+    import { success, failure } from '$lib/services/alerts.service';
+
+    let loading = false;
 
     const { form, createSubmitHandler } = createForm({
         onSubmit: () => {
@@ -11,8 +17,24 @@
     });
 
     const submit = createSubmitHandler({
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            loading = true;
+
+            const nameForm: ChangeScreenName = {
+                newScreenName: values.displayName,
+            };
+
+            await changeScreenName($profileSettings.currProfile._id, nameForm)
+                .then((res) => {
+                    updateDisplayNameForm($profileSettings.currProfile._id, res.screenName);
+                    success(`Display name updated.`);
+                    loading = false;
+                })
+                .catch((err) => {
+                    console.log(err);
+                    failure(`Something went wrong!`);
+                    loading = false;
+                });
         },
     });
 </script>
@@ -31,7 +53,7 @@
         />
     </form>
     <div class="self-center">
-        <Button on:click={submit}>
+        <Button on:click={submit} {loading} loadingText="Saving...">
             <Save2Line class="button-icon" />
             <span class="button-text">Update</span>
         </Button>

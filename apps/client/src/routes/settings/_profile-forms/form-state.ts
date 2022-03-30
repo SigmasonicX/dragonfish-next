@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Profile } from '$lib/models/accounts';
-import { updateAvatar } from '$lib/repo/session.repo';
+import { updateAvatar, updateDisplayName, updateBio } from '$lib/repo/session.repo';
 
 interface ProfileSettings {
     profiles: Profile[];
@@ -44,4 +44,26 @@ export function updateAvatarForm(profileId: string, newProfile: Profile): void {
     });
 
     updateAvatar(profileId, newProfile.profile.avatar);
+}
+
+export function updateDisplayNameForm(profileId: string, newDisplayName: string): void {
+    profileSettings.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].screenName = newDisplayName;
+        state.currProfile.screenName = newDisplayName;
+        return state;
+    });
+
+    updateDisplayName(profileId, newDisplayName);
+}
+
+export function updateBioForm(profileId: string, newBio: string): void {
+    profileSettings.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].profile.bio = newBio;
+        state.currProfile.profile.bio = newBio;
+        return state;
+    });
+
+    updateBio(profileId, newBio);
 }

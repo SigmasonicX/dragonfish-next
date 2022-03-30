@@ -115,6 +115,22 @@ export function updateCover(profileId: string, url: string): void {
     });
 }
 
+export function updateDisplayName(profileId: string, newDisplayName: string): void {
+    session.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].screenName = newDisplayName;
+        return state;
+    });
+}
+
+export function updateBio(profileId: string, bio: string): void {
+    session.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].profile.bio = bio;
+        return state;
+    });
+}
+
 //#endregion
 
 //#region ---GETTERS---

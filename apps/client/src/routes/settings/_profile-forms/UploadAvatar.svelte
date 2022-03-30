@@ -16,7 +16,6 @@
     let imageSrc = null;
     let pixelCrop = null;
     let isUploading = false;
-    let uploadProgress = 0;
 
     function handleDrop(event: DragEvent): void {
         const items = event.dataTransfer.items;
@@ -97,11 +96,6 @@
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
-                    onUploadProgress: (progressEvent) => {
-                        uploadProgress = Math.round(
-                            (progressEvent.loaded / progressEvent.total) * 100,
-                        );
-                    },
                 },
             )
             .then((res) => {
@@ -113,7 +107,6 @@
             .catch((err) => {
                 console.log(err);
                 failure(`Something went wrong!`);
-                uploadProgress = 0;
                 isUploading = false;
             });
     }
@@ -143,9 +136,6 @@
         </div>
         {#if isUploading}
             <div class="mt-4 mb-2">
-                <progress class="progress-bar" max="100" value={uploadProgress}
-                    >{uploadProgress}%</progress
-                >
                 <div class="flex items-center justify-center">
                     <Loader5Line class="animate-spin mr-2" size="24px" />
                     <span class="text-xs uppercase font-bold tracking-widest">Uploading...</span>
@@ -197,16 +187,6 @@
         &:hover {
             @apply underline;
             color: var(--accent-dark);
-        }
-    }
-    progress.progress-bar {
-        @apply w-full px-4 rounded-full mb-4;
-        &::-webkit-progress-bar {
-            @apply rounded-full bg-zinc-500;
-        }
-        &::-webkit-progress-value {
-            @apply rounded-full;
-            background-color: var(--accent);
         }
     }
 </style>
