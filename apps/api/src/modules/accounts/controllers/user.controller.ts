@@ -14,10 +14,11 @@ import { IdentityGuard } from '$shared/guards';
 import { User, JwtPayload, Identity } from '$shared/auth';
 import { UserService } from '../services';
 import { ChangeBio, ChangeScreenName, ChangeTagline, Roles } from '$shared/models/accounts';
+import { ImagesService } from '$modules/utilities';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly user: UserService) {}
+    constructor(private readonly user: UserService, private readonly images: ImagesService) {}
 
     @Get('get-profile')
     async getProfile(@Query('pseudId') pseudId: string) {
@@ -43,11 +44,11 @@ export class UserController {
     @UseInterceptors(FileInterceptor('avatar'))
     @Post('upload-avatar')
     async uploadAvatar(@UploadedFile() avatarImage: any, @Query('pseudId') pseudId: string) {
-        /*const avatarUrl = await this.images.upload(avatarImage, pseudId, 'avatars');
+        const avatarUrl = await this.images.upload(avatarImage, pseudId, 'avatars');
         const avatar = `${process.env.IMAGES_HOSTNAME}/avatars/${avatarUrl.substr(
             avatarUrl.lastIndexOf('/') + 1,
         )}`;
-        return await this.user.updateAvatar(pseudId, avatar);*/
+        return await this.user.updateAvatar(pseudId, avatar);
     }
 
     @UseGuards(IdentityGuard)
@@ -55,11 +56,11 @@ export class UserController {
     @UseInterceptors(FileInterceptor('coverPic'))
     @Post('upload-cover')
     async uploadCover(@UploadedFile() coverImage: any, @Query('pseudId') pseudId: string) {
-        /*const avatarUrl = await this.images.upload(coverImage, pseudId, 'cover-pics');
-        const avatar = `${process.env.IMAGES_HOSTNAME}/cover-pics/${avatarUrl.substr(
-            avatarUrl.lastIndexOf('/') + 1,
+        const coverUrl = await this.images.upload(coverImage, pseudId, 'cover-pics');
+        const cover = `${process.env.IMAGES_HOSTNAME}/cover-pics/${coverUrl.substr(
+            coverUrl.lastIndexOf('/') + 1,
         )}`;
-        return await this.user.updateCoverPic(pseudId, avatar);*/
+        return await this.user.updateCoverPic(pseudId, cover);
     }
 
     @UseGuards(IdentityGuard)

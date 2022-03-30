@@ -59,7 +59,25 @@ export async function register(payload: RegisterForm): Promise<void> {
 }
 
 export async function logout(): Promise<void> {
-    return auth.logout();
+    return auth
+        .logout()
+        .then(() => {
+            session.update(() => ({
+                account: null,
+                token: null,
+                profiles: null,
+                currProfile: null,
+            }));
+        })
+        .catch((err) => {
+            console.log(err);
+            session.update(() => ({
+                account: null,
+                token: null,
+                profiles: null,
+                currProfile: null,
+            }));
+        });
 }
 
 export async function createProfile(formInfo: ProfileForm): Promise<void> {

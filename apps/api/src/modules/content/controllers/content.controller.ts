@@ -28,6 +28,7 @@ import { Identity, Optional, User, JwtPayload } from '$shared/auth';
 import { ContentService, RatingsService } from '../services';
 import { IdentityGuard } from '$shared/guards';
 import { ContentLibraryService } from '../services';
+import { ImagesService } from '$modules/utilities';
 
 @Controller('content')
 export class ContentController {
@@ -35,6 +36,7 @@ export class ContentController {
         private readonly content: ContentService,
         private readonly ratings: RatingsService,
         private readonly library: ContentLibraryService,
+        private readonly images: ImagesService,
     ) {}
 
     @UseGuards(IdentityGuard)
@@ -79,8 +81,7 @@ export class ContentController {
     @Identity(Roles.User)
     @Get('fetch-all-by-kind')
     async fetchAllByKind(@Query('pseudId') pseudId: string, @Query('kind') kinds: ContentKind[]) {
-        const content = await this.content.fetchAllByKind(pseudId, kinds);
-        return content;
+        return await this.content.fetchAllByKind(pseudId, kinds);
     }
 
     @Get('fetch-all-published')
@@ -185,8 +186,7 @@ export class ContentController {
         @Query('pseudId') pseudId: string,
         @Param('proseId') proseId: string,
     ) {
-        // TODO: reimplement image upload
-        /*const coverArtUrl = await this.images.upload(coverArtImage, proseId, 'coverart');
+        const coverArtUrl = await this.images.upload(coverArtImage, proseId, 'coverart');
         const coverArt = `${process.env.IMAGES_HOSTNAME}/coverart/${coverArtUrl.substr(
             coverArtUrl.lastIndexOf('/') + 1,
         )}`;
@@ -195,7 +195,7 @@ export class ContentController {
             proseId,
             ContentKind.ProseContent,
             coverArt,
-        );*/
+        );
     }
 
     @UseGuards(IdentityGuard)
@@ -208,8 +208,7 @@ export class ContentController {
         @Query('pseudId') pseudId: string,
         @Param('poetryId') poetryId: string,
     ) {
-        // TODO: reimplement image upload
-        /*const coverArtUrl = await this.images.upload(coverArtImage, poetryId, 'coverart');
+        const coverArtUrl = await this.images.upload(coverArtImage, poetryId, 'coverart');
         const coverArt = `${process.env.IMAGES_HOSTNAME}/coverart/${coverArtUrl.substr(
             coverArtUrl.lastIndexOf('/') + 1,
         )}`;
@@ -218,7 +217,7 @@ export class ContentController {
             poetryId,
             ContentKind.PoetryContent,
             coverArt,
-        );*/
+        );
     }
 
     @UseGuards(IdentityGuard)

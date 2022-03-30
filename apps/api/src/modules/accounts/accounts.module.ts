@@ -6,9 +6,11 @@ import * as Schemas from './db/schemas';
 import * as Stores from './db/stores';
 import * as Services from './services';
 import * as Controllers from './controllers';
+import { UtilitiesModule } from '$modules/utilities';
 
 @Module({
     imports: [
+        UtilitiesModule,
         MongooseModule.forFeatureAsync([
             {
                 name: 'Account',

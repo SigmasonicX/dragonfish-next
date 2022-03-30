@@ -8,9 +8,11 @@ import * as Controllers from './controllers';
 import { AccountsModule } from '$modules/accounts';
 import { JwtModule } from '@nestjs/jwt';
 import { getJwtSecretKey, JWT_EXPIRATION } from '$shared/util';
+import { UtilitiesModule } from '$modules/utilities';
 
 @Module({
     imports: [
+        UtilitiesModule,
         AccountsModule,
         MongooseModule.forFeatureAsync([
             {
