@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { http } from '$lib/services/http';
+    import { baseUrl } from '$lib/util';
+    import { updateAvatarForm, profileSettings } from './form-state';
     import { closePopup } from '$lib/components/nav/popup';
     import { CloseLine, Loader5Line, UploadCloudLine } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import { success, failure } from '$lib/services/alerts.service';
     import Cropper from 'svelte-easy-crop';
-    import getCroppedImg from '$lib/services/image.service';
+    import getCroppedImg, { base64ToFile } from '$lib/services/image.service';
 
     let file: File = null;
     let crop = { x: 0, y: 0 };
@@ -31,7 +34,6 @@
                 file.type === 'image/jpeg' ||
                 file.type === 'image/jpg'
             ) {
-                success(`file[0].name = ${file.name}`);
                 reader.onload = (e) => {
                     imageSrc = e.target.result;
                 };
@@ -52,7 +54,6 @@
                 file.type === 'image/jpeg' ||
                 file.type === 'image/jpg'
             ) {
-                success(`... file[0].name = ${file.name}`);
                 reader.onload = (e) => {
                     imageSrc = e.target.result;
                 };
@@ -84,7 +85,37 @@
     async function uploadImage() {
         isUploading = true;
         let croppedImage = await getCroppedImg(imageSrc, pixelCrop);
-        console.log(croppedImage);
+        let imageToUpload = base64ToFile(croppedImage, 'avatar');
+        let formData = new FormData();
+        formData.append('avatar', imageToUpload);
+
+        await http
+            .post<string>(
+                `${baseUrl}/user/upload-avatar?pseudId=${$profileSettings.currProfile._id}`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    onUploadProgress: (progressEvent) => {
+                        uploadProgress = Math.round(
+                            (progressEvent.loaded / progressEvent.total) * 100,
+                        );
+                    },
+                },
+            )
+            .then((res) => {
+                const url = res.data;
+                updateAvatarForm($profileSettings.currProfile._id, url);
+                success(`Avatar updated.`);
+                closePopup();
+            })
+            .catch((err) => {
+                console.log(err);
+                failure(`Something went wrong!`);
+                uploadProgress = 0;
+                isUploading = false;
+            });
     }
 </script>
 

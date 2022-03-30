@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Profile } from '$lib/models/accounts';
+import { updateAvatar } from '$lib/repo/session.repo';
 
 interface ProfileSettings {
     profiles: Profile[];
@@ -32,4 +33,15 @@ export function setCurrProfile(profileId: string): void {
         }
         return state;
     });
+}
+
+export function updateAvatarForm(profileId: string, newProfile: Profile): void {
+    profileSettings.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].profile.avatar = newProfile.profile.avatar;
+        state.currProfile.profile.avatar = newProfile.profile.avatar;
+        return state;
+    });
+
+    updateAvatar(profileId, newProfile.profile.avatar);
 }

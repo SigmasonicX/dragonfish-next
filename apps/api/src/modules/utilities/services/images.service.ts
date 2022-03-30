@@ -1,4 +1,9 @@
-import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import {
+    Injectable,
+    BadRequestException,
+    InternalServerErrorException,
+    Logger,
+} from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -12,6 +17,8 @@ enum MimeTypes {
 
 @Injectable()
 export class ImagesService {
+    private logger = new Logger(`Images`);
+
     private readonly s3 = new AWS.S3({
         endpoint: process.env.DIGITALOCEAN_SPACES_ENDPOINT,
         accessKeyId: process.env.DIGITALOCEAN_SPACES_ACCESS_KEY,

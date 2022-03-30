@@ -4,7 +4,7 @@
     import Avatar from '$lib/components/ui/user/Avatar.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import { openPopup } from '$lib/components/nav/popup';
-    import UploadAvatar from '$lib/components/forms/UploadAvatar.svelte';
+    import UploadAvatar from './UploadAvatar.svelte';
 </script>
 
 <div class="settings-box bg-zinc-300 dark:bg-zinc-700 dark:highlight-shadowed">

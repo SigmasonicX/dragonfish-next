@@ -96,6 +96,25 @@ export function setCurrentProfile(profile: Profile): void {
     }));
 }
 
+export function updateAvatar(profileId: string, url: string): void {
+    session.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].profile.avatar = url;
+        if (state.currProfile && state.currProfile._id === profileId) {
+            state.currProfile.profile.avatar = url;
+        }
+        return state;
+    });
+}
+
+export function updateCover(profileId: string, url: string): void {
+    session.update((state) => {
+        const index = state.profiles.findIndex((item) => item._id === profileId);
+        state.profiles[index].profile.coverPic = url;
+        return state;
+    });
+}
+
 //#endregion
 
 //#region ---GETTERS---
