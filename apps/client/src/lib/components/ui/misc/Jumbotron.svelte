@@ -1,7 +1,6 @@
 <script lang="ts">
     import { useQuery } from '@sveltestack/svelte-query';
-    import { slide, fade } from 'svelte/transition';
-    import { quintOut } from 'svelte/easing';
+    import { slide } from 'svelte/transition';
     import { fetchFeaturedPosts } from '$lib/services/content.service';
     import { CloseLine, InformationLine, Loader5Line } from 'svelte-remixicon';
     import { localeDate } from '$lib/util';
@@ -66,23 +65,20 @@
     <div class="jumbotron">
         <div class="big-box">
             {#key currentIndex}
-                <img
-                    src={$featuredPosts.data[currentIndex].meta.banner}
-                    alt="banner"
-                    transition:slide|local={{ delay: 0, duration: 300, easing: quintOut }}
-                />
-                <div
-                    class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
-                    transition:fade|local={{ delay: 0, duration: 200 }}
-                >
-                    <h1>
-                        <a href="/blog/{$featuredPosts.data[currentIndex]._id}">
-                            {$featuredPosts.data[currentIndex].title}
-                        </a>
-                    </h1>
-                    {#if $featuredPosts.data[currentIndex].desc}
-                        <h2>{$featuredPosts.data[currentIndex].desc}</h2>
-                    {/if}
+                <div transition:slide|local={{ delay: 0, duration: 300 }}>
+                    <img src={$featuredPosts.data[currentIndex].meta.banner} alt="banner" />
+                    <div
+                        class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
+                    >
+                        <h1>
+                            <a href="/blog/{$featuredPosts.data[currentIndex]._id}">
+                                {$featuredPosts.data[currentIndex].title}
+                            </a>
+                        </h1>
+                        {#if $featuredPosts.data[currentIndex].desc}
+                            <h2>{$featuredPosts.data[currentIndex].desc}</h2>
+                        {/if}
+                    </div>
                 </div>
             {/key}
         </div>
