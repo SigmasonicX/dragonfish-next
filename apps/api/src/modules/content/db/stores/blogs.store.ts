@@ -101,6 +101,25 @@ export class BlogsStore {
     }
 
     /**
+     * Toggles a blog post to be fetched as a Featured post.
+     *
+     * @param userId
+     * @param featuredChange
+     */
+    async toggleFeatured(
+        userId: string,
+        featuredChange: NewsChange,
+    ): Promise<BlogsContentDocument> {
+        return this.blogsModel.findOneAndUpdate(
+            { _id: featuredChange.blogId, author: userId },
+            {
+                'audit.isFeatured': featuredChange.postAsNews,
+            },
+            { new: true },
+        );
+    }
+
+    /**
      * Changes a blog's banner image.
      * @param blogId
      * @param authorId

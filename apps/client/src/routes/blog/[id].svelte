@@ -49,6 +49,9 @@
         EmotionLaughLine,
         NewspaperLine,
         ImageEditLine,
+        NewspaperFill,
+        Medal2Line,
+        Medal2Fill,
     } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import TextField from '$lib/components/forms/TextField.svelte';
@@ -128,6 +131,23 @@
         const updatedContent = await http
             .patch<Content>(
                 `${baseUrl}/content/toggle-news-post?pseudId=${$session.currProfile._id}`,
+                toggleChange,
+            )
+            .then((res) => {
+                return res.data;
+            });
+
+        updateContent(updatedContent);
+    }
+
+    async function toggleFeatured(): Promise<void> {
+        const toggleChange: NewsChange = {
+            blogId: $content.content._id,
+            postAsNews: !($content.content as Blog).audit.isFeatured,
+        };
+        const updatedContent = await http
+            .patch<Content>(
+                `${baseUrl}/content/toggle-featured?pseudId=${$session.currProfile._id}`,
                 toggleChange,
             )
             .then((res) => {
@@ -279,13 +299,25 @@
                         {#if canMakeNewsPost()}
                             {#if $content.content.audit.isNewsPost}
                                 <Button kind="primary" on:click={toggleNewsPost}>
-                                    <NewspaperLine class="button-icon" />
-                                    <span class="button-text">Remove From Feed</span>
+                                    <NewspaperFill class="button-icon" />
+                                    <span class="button-text">On Feed</span>
                                 </Button>
+                                <div class="mx-0.5" />
+                                {#if $content.content.audit.isFeatured}
+                                    <Button kind="primary" on:click={toggleFeatured}>
+                                        <Medal2Fill class="button-icon" />
+                                        <span class="button-text">Featured</span>
+                                    </Button>
+                                {:else}
+                                    <Button kind="primary" on:click={toggleFeatured}>
+                                        <Medal2Line class="button-icon" />
+                                        <span class="button-text">Feature</span>
+                                    </Button>
+                                {/if}
                             {:else}
                                 <Button kind="primary" on:click={toggleNewsPost}>
                                     <NewspaperLine class="button-icon" />
-                                    <span class="button-text">Add To Feed</span>
+                                    <span class="button-text">Off Feed</span>
                                 </Button>
                             {/if}
                         {/if}

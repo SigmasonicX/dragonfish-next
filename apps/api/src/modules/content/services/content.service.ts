@@ -206,6 +206,10 @@ export class ContentService {
         return await this.blogs.changeBanner(blogId, pseudId, bannerUrl);
     }
 
+    public async toggleFeatured(pseudId: string, featuredChange: NewsChange) {
+        return await this.blogs.toggleFeatured(pseudId, featuredChange);
+    }
+
     /**
      * Updates user's counts of both blogs and works
      * @param user

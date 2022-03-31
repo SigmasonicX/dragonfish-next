@@ -228,6 +228,13 @@ export class ContentController {
     }
 
     @UseGuards(IdentityGuard)
+    @Identity(Roles.Admin, Roles.Moderator, Roles.Contributor)
+    @Patch('toggle-featured')
+    async toggleFeatured(@Query('pseudId') pseudId: string, @Body() featuredChange: NewsChange) {
+        return await this.content.toggleFeatured(pseudId, featuredChange);
+    }
+
+    @UseGuards(IdentityGuard)
     @Identity(Roles.User)
     @UseInterceptors(FileInterceptor('banner'))
     @Post('change-banner')
