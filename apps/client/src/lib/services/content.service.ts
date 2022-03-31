@@ -1,6 +1,6 @@
 import { http } from './http';
 import type { Content, ContentFilter, ContentKind } from '$lib/models/content';
-import type { PubChange } from '$lib/models/content/blogs';
+import type { Blog, PubChange } from '$lib/models/content/blogs';
 import type { PaginateResult, PubContent } from '$lib/models/util';
 import { baseUrl } from '$lib/util';
 import type { AxiosResponse } from 'axios';
@@ -29,6 +29,14 @@ export async function fetchAllNew(
     return http.get<PaginateResult<Content>>(route).then((res) => {
         return res.data;
     });
+}
+
+export async function fetchFirstNewsPosts(): Promise<Blog[]> {
+    return http.get<Blog[]>(`${baseUrl}/news/fetch-for-home`).then((res) => res.data);
+}
+
+export async function fetchFeaturedPosts(): Promise<Blog[]> {
+    return http.get<Blog[]>(`${baseUrl}/news/fetch-featured`).then((res) => res.data);
 }
 
 //#endregion

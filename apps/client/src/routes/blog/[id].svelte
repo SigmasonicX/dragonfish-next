@@ -33,6 +33,8 @@
         MIN_TITLE_LENGTH,
         MAX_TITLE_LENGTH,
         MIN_LONG_DESC_LENGTH,
+        MIN_SHORT_DESC_LENGTH,
+        MAX_SHORT_DESC_LENGTH,
         baseUrl,
     } from '$lib/util';
     import {
@@ -64,6 +66,7 @@
     import { Roles } from '$lib/models/accounts';
     import { openPopup } from '$lib/components/nav/popup';
     import UploadBanner from './_forms/UploadBanner.svelte';
+    import { failure } from '$lib/services/alerts.service';
 
     let isEditing = false;
 
@@ -72,6 +75,7 @@
         validate: (values) => {
             const errors = {
                 title: '',
+                desc: '',
                 body: '',
             };
 
@@ -82,6 +86,19 @@
                 errors.title = `Titles must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`;
             }
 
+            if (canMakeNewsPost() && values.desc === null && values.desc === undefined) {
+                errors.desc = `Blurbs are required for news posts.`;
+            }
+
+            if (canMakeNewsPost() && values.desc !== null && values.desc !== undefined) {
+                if (
+                    values.desc.length < MIN_SHORT_DESC_LENGTH ||
+                    values.desc.length > MAX_SHORT_DESC_LENGTH
+                ) {
+                    errors.desc = `Blurbs must be between ${MIN_SHORT_DESC_LENGTH} and ${MAX_SHORT_DESC_LENGTH} characters`;
+                }
+            }
+
             if (values.body && values.body.length < MIN_LONG_DESC_LENGTH) {
                 errors.body = `Long descriptions must be more than ${MIN_LONG_DESC_LENGTH} long`;
             }
@@ -90,6 +107,7 @@
         },
         initialValues: {
             title: $content.content.title,
+            desc: $content.content.desc,
             body: $content.content.body,
         },
     });
@@ -98,6 +116,7 @@
         onSubmit: async (values) => {
             const formData: BlogForm = {
                 title: values.title,
+                desc: values.desc ? values.desc : null,
                 body: values.body,
                 rating: $content.content.meta.rating,
             };
@@ -124,6 +143,28 @@
     }
 
     async function toggleNewsPost(): Promise<void> {
+        if (
+            $content.content.desc === null ||
+            $content.content.desc === undefined ||
+            $content.content.desc === 'null' ||
+            $content.content.desc === 'undefined' ||
+            $content.content.desc === ''
+        ) {
+            failure(`News posts MUST have a blurb. Edit this post to include one.`);
+            return;
+        }
+
+        if (
+            ($content.content as Blog).meta.banner === null ||
+            ($content.content as Blog).meta.banner === undefined ||
+            ($content.content as Blog).meta.banner === 'null' ||
+            ($content.content as Blog).meta.banner === 'undefined' ||
+            ($content.content as Blog).meta.banner === ''
+        ) {
+            failure(`News posts MUST have a banner image. Please include one.`);
+            return;
+        }
+
         const toggleChange: NewsChange = {
             blogId: $content.content._id,
             postAsNews: !($content.content as Blog).audit.isNewsPost,
@@ -193,12 +234,12 @@
     <meta property="twitter:image" content={$content.content.author.profile.avatar} />
 </svelte:head>
 
-<div class="w-full overflow-y-auto">
+<div class="w-full h-screen overflow-y-auto">
     <div class="mx-auto max-w-4xl my-6">
         {#if $content.content.meta.banner}
             <div class="mx-auto w-11/12 md:w-full rounded-t-lg overflow-hidden">
                 <img
-                    src={$content.content.author.profile.coverPic}
+                    src={$content.content.meta.banner}
                     alt="banner"
                     class="object-cover h-48 md:h-64 w-full block"
                 />
@@ -355,6 +396,15 @@
                         placeholder="A Brand New World"
                         errorMessage={$errors.title}
                     />
+                    {#if canMakeNewsPost()}
+                        <TextField
+                            name="desc"
+                            type="text"
+                            title="Blurb"
+                            placeholder="The one about my favorite thing"
+                            errorMessage={$errors.desc}
+                        />
+                    {/if}
                     <div class="my-4" />
                     <Editor label="Blog" bind:value={$data.body} />
                 </form>

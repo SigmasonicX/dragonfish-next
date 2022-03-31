@@ -25,6 +25,7 @@ export class BlogsStore {
         const newBlog = new this.blogsModel({
             author: user,
             title: sanitizeHtml(blogInfo.title),
+            desc: blogInfo.desc ? sanitizeHtml(blogInfo.desc) : null,
             body: sanitizeHtml(blogInfo.body, sanitizeOptions),
             'meta.rating': blogInfo.rating,
             'stats.words': countWords(stripTags(sanitizeHtml(blogInfo.body, sanitizeOptions))),
@@ -52,6 +53,7 @@ export class BlogsStore {
             { _id: blogId, author: user },
             {
                 title: sanitizeHtml(blogInfo.title),
+                desc: blogInfo.desc ? sanitizeHtml(blogInfo.desc) : null,
                 body: sanitizeHtml(blogInfo.body, sanitizeOptions),
                 'meta.rating': blogInfo.rating,
                 'stats.words': wordCount,

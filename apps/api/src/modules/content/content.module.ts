@@ -78,6 +78,7 @@ import { UtilitiesModule } from '$modules/utilities';
         Controllers.SectionsController,
         Controllers.TagsController,
         Controllers.SearchController,
+        Controllers.NewsController,
     ],
     providers: [
         Stores.ContentStore,

@@ -84,6 +84,19 @@ export class ContentGroupStore {
             .limit(6);
     }
 
+    async fetchFeaturedPosts(): Promise<BlogsContentDocument[]> {
+        const query = {
+            'audit.isDeleted': false,
+            'audit.isNewsPost': true,
+            'audit.isFeatured': true,
+            'audit.published': PubStatus.Published,
+        };
+        return this.blogsModel
+            .find(query)
+            .sort({ 'audit.publishedOn': this.NEWEST_FIRST })
+            .limit(4);
+    }
+
     /**
      * Fetches all published documents based on kind, limited by page number.
      * @param pageNum The current page

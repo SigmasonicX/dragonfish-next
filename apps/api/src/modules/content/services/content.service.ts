@@ -210,6 +210,14 @@ export class ContentService {
         return await this.blogs.toggleFeatured(pseudId, featuredChange);
     }
 
+    public async fetchFirstNewsPosts() {
+        return await this.contentGroup.fetchForHome();
+    }
+
+    public async fetchFeaturedPosts() {
+        return await this.contentGroup.fetchFeaturedPosts();
+    }
+
     /**
      * Updates user's counts of both blogs and works
      * @param user
