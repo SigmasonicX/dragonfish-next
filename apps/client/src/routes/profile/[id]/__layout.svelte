@@ -4,7 +4,6 @@
      * */
     import type { Load } from '@sveltejs/kit';
     import { profile } from '$lib/repo/profile.repo';
-    import type { Profile } from '$lib/models/accounts';
     import { getProfile } from '$lib/services/profile.service';
 
     export const load: Load = async ({ params }) => {
@@ -25,7 +24,7 @@
 
 <script lang="ts">
     import { page } from '$app/stores';
-    import { pluralize, slugify } from '$lib/util';
+    import { pluralize } from '$lib/util';
     import {
         UserFollowLine,
         MenuLine,
@@ -33,44 +32,60 @@
         QuillPenLine,
         CupLine,
         BarChart2Fill,
+        ImageEditLine,
+        ImageAddLine,
     } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
-    // eslint-disable-next-line no-redeclare
-    import type { Profile } from '$lib/models/accounts';
-
-    export let profileModel: Profile;
+    import { session } from '$lib/repo/session.repo';
+    import { openPopup } from '$lib/components/nav/popup';
+    import UploadCover from './_forms/UploadCover.svelte';
 </script>
 
 <div class="flex flex-col w-full h-screen overflow-y-auto">
     <div class="profile-header">
-        {#if profileModel.profile.coverPic}
+        {#if $profile.profile.coverPic}
+            {#if $session.currProfile && $session.currProfile._id === $profile._id}
+                <div class="absolute top-4 right-6 block z-20">
+                    <Button kind="primary">
+                        <ImageEditLine class="button-icon" />
+                        <span class="button-text">Edit Cover</span>
+                    </Button>
+                </div>
+            {/if}
             <img
                 class="block object-cover w-full h-40 lg:h-[20rem]"
-                src={profileModel.profile.coverPic}
+                src={$profile.profile.coverPic}
                 alt="cover"
             />
         {:else}
-            <div class="w-full h-[8rem]" style="background: var(--accent);" />
+            <div class="w-full h-[8rem] relative" style="background: var(--accent);">
+                {#if $session.currProfile && $session.currProfile._id === $profile._id}
+                    <div class="absolute top-4 right-6 block z-20">
+                        <Button kind="primary" on:click={() => openPopup(UploadCover)}>
+                            <ImageAddLine class="button-icon" />
+                            <span class="button-text">Add Cover</span>
+                        </Button>
+                    </div>
+                {/if}
+            </div>
         {/if}
         <div class="user-info-container">
             <div class="user-info">
                 <div class="avatar-container self-end">
-                    <img src={profileModel.profile.avatar} alt="avatar" />
+                    <img src={$profile.profile.avatar} alt="avatar" />
                 </div>
                 <div class="flex-1 lg:self-end top-4 flex flex-col relative">
                     <h1 class="text-2xl lg:text-3xl text-white font-medium">
-                        {profileModel.screenName}
+                        {$profile.screenName}
                     </h1>
-                    <h3 class="text-base text-white">@{profileModel.userTag}</h3>
+                    <h3 class="text-base text-white">@{$profile.userTag}</h3>
                     <span class="text-xs mt-1">
-                        <a class="text-white" href="/profile/{profileModel._id}/followers">
-                            {profileModel.stats.followers} follower{pluralize(
-                                profileModel.stats.followers,
-                            )}
+                        <a class="text-white" href="/profile/{$profile._id}/followers">
+                            {$profile.stats.followers} follower{pluralize($profile.stats.followers)}
                         </a>
                         <span class="mx-1 text-white">•</span>
-                        <a class="text-white" href="/profile/{profileModel._id}/following">
-                            {profileModel.stats.following} following
+                        <a class="text-white" href="/profile/{$profile._id}/following">
+                            {$profile.stats.following} following
                         </a>
                     </span>
                     <div class="my-5" />
@@ -88,30 +103,28 @@
             </div>
             <div class="user-nav">
                 <a
-                    href="/profile/{profileModel._id}"
-                    class:active={$page.url.pathname === `/profile/${profileModel._id}`}
+                    href="/profile/{$profile._id}"
+                    class:active={$page.url.pathname === `/profile/${$profile._id}`}
                 >
                     <Home5Line size="20px" class="mr-1" />
                     <span>Home</span>
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/works"
+                    href="/profile/{$profile._id}/works"
                     class:active={$page.url.pathname.includes(`works`)}
                 >
                     <QuillPenLine size="20px" class="mr-1" />
-                    <span>{profileModel.stats.works} Work{pluralize(profileModel.stats.works)}</span
-                    >
+                    <span>{$profile.stats.works} Work{pluralize($profile.stats.works)}</span>
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/blogs"
+                    href="/profile/{$profile._id}/blogs"
                     class:active={$page.url.pathname.includes(`blogs`)}
                 >
                     <CupLine size="20px" class="mr-1" />
-                    <span>{profileModel.stats.blogs} Blog{pluralize(profileModel.stats.blogs)}</span
-                    >
+                    <span>{$profile.stats.blogs} Blog{pluralize($profile.stats.blogs)}</span>
                 </a>
                 <a
-                    href="/profile/{profileModel._id}/shelves"
+                    href="/profile/{$profile._id}/shelves"
                     class:active={$page.url.pathname.includes(`shelves`)}
                 >
                     <BarChart2Fill size="20px" class="mr-1" />
@@ -125,7 +138,7 @@
 
 <style lang="scss">
     div.profile-header {
-        @apply w-full flex flex-col mb-6;
+        @apply w-full flex flex-col mb-6 relative;
         div.user-info-container {
             @apply w-full shadow-xl;
             background: var(--accent);

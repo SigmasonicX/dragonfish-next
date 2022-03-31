@@ -8,6 +8,7 @@
     import { success, failure } from '$lib/services/alerts.service';
     import Cropper from 'svelte-easy-crop';
     import getCroppedImg, { base64ToFile } from '$lib/services/image.service';
+    import type { Profile } from '$lib/models/accounts';
 
     let file: File = null;
     let crop = { x: 0, y: 0 };
@@ -89,7 +90,7 @@
         formData.append('avatar', imageToUpload);
 
         await http
-            .post<string>(
+            .post<Profile>(
                 `${baseUrl}/user/upload-avatar?pseudId=${$profileSettings.currProfile._id}`,
                 formData,
                 {
