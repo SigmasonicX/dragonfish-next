@@ -122,9 +122,7 @@
         {/if}
     {:else if kind === TagKind.Fandom && tag !== null}
         <span class="tag-label">
-            <a
-                href="/tag/{tag._id}/{slugify(tag.name)}"
-            >
+            <a href="/tag/{tag._id}/{slugify(tag.name)}">
                 {formatTagName(tag)}
             </a>
         </span>
@@ -133,7 +131,7 @@
 
 <style lang="scss">
     div.tag-pill {
-        @apply px-1 py-0.5 flex items-center rounded-md mx-0.5 mt-1 text-white transition transform cursor-pointer;
+        @apply px-1 py-0.5 flex items-center rounded-md mx-0.5 mt-1 text-white transition transform cursor-pointer h-[1.75rem];
         :global(svg) {
             @apply w-4 relative mr-1;
         }
@@ -141,7 +139,7 @@
         span.tag-label {
             @apply text-sm;
             a {
-                @apply font-light text-white
+                @apply font-light text-white;
             }
         }
 
