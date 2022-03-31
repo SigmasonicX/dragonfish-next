@@ -1,20 +1,42 @@
 <script lang="ts">
     import { useQuery } from '@sveltestack/svelte-query';
-    import { slide } from 'svelte/transition';
+    import { slide, fade } from 'svelte/transition';
     import { quintOut } from 'svelte/easing';
     import { fetchFeaturedPosts } from '$lib/services/content.service';
     import { CloseLine, InformationLine, Loader5Line } from 'svelte-remixicon';
     import { localeDate } from '$lib/util';
 
     enum Slides {
-        First,
-        Second,
-        Third,
-        Fourth,
+        First = 0,
+        Second = 1,
+        Third = 2,
+        Fourth = 3,
     }
     let activeSlide: Slides = Slides.First;
+    let currentIndex = 0;
 
     const featuredPosts = useQuery('featuredPosts', fetchFeaturedPosts);
+
+    function switchActiveSlide(index: number) {
+        switch (index) {
+            case 0:
+                currentIndex = 0;
+                activeSlide = Slides.First;
+                break;
+            case 1:
+                currentIndex = 1;
+                activeSlide = Slides.Second;
+                break;
+            case 2:
+                currentIndex = 2;
+                activeSlide = Slides.Third;
+                break;
+            case 3:
+                currentIndex = 3;
+                activeSlide = Slides.Fourth;
+                break;
+        }
+    }
 </script>
 
 {#if $featuredPosts.isLoading}
@@ -43,169 +65,49 @@
 {:else}
     <div class="jumbotron">
         <div class="big-box">
-            {#if activeSlide === Slides.First}
+            {#key currentIndex}
                 <img
-                    src={$featuredPosts.data[0].meta.banner}
+                    src={$featuredPosts.data[currentIndex].meta.banner}
                     alt="banner"
                     transition:slide|local={{ delay: 0, duration: 300, easing: quintOut }}
                 />
                 <div
                     class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
+                    transition:fade|local={{ delay: 0, duration: 200 }}
                 >
                     <h1>
-                        <a href="/blog/{$featuredPosts.data[0]._id}">
-                            {$featuredPosts.data[0].title}
+                        <a href="/blog/{$featuredPosts.data[currentIndex]._id}">
+                            {$featuredPosts.data[currentIndex].title}
                         </a>
                     </h1>
-                    {#if $featuredPosts.data[0].desc}
-                        <h2>{$featuredPosts.data[0].desc}</h2>
+                    {#if $featuredPosts.data[currentIndex].desc}
+                        <h2>{$featuredPosts.data[currentIndex].desc}</h2>
                     {/if}
                 </div>
-            {:else if activeSlide === Slides.Second}
-                <img
-                    src={$featuredPosts.data[1].meta.banner}
-                    alt="banner"
-                    transition:slide|local={{ delay: 0, duration: 300, easing: quintOut }}
-                />
-                <div
-                    class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
-                >
-                    <h1>
-                        <a href="/blog/{$featuredPosts.data[1]._id}">
-                            {$featuredPosts.data[1].title}
-                        </a>
-                    </h1>
-                    {#if $featuredPosts.data[1].desc}
-                        <h2>{$featuredPosts.data[1].desc}</h2>
-                    {/if}
-                </div>
-            {:else if activeSlide === Slides.Third}
-                <img
-                    src={$featuredPosts.data[2].meta.banner}
-                    alt="banner"
-                    transition:slide|local={{ delay: 0, duration: 300, easing: quintOut }}
-                />
-                <div
-                    class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
-                >
-                    <h1>
-                        <a href="/blog/{$featuredPosts.data[2]._id}">
-                            {$featuredPosts.data[2].title}
-                        </a>
-                    </h1>
-                    {#if $featuredPosts.data[2].desc}
-                        <h2>{$featuredPosts.data[2].desc}</h2>
-                    {/if}
-                </div>
-            {:else if activeSlide === Slides.Fourth}
-                <img
-                    src={$featuredPosts.data[3].meta.banner}
-                    alt="banner"
-                    transition:slide|local={{ delay: 0, duration: 300, easing: quintOut }}
-                />
-                <div
-                    class="box-info bg-zinc-300 dark:bg-zinc-700 bg-opacity-75 dark:bg-opacity-75 backdrop-blur"
-                >
-                    <h1>
-                        <a href="/blog/{$featuredPosts.data[3]._id}">
-                            {$featuredPosts.data[3].title}
-                        </a>
-                    </h1>
-                    {#if $featuredPosts.data[3].desc}
-                        <h2>{$featuredPosts.data[3].desc}</h2>
-                    {/if}
-                </div>
-            {/if}
+            {/key}
         </div>
         <div class="card-stack">
-            <div
-                class="card"
-                class:active={activeSlide === Slides.First}
-                on:click={() => (activeSlide = Slides.First)}
-            >
-                <div class="flex-1 truncate">
-                    <h3>{$featuredPosts.data[0].title}</h3>
-                    <div class="flex items-center">
-                        <span class="hidden text-sm md:text-base md:block"
-                            >by {$featuredPosts.data[0].author.screenName}</span
-                        >
-                        <span class="hidden md:block mx-1">•</span>
-                        <span class="text-sm md:text-base"
-                            >{localeDate(
-                                $featuredPosts.data[0].audit.publishedOn,
-                                'fullDate',
-                            )}</span
-                        >
+            {#each $featuredPosts.data as post, index}
+                <div
+                    class="card"
+                    class:active={currentIndex === index}
+                    on:click={() => switchActiveSlide(index)}
+                >
+                    <div class="flex-1 truncate">
+                        <h3>{post.title}</h3>
+                        <div class="flex items-center">
+                            <span class="hidden text-sm md:text-base md:block"
+                                >by {post.author.screenName}</span
+                            >
+                            <span class="hidden md:block mx-1">•</span>
+                            <span class="text-sm md:text-base"
+                                >{localeDate(post.audit.publishedOn, 'fullDate')}</span
+                            >
+                        </div>
                     </div>
+                    <img src={$featuredPosts.data[0].author.profile.avatar} alt="demo avatar" />
                 </div>
-                <img src={$featuredPosts.data[0].author.profile.avatar} alt="demo avatar" />
-            </div>
-            <div
-                class="card"
-                class:active={activeSlide === Slides.Second}
-                on:click={() => (activeSlide = Slides.Second)}
-            >
-                <div class="flex-1 truncate">
-                    <h3>{$featuredPosts.data[1].title}</h3>
-                    <div class="flex items-center">
-                        <span class="hidden text-sm md:text-base md:block"
-                            >by {$featuredPosts.data[1].author.screenName}</span
-                        >
-                        <span class="hidden md:block mx-1">•</span>
-                        <span class="text-sm md:text-base"
-                            >{localeDate(
-                                $featuredPosts.data[1].audit.publishedOn,
-                                'fullDate',
-                            )}</span
-                        >
-                    </div>
-                </div>
-                <img src={$featuredPosts.data[1].author.profile.avatar} alt="demo avatar" />
-            </div>
-            <div
-                class="card"
-                class:active={activeSlide === Slides.Third}
-                on:click={() => (activeSlide = Slides.Third)}
-            >
-                <div class="flex-1 truncate">
-                    <h3>{$featuredPosts.data[2].title}</h3>
-                    <div class="flex items-center">
-                        <span class="hidden text-sm md:text-base md:block"
-                            >by {$featuredPosts.data[2].author.screenName}</span
-                        >
-                        <span class="hidden md:block mx-1">•</span>
-                        <span class="text-sm md:text-base"
-                            >{localeDate(
-                                $featuredPosts.data[2].audit.publishedOn,
-                                'fullDate',
-                            )}</span
-                        >
-                    </div>
-                </div>
-                <img src={$featuredPosts.data[2].author.profile.avatar} alt="demo avatar" />
-            </div>
-            <div
-                class="card"
-                class:active={activeSlide === Slides.Fourth}
-                on:click={() => (activeSlide = Slides.Fourth)}
-            >
-                <div class="flex-1 truncate">
-                    <h3>{$featuredPosts.data[3].title}</h3>
-                    <div class="flex items-center">
-                        <span class="hidden text-sm md:text-base md:block"
-                            >by {$featuredPosts.data[3].author.screenName}</span
-                        >
-                        <span class="hidden md:block mx-1">•</span>
-                        <span class="text-sm md:text-base"
-                            >{localeDate(
-                                $featuredPosts.data[3].audit.publishedOn,
-                                'fullDate',
-                            )}</span
-                        >
-                    </div>
-                </div>
-                <img src={$featuredPosts.data[3].author.profile.avatar} alt="demo avatar" />
-            </div>
+            {/each}
         </div>
     </div>
 {/if}
@@ -241,7 +143,7 @@
                 }
                 &.active {
                     @apply bg-zinc-200 dark:bg-zinc-700;
-                    border-color: var(--accent);
+                    border-left-color: var(--accent);
                 }
                 h3 {
                     @apply text-lg md:text-2xl font-medium w-full truncate;
