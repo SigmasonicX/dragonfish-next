@@ -99,4 +99,22 @@ export class BlogsStore {
             { new: true },
         );
     }
+
+    /**
+     * Changes a blog's banner image.
+     * @param blogId
+     * @param authorId
+     * @param bannerUrl
+     */
+    async changeBanner(
+        blogId: string,
+        authorId: string,
+        bannerUrl: string,
+    ): Promise<BlogsContentDocument> {
+        return this.blogsModel.findOneAndUpdate(
+            { _id: blogId, author: authorId },
+            { 'meta.banner': bannerUrl },
+            { new: true },
+        );
+    }
 }

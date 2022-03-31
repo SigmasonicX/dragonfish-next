@@ -62,6 +62,7 @@ export function addSection(section: Section): void {
 }
 
 export function removeSection(section: Section): void {
+    // TODO: implement section deletion
     content.update((state) => {
         return state;
     });

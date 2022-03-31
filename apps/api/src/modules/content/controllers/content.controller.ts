@@ -226,4 +226,20 @@ export class ContentController {
     async toggleNewsPost(@Query('pseudId') pseudId: string, @Body() newsChange: NewsChange) {
         return await this.content.toggleNewsPost(pseudId, newsChange);
     }
+
+    @UseGuards(IdentityGuard)
+    @Identity(Roles.User)
+    @UseInterceptors(FileInterceptor('banner'))
+    @Post('change-banner')
+    async changeBanner(
+        @UploadedFile() bannerImage,
+        @Query('pseudId') pseudId: string,
+        @Query('blogId') blogId: string,
+    ) {
+        const bannerArtUrl = await this.images.upload(bannerImage, blogId, 'blog-banners');
+        const bannerArt = `${process.env.IMAGES_HOSTNAME}/blog-banners/${bannerArtUrl.substr(
+            bannerArtUrl.lastIndexOf('/') + 1,
+        )}`;
+        return await this.content.changeBanner(pseudId, blogId, bannerArt);
+    }
 }

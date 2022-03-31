@@ -58,7 +58,7 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full lg:w-[42rem] flex-1 mr-6">
+            <div class="w-full lg:w-[42rem] flex-1 ml-4 mr-6">
                 <div class="border-b mb-4 border-zinc-700 dark:border-white w-full mt-4">
                     <h3 class="text-2xl font-medium">Latest Blogs</h3>
                 </div>

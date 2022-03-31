@@ -22,17 +22,18 @@
 </script>
 
 <script lang="ts">
+    import { http } from '$lib/services/http';
     import { createForm } from 'felte';
     import { content, updateContent } from '$lib/repo/content.repo';
     import { session } from '$lib/repo/session.repo';
     import { saveChanges, publishOne } from '$lib/services/content.service';
     import {
-        slugify,
         pluralize,
         localeDate,
         MIN_TITLE_LENGTH,
         MAX_TITLE_LENGTH,
         MIN_LONG_DESC_LENGTH,
+        baseUrl,
     } from '$lib/util';
     import {
         InformationLine,
@@ -46,13 +47,20 @@
         CheckboxBlankCircleLine,
         CheckboxCircleLine,
         EmotionLaughLine,
+        NewspaperLine,
+        ImageEditLine,
     } from 'svelte-remixicon';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import TextField from '$lib/components/forms/TextField.svelte';
     import Editor from '$lib/components/forms/Editor.svelte';
     import Comments from '$lib/components/comments/Comments.svelte';
-    import { ContentKind, PubStatus } from '$lib/models/content';
+    import { Content, ContentKind, PubStatus } from '$lib/models/content';
+    import type { Blog, NewsChange } from '$lib/models/content/blogs';
     import type { BlogForm } from '$lib/models/content/works/forms';
+    import { isAllowed } from '$lib/services/auth.service';
+    import { Roles } from '$lib/models/accounts';
+    import { openPopup } from '$lib/components/nav/popup';
+    import UploadBanner from './_forms/UploadBanner.svelte';
 
     let isEditing = false;
 
@@ -111,6 +119,31 @@
             updateContent(res);
         });
     }
+
+    async function toggleNewsPost(): Promise<void> {
+        const toggleChange: NewsChange = {
+            blogId: $content.content._id,
+            postAsNews: !($content.content as Blog).audit.isNewsPost,
+        };
+        const updatedContent = await http
+            .patch<Content>(
+                `${baseUrl}/content/toggle-news-post?pseudId=${$session.currProfile._id}`,
+                toggleChange,
+            )
+            .then((res) => {
+                return res.data;
+            });
+
+        updateContent(updatedContent);
+    }
+
+    function canMakeNewsPost() {
+        return (
+            $session.currProfile &&
+            $session.currProfile._id === $content.content.author._id &&
+            isAllowed($session.currProfile.roles, [Roles.Admin, Roles.Moderator, Roles.Contributor])
+        );
+    }
 </script>
 
 <svelte:head>
@@ -142,10 +175,28 @@
 
 <div class="w-full overflow-y-auto">
     <div class="mx-auto max-w-4xl my-6">
+        {#if $content.content.meta.banner}
+            <div class="mx-auto w-11/12 md:w-full rounded-t-lg overflow-hidden">
+                <img
+                    src={$content.content.author.profile.coverPic}
+                    alt="banner"
+                    class="object-cover h-48 md:h-64 w-full block"
+                />
+            </div>
+        {/if}
         <div
-            class="mx-auto w-11/12 md:w-full md:rounded-b-lg rounded-t-lg flex items-center z-20 relative md:shadow-2xl"
+            class="mx-auto w-11/12 md:w-full md:rounded-b-lg rounded-t-lg flex items-center z-20 relative md:shadow-2xl relative"
+            class:rounded-t-lg={!$content.content.meta.banner}
             style="background: var(--accent);"
         >
+            {#if $session.currProfile && $session.currProfile._id === $content.content.author._id}
+                <div class="absolute top-1 right-1.5 z-20">
+                    <Button kind="primary" on:click={() => openPopup(UploadBanner)}>
+                        <ImageEditLine class="button-icon" />
+                        <span class="button-text">Edit Cover</span>
+                    </Button>
+                </div>
+            {/if}
             <div
                 class="m-4 rounded-full overflow-hidden w-20 h-20 md:w-28 md:h-28 border-4 border-white bg-white"
             >
@@ -155,7 +206,7 @@
                     class="w-full h-full"
                 />
             </div>
-            <div>
+            <div class="relative -top-1">
                 <h1 class="text-white font-medium text-3xl">{$content.content.title}</h1>
                 <div class="flex items-center text-xs text-white">
                     <span
@@ -223,6 +274,20 @@
                                 <CheckboxBlankCircleLine class="button-icon" />
                                 <span class="button-text">Unpublished</span>
                             </Button>
+                        {/if}
+                        <div class="mx-0.5" />
+                        {#if canMakeNewsPost()}
+                            {#if $content.content.audit.isNewsPost}
+                                <Button kind="primary" on:click={toggleNewsPost}>
+                                    <NewspaperLine class="button-icon" />
+                                    <span class="button-text">Remove From Feed</span>
+                                </Button>
+                            {:else}
+                                <Button kind="primary" on:click={toggleNewsPost}>
+                                    <NewspaperLine class="button-icon" />
+                                    <span class="button-text">Add To Feed</span>
+                                </Button>
+                            {/if}
                         {/if}
                     {/if}
                     <div class="flex-1"><!--separator--></div>
