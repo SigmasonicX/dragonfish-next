@@ -1,14 +1,16 @@
 <script lang="ts">
     import { slogans } from '$lib/models/site';
     import Jumbotron from '$lib/components/ui/misc/Jumbotron.svelte';
-    import { HeartsLine, Loader5Line } from 'svelte-remixicon';
+    import { CloseLine, HeartsLine, InformationLine, Loader5Line } from 'svelte-remixicon';
     import { useQuery } from '@sveltestack/svelte-query';
-    import { fetchFirstNew } from '$lib/services/content.service';
+    import { fetchFirstNew, fetchFirstNewsPosts } from '$lib/services/content.service';
     import { app } from '$lib/repo/app.repo';
     import WorkCard from '$lib/components/ui/content/WorkCard.svelte';
+    import NewsCard from '$lib/components/ui/content/NewsCard.svelte';
 
     const currSlogan = slogans[Math.floor(Math.random() * slogans.length)];
     const newWorks = useQuery('newWorks', () => fetchFirstNew($app.filter));
+    const firstSixNews = useQuery('firstSixNews', fetchFirstNewsPosts);
 </script>
 
 <svelte:head>
@@ -134,64 +136,36 @@
             <h3 class="text-2xl font-medium w-full border-b border-zinc-600 dark:border-white mb-4">
                 News & Updates
             </h3>
-            <div
-                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
-            >
-                <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
-                <div class="truncate flex-1 w-full ml-2">
-                    <h4 class="text-lg font-medium top-1">Last Week on Offprint</h4>
-                    <div class="relative -top-1 flex items-center">
-                        <span class="text-xs">by Figments</span>
-                        <span class="text-xs mx-0.5">•</span>
-                        <span class="text-xs">Wed, Nov. 29, 2021</span>
+            {#if $firstSixNews.isLoading}
+                <div class="w-full h-48 flex flex-col items-center justify-center">
+                    <div class="flex items-center">
+                        <Loader5Line class="animate-spin mr-2" />
+                        <span class="text-xs uppercase font-bold tracking-wider">Loading...</span>
                     </div>
                 </div>
-            </div>
-            <div class="my-2" />
-            <div
-                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
-            >
-                <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
-                <div class="truncate flex-1 w-full ml-2">
-                    <h4 class="text-lg font-medium top-1 truncate">Animorphs Writing Contest!</h4>
-                    <div class="relative -top-1 flex items-center">
-                        <span class="text-xs">by SigmasonicX</span>
-                        <span class="text-xs mx-0.5">•</span>
-                        <span class="text-xs">Wed, Nov. 29, 2021</span>
+            {:else if $firstSixNews.isError}
+                <div class="w-full h-48 flex flex-col items-center justify-center">
+                    <div class="flex items-center">
+                        <CloseLine class="mr-2" />
+                        <span class="text-xs uppercase font-bold tracking-wider"
+                            >Error fetching news</span
+                        >
                     </div>
                 </div>
-            </div>
-            <div class="my-2" />
-            <div
-                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
-            >
-                <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
-                <div class="truncate flex-1 w-full ml-2">
-                    <h4 class="text-lg font-medium top-1 truncate">DevBlog #2: Pain Is Process</h4>
-                    <div class="relative -top-1 flex items-center">
-                        <span class="text-xs">by Figments</span>
-                        <span class="text-xs mx-0.5">•</span>
-                        <span class="text-xs">Wed, Nov. 29, 2021</span>
+            {:else if $firstSixNews.data.length === 0}
+                <div class="w-full h-48 flex flex-col items-center justify-center">
+                    <div class="flex items-center">
+                        <InformationLine class="mr-2" />
+                        <span class="text-xs uppercase font-bold tracking-wider"
+                            >No news posted</span
+                        >
                     </div>
                 </div>
-            </div>
-            <div class="my-2" />
-            <div
-                class="w-full border border-zinc-600 dark:border-white rounded-md p-2 flex items-center"
-            >
-                <img src="/images/demoavatar.png" alt="demo avatar" style="max-width: 2.5rem" />
-                <div class="truncate flex-1 w-full ml-2">
-                    <h4 class="text-lg font-medium top-1 truncate">
-                        Interview: bats and the process of coping with no firm Owl House release
-                        date
-                    </h4>
-                    <div class="relative -top-1 flex items-center">
-                        <span class="text-xs">by Dash</span>
-                        <span class="text-xs mx-0.5">•</span>
-                        <span class="text-xs">Wed, Nov. 29, 2021</span>
-                    </div>
-                </div>
-            </div>
+            {:else}
+                {#each $firstSixNews.data as post}
+                    <NewsCard {post} />
+                {/each}
+            {/if}
         </div>
     </div>
     <div class="flex items-center justify-center flex-col md:flex-row">
