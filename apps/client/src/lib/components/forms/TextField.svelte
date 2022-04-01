@@ -28,15 +28,10 @@
         on:change
         on:keypress
     />
-    {#if !!errorMessage}
+    {#if !!errorMessage && errorMessage !== ''}
         <span
             class="text-[0.625rem] text-red-500 relative -top-1 left-2"
             transition:fade|local={{ delay: 0, duration: 350 }}>{errorMessage}</span
-        >
-    {:else}
-        <span
-            class="text-[0.625rem] text-red-500 relative -top-1 left-2"
-            transition:fade|local={{ delay: 0, duration: 350 }}>&nbsp;</span
         >
     {/if}
 </div>

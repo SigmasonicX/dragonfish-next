@@ -1,5 +1,6 @@
 <script lang="ts">
     import { LoginCircleLine, UserAddLine } from 'svelte-remixicon';
+    import { session } from '$lib/repo/session.repo';
     import LogInForm from '$lib/components/ui/user/LogInForm.svelte';
     import RegisterForm from '$lib/components/ui/user/RegisterForm.svelte';
     import { goto } from '$app/navigation';
@@ -12,7 +13,11 @@
     let selectedTab = RegistrationTabs.LogIn;
 
     function onSuccess() {
-        goto('/registration/select-profile');
+        if ($session.profiles.length === 0) {
+            goto('/registration/create-profile');
+        } else {
+            goto('/registration/select-profile');
+        }
     }
 </script>
 

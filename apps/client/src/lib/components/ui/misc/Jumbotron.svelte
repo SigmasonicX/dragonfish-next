@@ -121,12 +121,13 @@
                 h1 {
                     @apply text-3xl md:text-5xl font-medium;
                     a {
-                        color: var(--site-color);
+                        color: var(--text-color);
                     }
-                    color: var(--site-color);
+                    color: var(--text-color);
                 }
                 h2 {
-                    @apply text-xl md:text-3xl text-white;
+                    @apply text-xl md:text-3xl;
+                    color: var(--text-color);
                 }
             }
         }

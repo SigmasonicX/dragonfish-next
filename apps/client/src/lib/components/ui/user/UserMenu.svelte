@@ -1,15 +1,14 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
     import {
         LogoutCircleRLine,
         ArrowLeftRightLine,
         ArrowLeftSLine,
         CheckLine,
         CloseLine,
-        AddBoxLine,
     } from 'svelte-remixicon';
     import { session, logout } from '$lib/repo/session.repo';
-    import { abbreviate, pluralize, slugify } from '$lib/util';
+    import { abbreviate, pluralize } from '$lib/util';
+    import { close } from '$lib/components/nav/sidenav/sidenav.state';
     import RoleBadge from './RoleBadge.svelte';
     import Button from '$lib/components/ui/misc/Button.svelte';
     import SelectProfile from '$lib/components/ui/user/SelectProfile.svelte';
@@ -21,11 +20,10 @@
     }
 
     let currPage = MenuPages.Main;
-    const dispatch = createEventDispatcher();
 
     async function logOut() {
         await logout().then(() => {
-            dispatch('logout');
+            close();
         });
     }
 </script>
@@ -118,7 +116,7 @@
                         <CheckLine class="button-icon" />
                         <span class="button-text">Yes</span>
                     </Button>
-                    <div class="mx-2" />
+                    <div class="mx-2"><!--spacer--></div>
                     <Button on:click={() => (currPage = MenuPages.Main)}>
                         <CloseLine class="button-icon" />
                         <span class="button-text">No</span>

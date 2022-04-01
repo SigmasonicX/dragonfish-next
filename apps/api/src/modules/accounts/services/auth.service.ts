@@ -1,12 +1,12 @@
 import {
+    BadRequestException,
     Injectable,
     InternalServerErrorException,
     Logger,
     NotFoundException,
-    UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { argon2id, verify, hash } from 'argon2';
+import { argon2id, verify } from 'argon2';
 import { nanoid } from 'nanoid';
 import { JwtPayload, LoginPackage } from '$shared/auth';
 import { DeviceInfo, REFRESH_EXPIRATION } from '$shared/util';
@@ -91,7 +91,7 @@ export class AuthService {
             this.logger.log(`New user created with ID: ${addedUser._id}`);
             return await this.login(addedUser, req, device, false);
         } else {
-            throw new UnauthorizedException(`You need a valid invite code to register!`);
+            throw new BadRequestException(`You need a valid invite code to register!`);
         }
     }
 

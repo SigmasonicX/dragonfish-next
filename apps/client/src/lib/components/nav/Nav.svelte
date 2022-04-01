@@ -12,6 +12,7 @@
         Dashboard2Line,
         SearchEyeLine,
         MenuLine,
+        GroupLine,
     } from 'svelte-remixicon';
     import { open, close, sidenav } from '$lib/components/nav/sidenav/sidenav.state';
     import UserMenu from '$lib/components/ui/user/UserMenu.svelte';
@@ -145,6 +146,11 @@
                     <span class="link-name">Inbox</span>
                 </div>
             {/if}
+        {:else if $session.account}
+            <a class="link" href="/registration/select-profile">
+                <span class="link-icon"><GroupLine size="24px" /></span>
+                <span class="link-name">Profiles</span>
+            </a>
         {:else}
             <a class="link" href="/registration">
                 <span class="link-icon"><LoginCircleLine size="24px" /></span>
